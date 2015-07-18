@@ -140,8 +140,10 @@ namespace NativeUI
             }
         }
 
-        public void ProcessKey(Keys key)
+        public void ProcessKey()
         {
+            if(!Visible) return;
+
             if (Game.IsControlJustPressed(0, GTA.Control.FrontendUp) || Game.IsControlJustPressed(1, GTA.Control.FrontendUp) || Game.IsControlJustPressed(2, GTA.Control.FrontendUp))
             {
                 if (_activeItem % MenuItems.Count <= _minItem)
@@ -170,6 +172,7 @@ namespace NativeUI
                     _activeItem--;
                     MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
                 }
+                Game.PlaySound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET");
                 OnIndexChange(CurrentSelection);
             }
             else if (Game.IsControlJustPressed(0, GTA.Control.FrontendDown) || Game.IsControlJustPressed(1, GTA.Control.FrontendDown) || Game.IsControlJustPressed(2, GTA.Control.FrontendDown))
@@ -199,6 +202,7 @@ namespace NativeUI
                     _activeItem++;
                     MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
                 }
+                Game.PlaySound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET");
                 OnIndexChange(CurrentSelection);
             }
             else if (Game.IsControlJustPressed(0, GTA.Control.FrontendLeft) || Game.IsControlJustPressed(1, GTA.Control.FrontendLeft) || Game.IsControlJustPressed(2, GTA.Control.FrontendLeft))
@@ -206,6 +210,7 @@ namespace NativeUI
                 if (!(MenuItems[CurrentSelection] is UIMenuListItem)) return;
                 var it = (UIMenuListItem) MenuItems[CurrentSelection];
                 it.Index--;
+                Game.PlaySound("NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
                 OnListChange(it, it.Index);
             }
 
@@ -214,6 +219,7 @@ namespace NativeUI
                 if (!(MenuItems[CurrentSelection] is UIMenuListItem)) return;
                 var it = (UIMenuListItem) MenuItems[CurrentSelection];
                 it.Index++;
+                Game.PlaySound("TOGGLE_ON", "HUD_FRONTEND_DEFAULT_SOUNDSET");
                 OnListChange(it, it.Index);
             }
 
@@ -223,10 +229,12 @@ namespace NativeUI
                 {
                     var it = (UIMenuCheckboxItem) MenuItems[CurrentSelection];
                     it.Checked = !it.Checked;
+                    Game.PlaySound("SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
                     OnCheckboxChange(it, it.Checked);
                 }
                 else if (!(MenuItems[CurrentSelection] is UIMenuListItem))
                 {
+                    Game.PlaySound("SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
                     OnItemSelect(MenuItems[CurrentSelection], CurrentSelection);
                 }
             }

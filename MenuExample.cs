@@ -66,6 +66,7 @@ public class MenuExample : Script
 
     public void OnKeyDown(object o, KeyEventArgs e)
     {
+        mainMenu.ProcessKey();
         if (e.KeyCode == Keys.F5) // Our menu on/off switch
         {
             mainMenu.Visible = !mainMenu.Visible;
