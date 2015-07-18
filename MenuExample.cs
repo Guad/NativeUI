@@ -29,6 +29,8 @@ public class MenuExample : Script
         mainMenu.AddItem(new UIMenuItem("Cook!"));
 
         mainMenu.ItemSelect += ItemSelect;
+        mainMenu.ListChange += ListChange;
+        mainMenu.CheckboxChange += CheckboxChange;
     }
 
     public void CheckboxChange(UIMenu sender, UIMenuCheckboxItem checkbox, bool Checked)

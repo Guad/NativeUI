@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Forms;
 using GTA;
+using Font = GTA.Font;
 
 namespace NativeUI
 {
@@ -13,65 +13,104 @@ namespace NativeUI
 
     public delegate void OnItemSelect(UIMenu sender, UIMenuItem selectedItem, int index);
 
+
+    /// <summary>
+    /// Base class for NativeUI. Calls the next events: OnIndexChanged, OnListChanged, OnCheckboxChange, OnItemSelect.
+    /// </summary>
     public class UIMenu
     {
-        /// <summary>
-        /// Base class for NativeUI. Calls the next events:
-        /// - OnIndexChanged - Called when user presses up or down, changing current selection.
-        /// - OnListChanged - Called when user presses left or right, changing a list position.
-        /// - OnCheckboxChange - Called when user presses enter on a checkbox item.
-        /// - OnItemSelect - Called when user selects a simple item.
-        /// </summary>
+        
         
         private readonly UIContainer _mainMenu;
-        private readonly Sprite logo;
+        private readonly Sprite _logo;
 
         private int _activeItem = 1000;
 
         //Pagination
         private const int MaxItemsOnScreen = 12;
-        private int _minItem = 0;
+        private int _minItem;
         private int _maxItem = MaxItemsOnScreen;
 
         
-        private readonly Sprite upAndDownSprite;
-        private readonly UIRectangle extraRectangle;
+        private readonly Sprite _upAndDownSprite;
+        private readonly UIRectangle _extraRectangle;
 
         private Point Offset;
-
-        //old
-        //public List<dynamic> MenuItems = new List<dynamic>();
+        
         public List<UIMenuItem> MenuItems = new List<UIMenuItem>();
 
         //Events
+
+        /// <summary>
+        /// Called when user presses up or down, changing current selection.
+        /// </summary>
         public event OnIndexChanged IndexChange;
+
+        /// <summary>
+        /// Called when user presses left or right, changing a list position.
+        /// </summary>
         public event OnListChanged ListChange;
+
+        /// <summary>
+        /// Called when user presses enter on a checkbox item.
+        /// </summary>
         public event OnCheckboxChange CheckboxChange;
+
+        /// <summary>
+        /// Called when user selects a simple item.
+        /// </summary>
         public event OnItemSelect ItemSelect;
 
+        /// <summary>
+        /// Basic Menu constructor.
+        /// </summary>
+        /// <param name="title">Title that appears on the big banner.</param>
+        /// <param name="subtitle">Subtitle that appears in capital letters in a small black bar.</param>
         public UIMenu(string title, string subtitle) : this(title, subtitle, new Point(0, 0), "commonmenu", "interaction_bgd")
         {
         }
 
+
+        /// <summary>
+        /// Basic Menu constructor with an offset.
+        /// </summary>
+        /// <param name="title">Title that appears on the big banner.</param>
+        /// <param name="subtitle">Subtitle that appears in capital letters in a small black bar.</param>
+        /// <param name="offset">Point object with X and Y data for offsets. Applied to all menu elements.</param>
         public UIMenu(string title, string subtitle, Point offset) : this(title, subtitle, offset, "commonmenu", "interaction_bgd")
         {
         }
 
+
+        /// <summary>
+        /// Advanced Menu constructor that allows custom title banner.
+        /// </summary>
+        /// <param name="title">Title that appears on the big banner. Set to "" if you are using a custom banner.</param>
+        /// <param name="subtitle">Subtitle that appears in capital letters in a small black bar.</param>
+        /// <param name="offset">Point object with X and Y data for offsets. Applied to all menu elements.</param>
+        /// <param name="spriteLibrary">Sprite library name for the banner.</param>
+        /// <param name="spriteName">Sprite name for the banner.</param>
         public UIMenu(string title, string subtitle, Point offset, string spriteLibrary, string spriteName)
         {
 
             Offset = offset;
 
             _mainMenu = new UIContainer(new Point(0 + Offset.X, 0 + Offset.Y), new Size(700, 500), Color.FromArgb(0, 0, 0, 0));
-            logo = new Sprite(spriteLibrary, spriteName, new Point(0 + Offset.X, 0 + Offset.Y), new Size(300, 60));
-            _mainMenu.Items.Add(new UIText(title, new Point(150, 5), 1.15f, Color.White, GTA.Font.HouseScript, true));
+            _logo = new Sprite(spriteLibrary, spriteName, new Point(0 + Offset.X, 0 + Offset.Y), new Size(300, 60));
+            _mainMenu.Items.Add(new UIText(title, new Point(150, 5), 1.15f, Color.White, Font.HouseScript, true));
             _mainMenu.Items.Add(new UIRectangle(new Point(0, 60), new Size(300, 30), Color.Black));
             _mainMenu.Items.Add(new UIText(subtitle.ToUpper(), new Point(10, 66), 0.3f, Color.WhiteSmoke, 0, false));
-            Title = subtitle;
-            upAndDownSprite = new Sprite("commonmenu", "shop_arrows_upanddown", new Point(130 + Offset.X, 90 + 25 * (MaxItemsOnScreen + 1) + Offset.Y), new Size(30, 30));
-            extraRectangle = new UIRectangle(new Point(0 + Offset.X, 90 + 25 * (MaxItemsOnScreen + 1) + Offset.Y), new Size(300, 30), Color.FromArgb(100, 0, 0, 0));
+            Title = title;
+            Subtitle = subtitle;
+            _upAndDownSprite = new Sprite("commonmenu", "shop_arrows_upanddown", new Point(130 + Offset.X, 90 + 25 * (MaxItemsOnScreen + 1) + Offset.Y), new Size(30, 30));
+            _extraRectangle = new UIRectangle(new Point(0 + Offset.X, 90 + 25 * (MaxItemsOnScreen + 1) + Offset.Y), new Size(300, 30), Color.FromArgb(100, 0, 0, 0));
         }
 
+
+        /// <summary>
+        /// Add an item to the menu.
+        /// </summary>
+        /// <param name="item">Item object to be added. Can be normal item, checkbox or list item.</param>
         public void AddItem(UIMenuItem item)
         {
             item.Offset = Offset;
@@ -79,11 +118,20 @@ namespace NativeUI
             MenuItems.Add(item);
         }
 
+
+        /// <summary>
+        /// Remove an item at index n
+        /// </summary>
+        /// <param name="index">Index to remove the item at.</param>
         public void RemoveItemAt(int index)
         {
             MenuItems.RemoveAt(index);
         }
 
+
+        /// <summary>
+        /// Reset the current selected item to 0. Use this after you add or remove items dynamically.
+        /// </summary>
         public void RefreshIndex()
         {
             _activeItem = 1000 - (1000 % MenuItems.Count);
@@ -91,31 +139,23 @@ namespace NativeUI
             _minItem = 0;
         }
 
-        public void SetIndex(int newindex)
-        {
-            _activeItem = 1000 - (1000 % MenuItems.Count) + newindex;
-            if (CurrentSelection > _maxItem)
-            {
-                _maxItem = CurrentSelection;
-                _minItem = CurrentSelection - MaxItemsOnScreen;
-            }
-            else if(CurrentSelection < _minItem)
-            {
-                _maxItem = MaxItemsOnScreen + CurrentSelection;
-                _minItem = CurrentSelection;
-            }
-        }
 
+        /// <summary>
+        /// Remove all items from the menu.
+        /// </summary>
         public void Clear()
         {
             MenuItems.Clear();
         }
 
 
+        /// <summary>
+        /// Draw the menu and all of it's components.
+        /// </summary>
         public void Draw()
         {
             if (!Visible) return;
-            logo.Draw();
+            _logo.Draw();
             MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
             _mainMenu.Draw();
             if (MenuItems.Count <= MaxItemsOnScreen)
@@ -135,16 +175,20 @@ namespace NativeUI
                     item.Draw();
                     count++;
                 }
-                extraRectangle.Draw();
-                upAndDownSprite.Draw();
+                _extraRectangle.Draw();
+                _upAndDownSprite.Draw();
             }
         }
 
+
+        /// <summary>
+        /// Process keystroke. Call this in the OnKeyDown event.
+        /// </summary>
         public void ProcessKey()
         {
             if(!Visible) return;
 
-            if (Game.IsControlJustPressed(0, GTA.Control.FrontendUp) || Game.IsControlJustPressed(1, GTA.Control.FrontendUp) || Game.IsControlJustPressed(2, GTA.Control.FrontendUp))
+            if (Game.IsControlJustPressed(0, Control.FrontendUp) || Game.IsControlJustPressed(1, Control.FrontendUp) || Game.IsControlJustPressed(2, Control.FrontendUp))
             {
                 if (_activeItem % MenuItems.Count <= _minItem)
                 {
@@ -175,7 +219,7 @@ namespace NativeUI
                 Game.PlaySound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET");
                 OnIndexChange(CurrentSelection);
             }
-            else if (Game.IsControlJustPressed(0, GTA.Control.FrontendDown) || Game.IsControlJustPressed(1, GTA.Control.FrontendDown) || Game.IsControlJustPressed(2, GTA.Control.FrontendDown))
+            else if (Game.IsControlJustPressed(0, Control.FrontendDown) || Game.IsControlJustPressed(1, Control.FrontendDown) || Game.IsControlJustPressed(2, Control.FrontendDown))
             {
                 if (_activeItem % MenuItems.Count >= _maxItem)
                 {
@@ -205,7 +249,7 @@ namespace NativeUI
                 Game.PlaySound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET");
                 OnIndexChange(CurrentSelection);
             }
-            else if (Game.IsControlJustPressed(0, GTA.Control.FrontendLeft) || Game.IsControlJustPressed(1, GTA.Control.FrontendLeft) || Game.IsControlJustPressed(2, GTA.Control.FrontendLeft))
+            else if (Game.IsControlJustPressed(0, Control.FrontendLeft) || Game.IsControlJustPressed(1, Control.FrontendLeft) || Game.IsControlJustPressed(2, Control.FrontendLeft))
             {
                 if (!(MenuItems[CurrentSelection] is UIMenuListItem)) return;
                 var it = (UIMenuListItem) MenuItems[CurrentSelection];
@@ -214,7 +258,7 @@ namespace NativeUI
                 OnListChange(it, it.Index);
             }
 
-            else if (Game.IsControlJustPressed(0, GTA.Control.FrontendRight) || Game.IsControlJustPressed(1, GTA.Control.FrontendRight) || Game.IsControlJustPressed(2, GTA.Control.FrontendRight))
+            else if (Game.IsControlJustPressed(0, Control.FrontendRight) || Game.IsControlJustPressed(1, Control.FrontendRight) || Game.IsControlJustPressed(2, Control.FrontendRight))
             {
                 if (!(MenuItems[CurrentSelection] is UIMenuListItem)) return;
                 var it = (UIMenuListItem) MenuItems[CurrentSelection];
@@ -223,7 +267,7 @@ namespace NativeUI
                 OnListChange(it, it.Index);
             }
 
-            else if (Game.IsControlJustPressed(0, GTA.Control.FrontendSelect) || Game.IsControlJustPressed(1, GTA.Control.FrontendSelect) || Game.IsControlJustPressed(2, GTA.Control.FrontendSelect))
+            else if (Game.IsControlJustPressed(0, Control.FrontendSelect) || Game.IsControlJustPressed(1, Control.FrontendSelect) || Game.IsControlJustPressed(2, Control.FrontendSelect))
             {
                 if (MenuItems[CurrentSelection] is UIMenuCheckboxItem)
                 {
@@ -240,19 +284,56 @@ namespace NativeUI
             }
         }
 
+
+        /// <summary>
+        /// Change whether this menu is visible to the user.
+        /// </summary>
         public bool Visible { get; set; }
 
+
+        /// <summary>
+        /// Returns the current selected item's index.
+        /// Change the current selected item to index. Use this after you add or remove items dynamically.
+        /// </summary>
         public int CurrentSelection
         {
             get { return _activeItem % MenuItems.Count; }
+            set
+            {
+                _activeItem = 1000 - (1000 % MenuItems.Count) + value;
+                if (CurrentSelection > _maxItem)
+                {
+                    _maxItem = CurrentSelection;
+                    _minItem = CurrentSelection - MaxItemsOnScreen;
+                }
+                else if (CurrentSelection < _minItem)
+                {
+                    _maxItem = MaxItemsOnScreen + CurrentSelection;
+                    _minItem = CurrentSelection;
+                }
+            }
         }
 
+
+        /// <summary>
+        /// Returns the amount of items in the menu.
+        /// </summary>
         public int Size
         {
             get { return MenuItems.Count; }
         }
 
-        public string Title { get; set; }
+
+        /// <summary>
+        /// Returns the current title.
+        /// </summary>
+        public string Title { get; }
+
+
+        /// <summary>
+        /// Returns the current subtitle.
+        /// </summary>
+        public string Subtitle { get; }
 
         protected virtual void OnIndexChange(int newindex)
         {

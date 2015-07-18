@@ -15,14 +15,20 @@ namespace NativeUI
         private List<dynamic> Items;
 
         private int _index = 0;
-
+        
         public int Index
         {
-            get
-            { return _index % Items.Count; }
+            get { return _index % Items.Count; }
             set { _index = 100000 - (100000 % Items.Count) + value; }
         }
 
+
+        /// <summary>
+        /// List item, with left/right arrows.
+        /// </summary>
+        /// <param name="text">Item label.</param>
+        /// <param name="items">List that contains your items.</param>
+        /// <param name="index">Index in the list. If unsure user 0.</param>
         public UIMenuListItem(string text, List<dynamic> items, int index)
             : base(text)
         {
@@ -35,6 +41,11 @@ namespace NativeUI
             Index = index;
         }
 
+
+        /// <summary>
+        /// Change item's position.
+        /// </summary>
+        /// <param name="y">New Y position.</param>
         public override void Position(int y)
         {
             _arrowLeft.Position = new Point(120 + Offset.X, 93 + y + Offset.Y);
@@ -43,16 +54,32 @@ namespace NativeUI
             base.Position(y);
         }
 
+
+        /// <summary>
+        /// Find an item in the list and return it's index.
+        /// </summary>
+        /// <param name="item">Item to search for.</param>
+        /// <returns>Item index.</returns>
         public int ItemToIndex(dynamic item)
         {
             return Items.FindIndex(item);
         }
 
+
+        /// <summary>
+        /// Find an item by it's index and return the item converted to string.
+        /// </summary>
+        /// <param name="index">Item's index.</param>
+        /// <returns>String of Item</returns>
         public string IndexToItem(int index)
         {
             return Items[index].ToString();
         }
 
+
+        /// <summary>
+        /// Draw item.
+        /// </summary>
         public override void Draw()
         {
             base.Draw();

@@ -10,6 +10,11 @@ namespace NativeUI
         private bool _selected;
         private Sprite _selectedSprite;
 
+
+        /// <summary>
+        /// Basic menu button.
+        /// </summary>
+        /// <param name="text">Button label.</param>
         public UIMenuItem(string text)
         {
             int y = 0;
@@ -20,6 +25,10 @@ namespace NativeUI
             _selectedSprite = new Sprite("commonmenu", "gradient_nav", new Point(0, y + 90), new Size(300, 25));
         }
 
+
+        /// <summary>
+        /// Whether this item is currently selected.
+        /// </summary>
         public virtual bool Selected
         {
             get { return _selected; }
@@ -31,6 +40,11 @@ namespace NativeUI
             }
         }
 
+
+        /// <summary>
+        /// Set item's position.
+        /// </summary>
+        /// <param name="y"></param>
         public virtual void Position(int y)
         {
             _rectangle.Position = new Point(0 + Offset.X, y + 90 + Offset.Y);
@@ -38,6 +52,10 @@ namespace NativeUI
             _text.Position = new Point(10 + Offset.X, y + 93 + Offset.Y);
         }
 
+
+        /// <summary>
+        /// Draw this item.
+        /// </summary>
         public virtual void Draw()
         {
             _rectangle.Draw();

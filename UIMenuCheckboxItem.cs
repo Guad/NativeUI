@@ -6,6 +6,12 @@ namespace NativeUI
     {
         private Sprite _checkedSprite;
 
+
+        /// <summary>
+        /// Checkbox item with a toggleable checkbox.
+        /// </summary>
+        /// <param name="text">Item label.</param>
+        /// <param name="check">Boolean value whether the checkbox is checked.</param>
         public UIMenuCheckboxItem(string text, bool check)
             : base(text)
         {
@@ -14,14 +20,27 @@ namespace NativeUI
             Checked = check;
         }
 
+
+        /// <summary>
+        /// Change or get whether the checkbox is checked.
+        /// </summary>
         public bool Checked { get; set; }
 
+
+        /// <summary>
+        /// Change item's position.
+        /// </summary>
+        /// <param name="y">New Y value.</param>
         public override void Position(int y)
         {
             base.Position(y);
             _checkedSprite.Position = new Point(260 + Offset.X, y + 85 + Offset.Y);
         }
 
+
+        /// <summary>
+        /// Draw item.
+        /// </summary>
         public override void Draw()
         {
             base.Draw();
