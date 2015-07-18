@@ -23,9 +23,10 @@ namespace NativeUI
             set { _index = 100000 - (100000 % Items.Count) + value; }
         }
 
-        public UIMenuListItem(string text, int y, List<dynamic> items, int index)
-            : base(text, y)
+        public UIMenuListItem(string text, List<dynamic> items, int index)
+            : base(text)
         {
+            int y = 0;
             Items = new List<dynamic>(items);
             _arrowLeft = new Sprite("commonmenu", "arrowleft", new Point(120, 93 + y), new Size(20, 20));
             _arrowRight = new Sprite("commonmenu", "arrowright", new Point(275, 93 + y), new Size(20, 20));
@@ -45,6 +46,11 @@ namespace NativeUI
         public int ItemToIndex(dynamic item)
         {
             return Items.FindIndex(item);
+        }
+
+        public string IndexToItem(int index)
+        {
+            return Items[index].ToString();
         }
 
         public override void Draw()

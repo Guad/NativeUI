@@ -10,8 +10,10 @@ namespace NativeUI
         private bool _selected;
         private Sprite _selectedSprite;
 
-        public UIMenuItem(string text, int y)
+        public UIMenuItem(string text)
         {
+            int y = 0;
+            Text = text;
             _rectangle = new UIRectangle(new Point(0, y + 90), new Size(300, 25), Color.FromArgb(100, 0, 0, 0));
             _text = new UIText(text, new Point(10, y + 93), 0.3f, Color.WhiteSmoke, GTA.Font.ChaletLondon, false);
 
@@ -45,5 +47,6 @@ namespace NativeUI
         }
 
         public Point Offset { get; set; }
+        public string Text { get; set; }
     }
 }

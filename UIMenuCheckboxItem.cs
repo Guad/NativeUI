@@ -6,9 +6,10 @@ namespace NativeUI
     {
         private Sprite _checkedSprite;
 
-        public UIMenuCheckboxItem(string text, int y, bool check)
-            : base(text, y)
+        public UIMenuCheckboxItem(string text, bool check)
+            : base(text)
         {
+            int y = 0;
             _checkedSprite = new Sprite("commonmenu", "shop_box_blank", new Point(260, y + 85), new Size(35, 35));
             Checked = check;
         }
