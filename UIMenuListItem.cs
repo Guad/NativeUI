@@ -67,13 +67,13 @@ namespace NativeUI
 
 
         /// <summary>
-        /// Find an item by it's index and return the item converted to string.
+        /// Find an item by it's index and return the item.
         /// </summary>
         /// <param name="index">Item's index.</param>
-        /// <returns>String of Item</returns>
-        public string IndexToItem(int index)
+        /// <returns>Item</returns>
+        public dynamic IndexToItem(int index)
         {
-            return Items[index].ToString();
+            return Items[index];
         }
 
 

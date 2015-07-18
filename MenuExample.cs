@@ -42,7 +42,7 @@ public class MenuExample : Script
     public void ListChange(UIMenu sender, UIMenuListItem list, int index)
     {
         if (sender != mainMenu) return; // We only want to detect changes from our menu.
-        string dish = list.IndexToItem(index);
+        string dish = list.IndexToItem(index).ToString();
         UI.Notify("Preparing ~b~" + dish +"~w~...");
     }
     
@@ -51,7 +51,7 @@ public class MenuExample : Script
         if (sender != mainMenu || selectedItem.Text != "Cook!") return; // We only want to detect changes from our menu and our button.
         // You can also detect the button by using index
         var ourList = (UIMenuListItem) sender.MenuItems[1];
-        string dish = ourList.IndexToItem(ourList.Index);
+        string dish = ourList.IndexToItem(ourList.Index).ToString();
         var ourCheckbox = (UIMenuCheckboxItem) sender.MenuItems[0];
         bool ketchup = ourCheckbox.Checked;
 
