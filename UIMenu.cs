@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Windows.Forms;
 using GTA;
+using GTA.Native;
+using Control = GTA.Control;
 using Font = GTA.Font;
 
 namespace NativeUI
@@ -61,6 +65,14 @@ namespace NativeUI
         /// </summary>
         public event OnItemSelect ItemSelect;
 
+        //Keys
+        public Keys KeyUp { get; set; }
+        public Keys KeyDown { get; set; }
+        public Keys KeyLeft { get; set; }
+        public Keys KeyRight { get; set; }
+        public Keys KeySelect { get; set; }
+
+
         /// <summary>
         /// Basic Menu constructor.
         /// </summary>
@@ -104,6 +116,12 @@ namespace NativeUI
             Subtitle = subtitle;
             _upAndDownSprite = new Sprite("commonmenu", "shop_arrows_upanddown", new Point(130 + Offset.X, 90 + 25 * (MaxItemsOnScreen + 1) + Offset.Y), new Size(30, 30));
             _extraRectangle = new UIRectangle(new Point(0 + Offset.X, 90 + 25 * (MaxItemsOnScreen + 1) + Offset.Y), new Size(300, 30), Color.FromArgb(100, 0, 0, 0));
+
+            KeyUp = Keys.NumPad8;
+            KeyDown = Keys.NumPad2;
+            KeyLeft = Keys.NumPad4;
+            KeyRight = Keys.NumPad6;
+            KeySelect = Keys.NumPad5;
         }
 
 
@@ -184,12 +202,13 @@ namespace NativeUI
         /// <summary>
         /// Process keystroke. Call this in the OnKeyDown event.
         /// </summary>
-        public void ProcessKey()
+        public void ProcessKey(Keys key)
         {
             if(!Visible) return;
 
-            if (Game.IsControlJustPressed(0, Control.FrontendUp) || Game.IsControlJustPressed(1, Control.FrontendUp) || Game.IsControlJustPressed(2, Control.FrontendUp))
+            if (Game.IsControlJustPressed(0, Control.FrontendUp) || key == KeyUp)
             {
+                Function.Call(Hash.DESTROY_MOBILE_PHONE);
                 if (_activeItem % MenuItems.Count <= _minItem)
                 {
                     if (_activeItem % MenuItems.Count == 0)
@@ -219,7 +238,7 @@ namespace NativeUI
                 Game.PlaySound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET");
                 OnIndexChange(CurrentSelection);
             }
-            else if (Game.IsControlJustPressed(0, Control.FrontendDown) || Game.IsControlJustPressed(1, Control.FrontendDown) || Game.IsControlJustPressed(2, Control.FrontendDown))
+            else if (Game.IsControlJustPressed(0, Control.FrontendDown) || key == KeyDown)
             {
                 if (_activeItem % MenuItems.Count >= _maxItem)
                 {
@@ -249,7 +268,7 @@ namespace NativeUI
                 Game.PlaySound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET");
                 OnIndexChange(CurrentSelection);
             }
-            else if (Game.IsControlJustPressed(0, Control.FrontendLeft) || Game.IsControlJustPressed(1, Control.FrontendLeft) || Game.IsControlJustPressed(2, Control.FrontendLeft))
+            else if (Game.IsControlJustPressed(0, Control.FrontendLeft) || key == KeyLeft)
             {
                 if (!(MenuItems[CurrentSelection] is UIMenuListItem)) return;
                 var it = (UIMenuListItem) MenuItems[CurrentSelection];
@@ -258,7 +277,7 @@ namespace NativeUI
                 OnListChange(it, it.Index);
             }
 
-            else if (Game.IsControlJustPressed(0, Control.FrontendRight) || Game.IsControlJustPressed(1, Control.FrontendRight) || Game.IsControlJustPressed(2, Control.FrontendRight))
+            else if (Game.IsControlJustPressed(0, Control.FrontendRight) || key == KeyRight)
             {
                 if (!(MenuItems[CurrentSelection] is UIMenuListItem)) return;
                 var it = (UIMenuListItem) MenuItems[CurrentSelection];
@@ -267,7 +286,7 @@ namespace NativeUI
                 OnListChange(it, it.Index);
             }
 
-            else if (Game.IsControlJustPressed(0, Control.FrontendSelect) || Game.IsControlJustPressed(1, Control.FrontendSelect) || Game.IsControlJustPressed(2, Control.FrontendSelect))
+            else if (Game.IsControlJustPressed(0, Control.FrontendAccept) || key == KeySelect)
             {
                 if (MenuItems[CurrentSelection] is UIMenuCheckboxItem)
                 {
@@ -288,8 +307,19 @@ namespace NativeUI
         /// <summary>
         /// Change whether this menu is visible to the user.
         /// </summary>
-        public bool Visible { get; set; }
+        public bool Visible
+        {
+            get
+            {
+                return _visible;
+            }
+            set
+            {
+                _visible = value;
+            }
+        }
 
+        private bool _visible;
 
         /// <summary>
         /// Returns the current selected item's index.

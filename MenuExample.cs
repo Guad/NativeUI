@@ -30,7 +30,6 @@ public class MenuExample : Script
         };
         mainMenu.AddItem(dishesListItem = new UIMenuListItem("Food", foods, 0));
         mainMenu.AddItem(cookItem = new UIMenuItem("Cook!"));
-
         mainMenu.ItemSelect += ItemSelect;
         mainMenu.ListChange += ListChange;
         mainMenu.CheckboxChange += CheckboxChange;
@@ -69,7 +68,7 @@ public class MenuExample : Script
 
     public void OnKeyDown(object o, KeyEventArgs e)
     {
-        mainMenu.ProcessKey();
+        mainMenu.ProcessKey(e.KeyCode);
         if (e.KeyCode == Keys.F5) // Our menu on/off switch
         {
             mainMenu.Visible = !mainMenu.Visible;
