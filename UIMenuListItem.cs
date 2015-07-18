@@ -30,14 +30,25 @@ namespace NativeUI
         /// <param name="items">List that contains your items.</param>
         /// <param name="index">Index in the list. If unsure user 0.</param>
         public UIMenuListItem(string text, List<dynamic> items, int index)
-            : base(text)
+            : this(text, items, index, "")
+        {
+        }
+
+        /// <summary>
+        /// List item, with left/right arrows.
+        /// </summary>
+        /// <param name="text">Item label.</param>
+        /// <param name="items">List that contains your items.</param>
+        /// <param name="index">Index in the list. If unsure user 0.</param>
+        /// <param name="description">Description for this item.</param>
+        public UIMenuListItem(string text, List<dynamic> items, int index, string description)
+            : base(text, description)
         {
             int y = 0;
             Items = new List<dynamic>(items);
-            _arrowLeft = new Sprite("commonmenu", "arrowleft", new Point(120, 93 + y), new Size(20, 20));
-            _arrowRight = new Sprite("commonmenu", "arrowright", new Point(275, 93 + y), new Size(20, 20));
-
-            itemText = new UIText("", new Point(300, y + 94), 0.3f, Color.White, GTA.Font.ChaletLondon, false);
+            _arrowLeft = new Sprite("commonmenu", "arrowleft", new Point(110, 108 + y), new Size(10, 10));
+            _arrowRight = new Sprite("commonmenu", "arrowright", new Point(265, 108 + y), new Size(10, 10));
+            itemText = new UIText("", new Point(290, y + 104), 0.3f, Color.White, GTA.Font.ChaletLondon, false);
             Index = index;
         }
 
@@ -48,9 +59,9 @@ namespace NativeUI
         /// <param name="y">New Y position.</param>
         public override void Position(int y)
         {
-            _arrowLeft.Position = new Point(120 + Offset.X, 93 + y + Offset.Y);
-            _arrowRight.Position = new Point(275 + Offset.X, 93 + y + Offset.Y);
-            itemText.Position = new Point(300 + Offset.X, y + 94 + Offset.Y);
+            _arrowLeft.Position = new Point(110 + Offset.X, 108 + y + Offset.Y);
+            _arrowRight.Position = new Point(265 + Offset.X, 108 + y + Offset.Y);
+            itemText.Position = new Point(290 + Offset.X, y + 104 + Offset.Y);
             base.Position(y);
         }
 
@@ -88,19 +99,18 @@ namespace NativeUI
             SizeF strSize;
             using (Graphics g = Graphics.FromImage(new Bitmap(1, 1)))
             {
-                strSize = g.MeasureString(caption, new System.Drawing.Font("Segoe UI", 11, FontStyle.Regular, GraphicsUnit.Pixel));
+                strSize = g.MeasureString(caption, new System.Drawing.Font("Helvetica", 11, FontStyle.Regular, GraphicsUnit.Pixel));
             }
             int offset = Convert.ToInt32(strSize.Width);
-            //int offset = caption.Length * 5;
 
             itemText.Color = Selected ? Color.Black : Color.WhiteSmoke;
-            itemText.Position = new Point(275 - 10 - offset + Offset.X, itemText.Position.Y + Offset.Y);
+            itemText.Position = new Point(262 - offset + Offset.X, itemText.Position.Y);
             itemText.Caption = caption;
 
             _arrowLeft.Color = Selected ? Color.Black : Color.WhiteSmoke;
             _arrowRight.Color = Selected ? Color.Black : Color.WhiteSmoke;
 
-            _arrowLeft.Position = new Point(270 - 30 - offset + Offset.X, _arrowLeft.Position.Y + Offset.Y);
+            _arrowLeft.Position = new Point(250 - offset + Offset.X, _arrowLeft.Position.Y);
 
             _arrowLeft.Draw();
             _arrowRight.Draw();

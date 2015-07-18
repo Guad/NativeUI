@@ -28,6 +28,11 @@ namespace NativeUI
         private readonly UIContainer _mainMenu;
         private readonly Sprite _logo;
 
+        private readonly UIRectangle _descriptionBar;
+        private readonly UIRectangle _descriptionRectangle;
+        private UIText _descriptionText;
+
+
         private int _activeItem = 1000;
 
         //Pagination
@@ -108,14 +113,18 @@ namespace NativeUI
             Offset = offset;
 
             _mainMenu = new UIContainer(new Point(0 + Offset.X, 0 + Offset.Y), new Size(700, 500), Color.FromArgb(0, 0, 0, 0));
-            _logo = new Sprite(spriteLibrary, spriteName, new Point(0 + Offset.X, 0 + Offset.Y), new Size(300, 60));
-            _mainMenu.Items.Add(new UIText(title, new Point(150, 5), 1.15f, Color.White, Font.HouseScript, true));
-            _mainMenu.Items.Add(new UIRectangle(new Point(0, 60), new Size(300, 30), Color.Black));
-            _mainMenu.Items.Add(new UIText(subtitle.ToUpper(), new Point(10, 66), 0.3f, Color.WhiteSmoke, 0, false));
+            _logo = new Sprite(spriteLibrary, spriteName, new Point(0 + Offset.X, 0 + Offset.Y), new Size(290, 75));
+            _mainMenu.Items.Add(new UIText(title, new Point(145, 15), 1.15f, Color.White, Font.HouseScript, true));
+            _mainMenu.Items.Add(new UIRectangle(new Point(0, 75), new Size(290, 25), Color.Black));
+            _mainMenu.Items.Add(new UIText(subtitle, new Point(5, 78), 0.35f, Color.WhiteSmoke, 0, false));
             Title = title;
             Subtitle = subtitle;
             _upAndDownSprite = new Sprite("commonmenu", "shop_arrows_upanddown", new Point(130 + Offset.X, 90 + 25 * (MaxItemsOnScreen + 1) + Offset.Y), new Size(30, 30));
             _extraRectangle = new UIRectangle(new Point(0 + Offset.X, 90 + 25 * (MaxItemsOnScreen + 1) + Offset.Y), new Size(300, 30), Color.FromArgb(100, 0, 0, 0));
+
+            _descriptionBar = new UIRectangle(new Point(Offset.X, 120), new Size(290, 5), Color.Black);
+            _descriptionRectangle = new UIRectangle(new Point(Offset.X, 125), new Size(290, 30), Color.FromArgb(150, 0, 0, 0));
+            _descriptionText = new UIText("Description", new Point(Offset.X + 5, 125), 0.33f, Color.FromArgb(255, 255, 255, 255), Font.ChaletLondon, false);
 
             KeyUp = Keys.NumPad8;
             KeyDown = Keys.NumPad2;
@@ -134,6 +143,10 @@ namespace NativeUI
             item.Offset = Offset;
             item.Position(MenuItems.Count * 25);
             MenuItems.Add(item);
+
+            _descriptionBar.Position = new Point(Offset.X, 25 + _descriptionBar.Position.Y);
+            _descriptionRectangle.Position = new Point(Offset.X, 25 + _descriptionRectangle.Position.Y);
+            _descriptionText.Position = new Point(Offset.X + 5, _descriptionText.Position.Y + 25);
         }
 
 
@@ -144,6 +157,9 @@ namespace NativeUI
         public void RemoveItemAt(int index)
         {
             MenuItems.RemoveAt(index);
+            _descriptionBar.Position = new Point(Offset.X, _descriptionBar.Position.Y - 25);
+            _descriptionRectangle.Position = new Point(Offset.X, _descriptionRectangle.Position.Y - 25);
+            _descriptionText.Position = new Point(Offset.X + 5, _descriptionText.Position.Y - 25);
         }
 
 
@@ -164,6 +180,9 @@ namespace NativeUI
         public void Clear()
         {
             MenuItems.Clear();
+            _descriptionBar.Position = new Point(Offset.X, 125);
+            _descriptionRectangle.Position = new Point(Offset.X, 130);
+            _descriptionText.Position = new Point(Offset.X + 5, 130);
         }
 
 
@@ -176,6 +195,16 @@ namespace NativeUI
             _logo.Draw();
             MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
             _mainMenu.Draw();
+            if (!String.IsNullOrWhiteSpace(MenuItems[_activeItem%(MenuItems.Count)].Description))
+            {
+                _descriptionText.Caption = FormatDescription(MenuItems[_activeItem%(MenuItems.Count)].Description);
+                int numLines = _descriptionText.Caption.Split('\n').Length;
+                _descriptionRectangle.Size = new Size(290, numLines * 20 + 2);
+
+                _descriptionBar.Draw();
+                _descriptionRectangle.Draw();
+                _descriptionText.Draw();
+            }
             if (MenuItems.Count <= MaxItemsOnScreen)
             {
                 foreach (var item in MenuItems)
@@ -208,7 +237,6 @@ namespace NativeUI
 
             if (Game.IsControlJustPressed(0, Control.FrontendUp) || key == KeyUp)
             {
-                Function.Call(Hash.DESTROY_MOBILE_PHONE);
                 if (_activeItem % MenuItems.Count <= _minItem)
                 {
                     if (_activeItem % MenuItems.Count == 0)
@@ -303,23 +331,37 @@ namespace NativeUI
             }
         }
 
+        private string FormatDescription(string input)
+        {
+            int maxPixelsPerLine = 250;
+            int aggregatePixels = 0;
+            string output = "";
+            string[] words = input.Split(' ');
+            foreach (string word in words)
+            {
+                SizeF strSize;
+                using (Graphics g = Graphics.FromImage(new Bitmap(1, 1)))
+                {
+                    strSize = g.MeasureString(word, new System.Drawing.Font("Helvetica", 11, FontStyle.Regular, GraphicsUnit.Pixel));
+                }
+                aggregatePixels += Convert.ToInt32(strSize.Width);
+                if (aggregatePixels > maxPixelsPerLine)
+                {
+                    output += "\n" + word + " ";
+                    aggregatePixels = Convert.ToInt32(strSize.Width);
+                }
+                else
+                {
+                    output += word + " ";
+                }
+            }
+            return output;
+        }
 
         /// <summary>
         /// Change whether this menu is visible to the user.
         /// </summary>
-        public bool Visible
-        {
-            get
-            {
-                return _visible;
-            }
-            set
-            {
-                _visible = value;
-            }
-        }
-
-        private bool _visible;
+        public bool Visible { get; set; }
 
         /// <summary>
         /// Returns the current selected item's index.

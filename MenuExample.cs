@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Drawing;
 using System.Windows.Forms;
 using GTA;
 using GTA.Native;
@@ -19,17 +20,20 @@ public class MenuExample : Script
         Tick += OnTick;
         KeyDown += OnKeyDown;
 
-        mainMenu = new UIMenu("Showcase", "NativeUI Showcase");
-        mainMenu.AddItem(ketchupCheckbox = new UIMenuCheckboxItem("Add ketchup?", false));
+        mainMenu = new UIMenu("Showcase", "~b~NATIVEUI SHOWCASE", new Point(20, 10));
+        mainMenu.AddItem(ketchupCheckbox = new UIMenuCheckboxItem("Add ketchup?", false, "Do you wish to add ketchup?"));
         var foods = new List<dynamic>
         {
             "Banana",
             "Apple",
             "Pizza",
+            "Quartilicious",
             0xF00D, // Dynamic!
         };
         mainMenu.AddItem(dishesListItem = new UIMenuListItem("Food", foods, 0));
-        mainMenu.AddItem(cookItem = new UIMenuItem("Cook!"));
+        mainMenu.AddItem(cookItem = new UIMenuItem("Cook!", "Cook the dish with the appropiate ingredients and ketchup."));
+        mainMenu.RefreshIndex();
+
         mainMenu.ItemSelect += ItemSelect;
         mainMenu.ListChange += ListChange;
         mainMenu.CheckboxChange += CheckboxChange;

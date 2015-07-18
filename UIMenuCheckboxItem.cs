@@ -13,10 +13,21 @@ namespace NativeUI
         /// <param name="text">Item label.</param>
         /// <param name="check">Boolean value whether the checkbox is checked.</param>
         public UIMenuCheckboxItem(string text, bool check)
-            : base(text)
+            : this(text, check, "")
+        {
+        }
+
+        /// <summary>
+        /// Checkbox item with a toggleable checkbox.
+        /// </summary>
+        /// <param name="text">Item label.</param>
+        /// <param name="check">Boolean value whether the checkbox is checked.</param>
+        /// <param name="description">Description for this item.</param>
+        public UIMenuCheckboxItem(string text, bool check, string description)
+            : base(text, description)
         {
             int y = 0;
-            _checkedSprite = new Sprite("commonmenu", "shop_box_blank", new Point(260, y + 85), new Size(35, 35));
+            _checkedSprite = new Sprite("commonmenu", "shop_box_blank", new Point(250, y + 95), new Size(35, 35));
             Checked = check;
         }
 
@@ -34,7 +45,7 @@ namespace NativeUI
         public override void Position(int y)
         {
             base.Position(y);
-            _checkedSprite.Position = new Point(260 + Offset.X, y + 85 + Offset.Y);
+            _checkedSprite.Position = new Point(250 + Offset.X, y + 95 + Offset.Y);
         }
 
 

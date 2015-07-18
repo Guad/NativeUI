@@ -10,19 +10,27 @@ namespace NativeUI
         private bool _selected;
         private Sprite _selectedSprite;
 
+        /// <summary>
+        /// Basic menu button.
+        /// </summary>
+        /// <param name="text">Button label.</param>
+        public UIMenuItem(string text) : this(text, "")
+        {
+        }
 
         /// <summary>
         /// Basic menu button.
         /// </summary>
         /// <param name="text">Button label.</param>
-        public UIMenuItem(string text)
+        /// <param name="description">Description.</param>
+        public UIMenuItem(string text, string description)
         {
             int y = 0;
             Text = text;
-            _rectangle = new UIRectangle(new Point(0, y + 90), new Size(300, 25), Color.FromArgb(100, 0, 0, 0));
-            _text = new UIText(text, new Point(10, y + 93), 0.3f, Color.WhiteSmoke, GTA.Font.ChaletLondon, false);
-
-            _selectedSprite = new Sprite("commonmenu", "gradient_nav", new Point(0, y + 90), new Size(300, 25));
+            _rectangle = new UIRectangle(new Point(0, y + 100), new Size(290, 25), Color.FromArgb(150, 0, 0, 0));
+            _text = new UIText(text, new Point(5, y + 103), 0.33f, Color.WhiteSmoke, GTA.Font.ChaletLondon, false);
+            Description = description;
+            _selectedSprite = new Sprite("commonmenu", "gradient_nav", new Point(0, y + 100), new Size(290, 25));
         }
 
 
@@ -40,6 +48,8 @@ namespace NativeUI
             }
         }
 
+        public virtual string Description { get; set; }
+
 
         /// <summary>
         /// Set item's position.
@@ -47,9 +57,9 @@ namespace NativeUI
         /// <param name="y"></param>
         public virtual void Position(int y)
         {
-            _rectangle.Position = new Point(0 + Offset.X, y + 90 + Offset.Y);
-            _selectedSprite.Position = new Point(0 + Offset.X, y + 90 + Offset.Y);
-            _text.Position = new Point(10 + Offset.X, y + 93 + Offset.Y);
+            _rectangle.Position = new Point(0 + Offset.X, y + 100 + Offset.Y);
+            _selectedSprite.Position = new Point(0 + Offset.X, y + 100 + Offset.Y);
+            _text.Position = new Point(5 + Offset.X, y + 103 + Offset.Y);
         }
 
 
