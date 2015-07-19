@@ -9,22 +9,20 @@ using Font = GTA.Font;
 
 namespace NativeUI
 {
-    public delegate void OnIndexChanged(UIMenu sender, int newIndex);
+    public delegate void IndexChangedEvent(UIMenu sender, int newIndex);
 
-    public delegate void OnListChanged(UIMenu sender, UIMenuListItem listItem, int newIndex);
+    public delegate void ListChangedEvent(UIMenu sender, UIMenuListItem listItem, int newIndex);
 
-    public delegate void OnCheckboxChange(UIMenu sender, UIMenuCheckboxItem checkboxItem, bool Checked);
+    public delegate void CheckboxChangeEvent(UIMenu sender, UIMenuCheckboxItem checkboxItem, bool Checked);
 
-    public delegate void OnItemSelect(UIMenu sender, UIMenuItem selectedItem, int index);
+    public delegate void ItemSelectEvent(UIMenu sender, UIMenuItem selectedItem, int index);
 
 
     /// <summary>
-    /// Base class for NativeUI. Calls the next events: OnIndexChanged, OnListChanged, OnCheckboxChange, OnItemSelect.
+    /// Base class for NativeUI. Calls the next events: OnIndexChange, OnListChanged, OnCheckboxChange, OnItemSelect.
     /// </summary>
     public class UIMenu
     {
-        
-        
         private readonly UIContainer _mainMenu;
         private readonly Sprite _logo;
 
@@ -53,22 +51,22 @@ namespace NativeUI
         /// <summary>
         /// Called when user presses up or down, changing current selection.
         /// </summary>
-        public event OnIndexChanged IndexChange;
+        public event IndexChangedEvent OnIndexChange;
 
         /// <summary>
         /// Called when user presses left or right, changing a list position.
         /// </summary>
-        public event OnListChanged ListChange;
+        public event ListChangedEvent OnListChange;
 
         /// <summary>
         /// Called when user presses enter on a checkbox item.
         /// </summary>
-        public event OnCheckboxChange CheckboxChange;
+        public event CheckboxChangeEvent OnCheckboxChange;
 
         /// <summary>
         /// Called when user selects a simple item.
         /// </summary>
-        public event OnItemSelect ItemSelect;
+        public event ItemSelectEvent OnItemSelect;
 
         //Keys
         public Keys KeyUp { get; set; }
@@ -76,6 +74,7 @@ namespace NativeUI
         public Keys KeyLeft { get; set; }
         public Keys KeyRight { get; set; }
         public Keys KeySelect { get; set; }
+
 
 
         /// <summary>
@@ -264,7 +263,7 @@ namespace NativeUI
                     MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
                 }
                 Game.PlaySound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET");
-                OnIndexChange(CurrentSelection);
+                IndexChange(CurrentSelection);
             }
             else if (Game.IsControlJustPressed(0, Control.FrontendDown) || key == KeyDown)
             {
@@ -294,7 +293,7 @@ namespace NativeUI
                     MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
                 }
                 Game.PlaySound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET");
-                OnIndexChange(CurrentSelection);
+                IndexChange(CurrentSelection);
             }
             else if (Game.IsControlJustPressed(0, Control.FrontendLeft) || key == KeyLeft)
             {
@@ -302,7 +301,7 @@ namespace NativeUI
                 var it = (UIMenuListItem) MenuItems[CurrentSelection];
                 it.Index--;
                 Game.PlaySound("NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
-                OnListChange(it, it.Index);
+                ListChange(it, it.Index);
             }
 
             else if (Game.IsControlJustPressed(0, Control.FrontendRight) || key == KeyRight)
@@ -311,7 +310,7 @@ namespace NativeUI
                 var it = (UIMenuListItem) MenuItems[CurrentSelection];
                 it.Index++;
                 Game.PlaySound("TOGGLE_ON", "HUD_FRONTEND_DEFAULT_SOUNDSET");
-                OnListChange(it, it.Index);
+                ListChange(it, it.Index);
             }
 
             else if (Game.IsControlJustPressed(0, Control.FrontendAccept) || key == KeySelect)
@@ -321,12 +320,12 @@ namespace NativeUI
                     var it = (UIMenuCheckboxItem) MenuItems[CurrentSelection];
                     it.Checked = !it.Checked;
                     Game.PlaySound("SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
-                    OnCheckboxChange(it, it.Checked);
+                    CheckboxChange(it, it.Checked);
                 }
                 else if (!(MenuItems[CurrentSelection] is UIMenuListItem))
                 {
                     Game.PlaySound("SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
-                    OnItemSelect(MenuItems[CurrentSelection], CurrentSelection);
+                    ItemSelect(MenuItems[CurrentSelection], CurrentSelection);
                 }
             }
         }
@@ -407,24 +406,24 @@ namespace NativeUI
         /// </summary>
         public string Subtitle { get; }
 
-        protected virtual void OnIndexChange(int newindex)
+        protected virtual void IndexChange(int newindex)
         {
-            IndexChange?.Invoke(this, newindex);
+            OnIndexChange?.Invoke(this, newindex);
         }
 
-        protected virtual void OnListChange(UIMenuListItem sender, int newindex)
+        protected virtual void ListChange(UIMenuListItem sender, int newindex)
         {
-            ListChange?.Invoke(this, sender, newindex);
+            OnListChange?.Invoke(this, sender, newindex);
         }
 
-        protected virtual void OnItemSelect(UIMenuItem selecteditem, int index)
+        protected virtual void ItemSelect(UIMenuItem selecteditem, int index)
         {
-            ItemSelect?.Invoke(this, selecteditem, index);
+            OnItemSelect?.Invoke(this, selecteditem, index);
         }
 
-        protected virtual void OnCheckboxChange(UIMenuCheckboxItem sender, bool Checked)
+        protected virtual void CheckboxChange(UIMenuCheckboxItem sender, bool Checked)
         {
-            CheckboxChange?.Invoke(this, sender, Checked);
+            OnCheckboxChange?.Invoke(this, sender, Checked);
         }
     }
 }

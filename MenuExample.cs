@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Drawing;
 using System.Windows.Forms;
 using GTA;
-using GTA.Native;
-using GTA.Math;
 using NativeUI;
 
 public class MenuExample : Script
@@ -20,7 +17,7 @@ public class MenuExample : Script
         Tick += OnTick;
         KeyDown += OnKeyDown;
 
-        mainMenu = new UIMenu("Showcase", "~b~NATIVEUI SHOWCASE", new Point(20, 10));
+        mainMenu = new UIMenu("Native UI", "~b~NATIVEUI SHOWCASE", new Point(20, 10));
         mainMenu.AddItem(ketchupCheckbox = new UIMenuCheckboxItem("Add ketchup?", false, "Do you wish to add ketchup?"));
         var foods = new List<dynamic>
         {
@@ -32,27 +29,35 @@ public class MenuExample : Script
         };
         mainMenu.AddItem(dishesListItem = new UIMenuListItem("Food", foods, 0));
         mainMenu.AddItem(cookItem = new UIMenuItem("Cook!", "Cook the dish with the appropiate ingredients and ketchup."));
+        cookItem.LeftBadge = UIMenuItem.BadgeStyle.Star;
+        cookItem.RightBadge = UIMenuItem.BadgeStyle.Tick;
         mainMenu.RefreshIndex();
 
-        mainMenu.ItemSelect += ItemSelect;
-        mainMenu.ListChange += ListChange;
-        mainMenu.CheckboxChange += CheckboxChange;
+        mainMenu.OnItemSelect += OnItemSelect;
+        mainMenu.OnListChange += OnListChange;
+        mainMenu.OnCheckboxChange += OnCheckboxChange;
+        mainMenu.OnIndexChange += OnItemChange;
     }
 
-    public void CheckboxChange(UIMenu sender, UIMenuCheckboxItem checkbox, bool Checked)
+    public void OnItemChange(UIMenu sender, int index)
+    {
+        sender.MenuItems[index].LeftBadge = UIMenuItem.BadgeStyle.None;
+    }
+
+    public void OnCheckboxChange(UIMenu sender, UIMenuCheckboxItem checkbox, bool Checked)
     {
         if (sender != mainMenu || checkbox != ketchupCheckbox) return; // We only want to detect changes from our menu.
         UI.Notify("~r~Ketchup status: ~b~" + Checked);
     }
 
-    public void ListChange(UIMenu sender, UIMenuListItem list, int index)
+    public void OnListChange(UIMenu sender, UIMenuListItem list, int index)
     {
         if (sender != mainMenu || list != dishesListItem) return; // We only want to detect changes from our menu.
         string dish = list.IndexToItem(index).ToString();
         UI.Notify("Preparing ~b~" + dish +"~w~...");
     }
     
-    public void ItemSelect(UIMenu sender, UIMenuItem selectedItem, int index)
+    public void OnItemSelect(UIMenu sender, UIMenuItem selectedItem, int index)
     {
         if (sender != mainMenu || selectedItem != cookItem) return; // We only want to detect changes from our menu and our button.
         // You can also detect the button by using index

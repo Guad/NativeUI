@@ -10,6 +10,9 @@ namespace NativeUI
         private bool _selected;
         private Sprite _selectedSprite;
 
+        private Sprite _badgeLeft;
+        private Sprite _badgeRight;
+
         /// <summary>
         /// Basic menu button.
         /// </summary>
@@ -31,6 +34,9 @@ namespace NativeUI
             _text = new UIText(text, new Point(5, y + 103), 0.33f, Color.WhiteSmoke, GTA.Font.ChaletLondon, false);
             Description = description;
             _selectedSprite = new Sprite("commonmenu", "gradient_nav", new Point(0, y + 100), new Size(290, 25));
+
+            _badgeLeft = new Sprite("commonmenu", "", new Point(0, y + 95), new Size(28, 28));
+            _badgeRight = new Sprite("commonmenu", "", new Point(270, y + 95), new Size(28, 28));
         }
 
 
@@ -60,6 +66,9 @@ namespace NativeUI
             _rectangle.Position = new Point(0 + Offset.X, y + 100 + Offset.Y);
             _selectedSprite.Position = new Point(0 + Offset.X, y + 100 + Offset.Y);
             _text.Position = new Point(5 + Offset.X, y + 103 + Offset.Y);
+
+            _badgeLeft.Position = new Point(0 + Offset.X, y + 98 + Offset.Y);
+            _badgeRight.Position = new Point(260 + Offset.X, y + 98 + Offset.Y);
         }
 
 
@@ -69,12 +78,129 @@ namespace NativeUI
         public virtual void Draw()
         {
             _rectangle.Draw();
-            _text.Draw();
             if (Selected)
                 _selectedSprite.Draw();
+            if (LeftBadge != BadgeStyle.None)
+            {
+                _text.Position = new Point(25 + Offset.X, _text.Position.Y);
+                _badgeLeft.TextureName = BadgeToSprite(LeftBadge, Selected);
+                _badgeLeft.Color = BadgeToColor(LeftBadge, Selected);
+                _badgeLeft.Draw();
+            }
+            else
+            {
+                _text.Position = new Point(5 + Offset.X, _text.Position.Y);
+            }
+            if (RightBadge != BadgeStyle.None)
+            {
+                _badgeRight.TextureName = BadgeToSprite(RightBadge, Selected);
+                _badgeRight.Color = BadgeToColor(RightBadge, Selected);
+                _badgeRight.Draw();
+            }
+            _text.Draw();
         }
 
         public Point Offset { get; set; }
+
         public string Text { get; set; }
+
+        public virtual BadgeStyle LeftBadge { get; set; }
+
+        public virtual BadgeStyle RightBadge { get; set; }
+
+        public enum BadgeStyle
+        {
+            None,
+            BronzeMedal,
+            GoldMedal,
+            SilverMedal,
+            Alert,
+            Crown,
+            Ammo,
+            Armour,
+            Barber,
+            Clothes,
+            Franklin,
+            Bike,
+            Car,
+            Gun,
+            Heart,
+            Makeup,
+            Mask,
+            Michael,
+            Star,
+            Tatoo,
+            Trevor,
+            Lock,
+            Tick,
+        }
+
+        private string BadgeToSprite(BadgeStyle badge, bool selected)
+        {
+            switch (badge)
+            {
+                case BadgeStyle.None:
+                    return "";
+                case BadgeStyle.BronzeMedal:
+                    return "mp_medal_bronze";
+                case BadgeStyle.GoldMedal:
+                    return "mp_medal_gold";
+                case BadgeStyle.SilverMedal:
+                    return "medal_silver";
+                case BadgeStyle.Alert:
+                    return "mp_alerttriangle";
+                case BadgeStyle.Crown:
+                    return "mp_hostcrown";
+                case BadgeStyle.Ammo:
+                    return selected ? "shop_ammo_icon_b" : "shop_ammo_icon_a";
+                case BadgeStyle.Armour:
+                    return selected ? "shop_armour_icon_b" : "shop_armour_icon_a";
+                case BadgeStyle.Barber:
+                    return selected ? "shop_barber_icon_b" : "shop_barber_icon_a";
+                case BadgeStyle.Clothes:
+                    return selected ? "shop_clothing_icon_b" : "shop_clothing_icon_a";
+                case BadgeStyle.Franklin:
+                    return selected ? "shop_franklin_icon_b" : "shop_franklin_icon_a";
+                case BadgeStyle.Bike:
+                    return selected ? "shop_garage_bike_icon_b" : "shop_garage_bike_icon_a";
+                case BadgeStyle.Car:
+                    return selected ? "shop_garage_icon_b" : "shop_garage_icon_a";
+                case BadgeStyle.Gun:
+                    return selected ? "shop_gunclub_icon_b" : "shop_gunclub_icon_a";
+                case BadgeStyle.Heart:
+                    return selected ? "shop_health_icon_b" : "shop_health_icon_a";
+                case BadgeStyle.Lock:
+                    return "shop_lock";
+                case BadgeStyle.Makeup:
+                    return selected ? "shop_makeup_icon_b" : "shop_makeup_icon_a";
+                case BadgeStyle.Mask:
+                    return selected ? "shop_mask_icon_b" : "shop_mask_icon_a";
+                case BadgeStyle.Michael:
+                    return selected ? "shop_michael_icon_b" : "shop_michael_icon_a";
+                case BadgeStyle.Star:
+                    return "shop_new_star";
+                case BadgeStyle.Tatoo:
+                    return selected ? "shop_tattoos_icon_b" : "shop_tattoos_icon_";
+                case BadgeStyle.Tick:
+                    return "shop_tick_icon";
+                case BadgeStyle.Trevor:
+                    return selected ? "shop_trevor_icon_b" : "shop_trevor_icon_a";
+                default:
+                    return "";
+            }
+        }
+
+        public Color BadgeToColor(BadgeStyle badge, bool selected)
+        {
+            switch (badge)
+            {
+                case BadgeStyle.Lock:
+                case BadgeStyle.Tick:
+                case BadgeStyle.Crown:
+                    return selected ? Color.FromArgb(255, 0, 0, 0) : Color.FromArgb(255, 255, 255, 255);
+                default:
+                    return Color.FromArgb(255, 255, 255, 255);
+            }
+        }
     }
 }
