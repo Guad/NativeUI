@@ -118,8 +118,9 @@ namespace NativeUI
             _mainMenu.Items.Add(new UIText(subtitle, new Point(5, 78), 0.35f, Color.WhiteSmoke, 0, false));
             Title = title;
             Subtitle = subtitle;
-            _upAndDownSprite = new Sprite("commonmenu", "shop_arrows_upanddown", new Point(130 + Offset.X, 90 + 25 * (MaxItemsOnScreen + 1) + Offset.Y), new Size(30, 30));
-            _extraRectangle = new UIRectangle(new Point(0 + Offset.X, 90 + 25 * (MaxItemsOnScreen + 1) + Offset.Y), new Size(300, 30), Color.FromArgb(100, 0, 0, 0));
+
+            _upAndDownSprite = new Sprite("commonmenu", "shop_arrows_upanddown", new Point(120 + Offset.X, 100 + 25 * (MaxItemsOnScreen + 1) + Offset.Y), new Size(30, 30));
+            _extraRectangle = new UIRectangle(new Point(0 + Offset.X, 100 + 25 * (MaxItemsOnScreen + 1) + Offset.Y), new Size(290, 30), Color.FromArgb(200, 0, 0, 0));
 
             _descriptionBar = new UIRectangle(new Point(Offset.X, 120), new Size(290, 5), Color.Black);
             _descriptionRectangle = new UIRectangle(new Point(Offset.X, 125), new Size(290, 30), Color.FromArgb(150, 0, 0, 0));
@@ -130,6 +131,21 @@ namespace NativeUI
             KeyLeft = Keys.NumPad4;
             KeyRight = Keys.NumPad6;
             KeySelect = Keys.NumPad5;
+        }
+
+        private void RecaulculateDescriptionPosition()
+        {
+            _descriptionBar.Position = new Point(Offset.X, 125);
+            _descriptionRectangle.Position = new Point(Offset.X, 130);
+            _descriptionText.Position = new Point(Offset.X + 5, 130);
+
+            int count = Size;
+            if (count > MaxItemsOnScreen)
+                count = MaxItemsOnScreen + 2;
+
+            _descriptionBar.Position = new Point(Offset.X, 25*count + _descriptionBar.Position.Y);
+            _descriptionRectangle.Position = new Point(Offset.X, 25*count + _descriptionRectangle.Position.Y);
+            _descriptionText.Position = new Point(Offset.X + 5, 25*count + _descriptionText.Position.Y);
         }
 
 
@@ -143,9 +159,7 @@ namespace NativeUI
             item.Position(MenuItems.Count * 25);
             MenuItems.Add(item);
 
-            _descriptionBar.Position = new Point(Offset.X, 25 + _descriptionBar.Position.Y);
-            _descriptionRectangle.Position = new Point(Offset.X, 25 + _descriptionRectangle.Position.Y);
-            _descriptionText.Position = new Point(Offset.X + 5, _descriptionText.Position.Y + 25);
+            RecaulculateDescriptionPosition();
         }
 
 
@@ -155,10 +169,13 @@ namespace NativeUI
         /// <param name="index">Index to remove the item at.</param>
         public void RemoveItemAt(int index)
         {
+            if (Size > MaxItemsOnScreen && _maxItem == Size - 1)
+            {
+                _maxItem--;
+                _minItem--;
+            }
             MenuItems.RemoveAt(index);
-            _descriptionBar.Position = new Point(Offset.X, _descriptionBar.Position.Y - 25);
-            _descriptionRectangle.Position = new Point(Offset.X, _descriptionRectangle.Position.Y - 25);
-            _descriptionText.Position = new Point(Offset.X + 5, _descriptionText.Position.Y - 25);
+            RecaulculateDescriptionPosition();
         }
 
 
@@ -167,6 +184,7 @@ namespace NativeUI
         /// </summary>
         public void RefreshIndex()
         {
+            MenuItems[_activeItem % (MenuItems.Count)].Selected = false;
             _activeItem = 1000 - (1000 % MenuItems.Count);
             _maxItem = MaxItemsOnScreen;
             _minItem = 0;
@@ -179,9 +197,7 @@ namespace NativeUI
         public void Clear()
         {
             MenuItems.Clear();
-            _descriptionBar.Position = new Point(Offset.X, 125);
-            _descriptionRectangle.Position = new Point(Offset.X, 130);
-            _descriptionText.Position = new Point(Offset.X + 5, 130);
+            RecaulculateDescriptionPosition();
         }
 
 
@@ -204,11 +220,15 @@ namespace NativeUI
                 _descriptionRectangle.Draw();
                 _descriptionText.Draw();
             }
+
             if (MenuItems.Count <= MaxItemsOnScreen)
             {
+                int count = 0;
                 foreach (var item in MenuItems)
                 {
+                    item.Position(count * 25);
                     item.Draw();
+                    count++;
                 }
             }
             else
@@ -371,6 +391,7 @@ namespace NativeUI
             get { return _activeItem % MenuItems.Count; }
             set
             {
+                MenuItems[_activeItem%(MenuItems.Count)].Selected = false;
                 _activeItem = 1000 - (1000 % MenuItems.Count) + value;
                 if (CurrentSelection > _maxItem)
                 {
