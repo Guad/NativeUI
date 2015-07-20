@@ -69,18 +69,7 @@ namespace NativeUI
         /// </summary>
         public event ItemSelectEvent OnItemSelect;
 
-        //Keys DEPRECATED
-        [System.Obsolete("Please use SetKey as this method no longer works.")]
-        public Keys KeyUp { get; set; }
-        [System.Obsolete("Please use SetKey as this method no longer works.")]
-        public Keys KeyDown { get; set; }
-        [System.Obsolete("Please use SetKey as this method no longer works.")]
-        public Keys KeyLeft { get; set; }
-        [System.Obsolete("Please use SetKey as this method no longer works.")]
-        public Keys KeyRight { get; set; }
-        [System.Obsolete("Please use SetKey as this method no longer works.")]
-        public Keys KeySelect { get; set; }
-
+        //Keys
         private Dictionary<MenuControls, Tuple<List<Keys>, List<Tuple<GTA.Control, int>>>> _keyDictionary = new Dictionary<MenuControls, Tuple<List<Keys>, List<Tuple<GTA.Control, int>>>> ();
         
 
@@ -323,26 +312,28 @@ namespace NativeUI
             _keyDictionary[control].Item2.Clear();
         }
 
-        public bool HasControlBeenPressed(MenuControls control, Keys key)
+        public bool HasControlJustBeenPressed(MenuControls control, Keys key = Keys.None)
         {
             List<Keys> tmpKeys = new List<Keys>(_keyDictionary[control].Item1);
             List<Tuple<GTA.Control, int>> tmpControls = new List<Tuple<Control, int>>(_keyDictionary[control].Item2);
 
-            if (tmpKeys.Any(tkey => tkey == key))
-                return true;
+            if (key != Keys.None)
+            {
+                if (tmpKeys.Any(Game.IsKeyPressed))
+                    return true;
+            }
             if (tmpControls.Any(tuple => Game.IsControlJustPressed(tuple.Item2, tuple.Item1)))
                 return true;
             return false;
         }
         
         /// <summary>
-        /// Process keystroke. Call this in the OnKeyDown event.
+        /// Process control-stroke. Call this in the OnTick event.
         /// </summary>
-        public void ProcessKey(Keys key)
+        public void ProcessControl(Keys key = Keys.None)
         {
             if(!Visible) return;
-
-            if (HasControlBeenPressed(MenuControls.Up, key))
+            if (HasControlJustBeenPressed(MenuControls.Up, key))
             {
                 if (_activeItem % MenuItems.Count <= _minItem)
                 {
@@ -373,7 +364,7 @@ namespace NativeUI
                 Game.PlaySound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET");
                 IndexChange(CurrentSelection);
             }
-            else if (HasControlBeenPressed(MenuControls.Down, key))
+            else if (HasControlJustBeenPressed(MenuControls.Down, key))
             {
                 if (_activeItem % MenuItems.Count >= _maxItem)
                 {
@@ -403,7 +394,7 @@ namespace NativeUI
                 Game.PlaySound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET");
                 IndexChange(CurrentSelection);
             }
-            else if (HasControlBeenPressed(MenuControls.Left, key))
+            else if (HasControlJustBeenPressed(MenuControls.Left, key))
             {
                 if (!(MenuItems[CurrentSelection] is UIMenuListItem)) return;
                 var it = (UIMenuListItem) MenuItems[CurrentSelection];
@@ -412,7 +403,7 @@ namespace NativeUI
                 ListChange(it, it.Index);
             }
 
-            else if (HasControlBeenPressed(MenuControls.Right, key))
+            else if (HasControlJustBeenPressed(MenuControls.Right, key))
             {
                 if (!(MenuItems[CurrentSelection] is UIMenuListItem)) return;
                 var it = (UIMenuListItem) MenuItems[CurrentSelection];
@@ -421,7 +412,7 @@ namespace NativeUI
                 ListChange(it, it.Index);
             }
 
-            else if (HasControlBeenPressed(MenuControls.Select, key))
+            else if (HasControlJustBeenPressed(MenuControls.Select, key))
             {
                 if (MenuItems[CurrentSelection] is UIMenuCheckboxItem)
                 {
@@ -435,6 +426,19 @@ namespace NativeUI
                     Game.PlaySound("SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
                     ItemSelect(MenuItems[CurrentSelection], CurrentSelection);
                 }
+            }
+        }
+
+
+        /// <summary>
+        /// Process keystroke. Call this in the OnKeyDown event.
+        /// </summary>
+        /// <param name="key"></param>
+        public void ProcessKey(Keys key)
+        {
+            if ((from object menuControl in Enum.GetValues(typeof(MenuControls)) select new List<Keys>(_keyDictionary[(MenuControls)menuControl].Item1)).Any(tmpKeys => tmpKeys.Any(k => k == key)))
+            {
+                ProcessControl(key);
             }
         }
 

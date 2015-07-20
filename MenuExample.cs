@@ -72,12 +72,12 @@ public class MenuExample : Script
 
     public void OnTick(object o, EventArgs e)
     {
+        mainMenu.ProcessControl();
         mainMenu.Draw();
     }
 
     public void OnKeyDown(object o, KeyEventArgs e)
     {
-        mainMenu.ProcessKey(e.KeyCode);
         if (e.KeyCode == Keys.F5) // Our menu on/off switch
         {
             mainMenu.Visible = !mainMenu.Visible;
