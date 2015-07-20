@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using GTA;
 using GTA.Native;
@@ -68,14 +69,20 @@ namespace NativeUI
         /// </summary>
         public event ItemSelectEvent OnItemSelect;
 
-        //Keys
+        //Keys DEPRECATED
+        [System.Obsolete("Please use SetKey as this method no longer works.")]
         public Keys KeyUp { get; set; }
+        [System.Obsolete("Please use SetKey as this method no longer works.")]
         public Keys KeyDown { get; set; }
+        [System.Obsolete("Please use SetKey as this method no longer works.")]
         public Keys KeyLeft { get; set; }
+        [System.Obsolete("Please use SetKey as this method no longer works.")]
         public Keys KeyRight { get; set; }
+        [System.Obsolete("Please use SetKey as this method no longer works.")]
         public Keys KeySelect { get; set; }
 
-
+        private Dictionary<MenuControls, Tuple<List<Keys>, List<Tuple<GTA.Control, int>>>> _keyDictionary = new Dictionary<MenuControls, Tuple<List<Keys>, List<Tuple<GTA.Control, int>>>> ();
+        
 
         /// <summary>
         /// Basic Menu constructor.
@@ -108,7 +115,6 @@ namespace NativeUI
         /// <param name="spriteName">Sprite name for the banner.</param>
         public UIMenu(string title, string subtitle, Point offset, string spriteLibrary, string spriteName)
         {
-
             Offset = offset;
 
             _mainMenu = new UIContainer(new Point(0 + Offset.X, 0 + Offset.Y), new Size(700, 500), Color.FromArgb(0, 0, 0, 0));
@@ -126,11 +132,11 @@ namespace NativeUI
             _descriptionRectangle = new UIRectangle(new Point(Offset.X, 125), new Size(290, 30), Color.FromArgb(150, 0, 0, 0));
             _descriptionText = new UIText("Description", new Point(Offset.X + 5, 125), 0.33f, Color.FromArgb(255, 255, 255, 255), Font.ChaletLondon, false);
 
-            KeyUp = Keys.NumPad8;
-            KeyDown = Keys.NumPad2;
-            KeyLeft = Keys.NumPad4;
-            KeyRight = Keys.NumPad6;
-            KeySelect = Keys.NumPad5;
+            SetKey(MenuControls.Up, GTA.Control.FrontendUp);
+            SetKey(MenuControls.Down, GTA.Control.FrontendDown);
+            SetKey(MenuControls.Left, GTA.Control.FrontendLeft);
+            SetKey(MenuControls.Right, GTA.Control.FrontendRight);
+            SetKey(MenuControls.Select, GTA.Control.FrontendAccept);
         }
 
         private void RecaulculateDescriptionPosition()
@@ -206,7 +212,16 @@ namespace NativeUI
         /// </summary>
         public void Draw()
         {
-            if (!Visible) return;
+            if (Visible)
+            {
+                Function.Call(Hash.DISABLE_CONTROL_ACTION, 0, (int) GTA.Control.Phone, true);
+            }
+            else
+            {
+                Function.Call(Hash.ENABLE_CONTROL_ACTION, 0, (int)GTA.Control.Phone, true);
+                return;
+            }
+
             _logo.Draw();
             MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
             _mainMenu.Draw();
@@ -248,13 +263,86 @@ namespace NativeUI
 
 
         /// <summary>
+        /// Set a key to control a menu. Can be multiple keys for each control.
+        /// </summary>
+        /// <param name="control"></param>
+        /// <param name="keyToSet"></param>
+        public void SetKey(MenuControls control, Keys keyToSet)
+        {
+            if (_keyDictionary.ContainsKey(control))
+                _keyDictionary[control].Item1.Add(keyToSet);
+            else
+            {
+                _keyDictionary.Add(control,
+                    new Tuple<List<Keys>, List<Tuple<Control, int>>>(new List<Keys>(), new List<Tuple<Control, int>>()));
+                _keyDictionary[control].Item1.Add(keyToSet);
+            }
+        }
+
+
+        /// <summary>
+        /// Set a GTA.Control to control a menu. Can be multiple controls. This applies it to all indexes.
+        /// </summary>
+        /// <param name="control"></param>
+        /// <param name="gtaControl"></param>
+        public void SetKey(MenuControls control, GTA.Control gtaControl)
+        {
+            SetKey(control, gtaControl, 0);
+            SetKey(control, gtaControl, 1);
+            SetKey(control, gtaControl, 2);
+        }
+
+
+        /// <summary>
+        /// Set a GTA.Control to control a menu only on a specific index.
+        /// </summary>
+        /// <param name="control"></param>
+        /// <param name="gtaControl"></param>
+        /// <param name="controlIndex"></param>
+        public void SetKey(MenuControls control, GTA.Control gtaControl, int controlIndex)
+        {
+            if (_keyDictionary.ContainsKey(control))
+                _keyDictionary[control].Item2.Add(new Tuple<Control, int>(gtaControl, controlIndex));
+            else
+            {
+                _keyDictionary.Add(control,
+                    new Tuple<List<Keys>, List<Tuple<Control, int>>>(new List<Keys>(), new List<Tuple<Control, int>>()));
+                _keyDictionary[control].Item2.Add(new Tuple<Control, int>(gtaControl, controlIndex));
+            }
+
+        }
+
+
+        /// <summary>
+        /// Remove all controls on a control.
+        /// </summary>
+        /// <param name="control"></param>
+        public void ResetKey(MenuControls control)
+        {
+            _keyDictionary[control].Item1.Clear();
+            _keyDictionary[control].Item2.Clear();
+        }
+
+        public bool HasControlBeenPressed(MenuControls control, Keys key)
+        {
+            List<Keys> tmpKeys = new List<Keys>(_keyDictionary[control].Item1);
+            List<Tuple<GTA.Control, int>> tmpControls = new List<Tuple<Control, int>>(_keyDictionary[control].Item2);
+
+            if (tmpKeys.Any(tkey => tkey == key))
+                return true;
+            if (tmpControls.Any(tuple => Game.IsControlJustPressed(tuple.Item2, tuple.Item1)))
+                return true;
+            return false;
+        }
+        
+        /// <summary>
         /// Process keystroke. Call this in the OnKeyDown event.
         /// </summary>
         public void ProcessKey(Keys key)
         {
             if(!Visible) return;
 
-            if (Game.IsControlJustPressed(0, Control.FrontendUp) || key == KeyUp)
+            if (HasControlBeenPressed(MenuControls.Up, key))
             {
                 if (_activeItem % MenuItems.Count <= _minItem)
                 {
@@ -285,7 +373,7 @@ namespace NativeUI
                 Game.PlaySound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET");
                 IndexChange(CurrentSelection);
             }
-            else if (Game.IsControlJustPressed(0, Control.FrontendDown) || key == KeyDown)
+            else if (HasControlBeenPressed(MenuControls.Down, key))
             {
                 if (_activeItem % MenuItems.Count >= _maxItem)
                 {
@@ -315,7 +403,7 @@ namespace NativeUI
                 Game.PlaySound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET");
                 IndexChange(CurrentSelection);
             }
-            else if (Game.IsControlJustPressed(0, Control.FrontendLeft) || key == KeyLeft)
+            else if (HasControlBeenPressed(MenuControls.Left, key))
             {
                 if (!(MenuItems[CurrentSelection] is UIMenuListItem)) return;
                 var it = (UIMenuListItem) MenuItems[CurrentSelection];
@@ -324,7 +412,7 @@ namespace NativeUI
                 ListChange(it, it.Index);
             }
 
-            else if (Game.IsControlJustPressed(0, Control.FrontendRight) || key == KeyRight)
+            else if (HasControlBeenPressed(MenuControls.Right, key))
             {
                 if (!(MenuItems[CurrentSelection] is UIMenuListItem)) return;
                 var it = (UIMenuListItem) MenuItems[CurrentSelection];
@@ -333,7 +421,7 @@ namespace NativeUI
                 ListChange(it, it.Index);
             }
 
-            else if (Game.IsControlJustPressed(0, Control.FrontendAccept) || key == KeySelect)
+            else if (HasControlBeenPressed(MenuControls.Select, key))
             {
                 if (MenuItems[CurrentSelection] is UIMenuCheckboxItem)
                 {
@@ -342,7 +430,7 @@ namespace NativeUI
                     Game.PlaySound("SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
                     CheckboxChange(it, it.Checked);
                 }
-                else if (!(MenuItems[CurrentSelection] is UIMenuListItem))
+                else
                 {
                     Game.PlaySound("SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
                     ItemSelect(MenuItems[CurrentSelection], CurrentSelection);
@@ -445,6 +533,15 @@ namespace NativeUI
         protected virtual void CheckboxChange(UIMenuCheckboxItem sender, bool Checked)
         {
             OnCheckboxChange?.Invoke(this, sender, Checked);
+        }
+
+        public enum MenuControls
+        {
+            Up,
+            Down,
+            Left,
+            Right,
+            Select
         }
     }
 }
