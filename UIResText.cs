@@ -31,10 +31,11 @@ namespace NativeUI
 
         public override void Draw(Size offset)
         {
-            int width = Game.ScreenResolution.Width;
-            int height = Game.ScreenResolution.Height;
-
-            UI.ShowSubtitle(String.Format("{0}x{1}", width, height));
+            int screenw = Game.ScreenResolution.Width;
+            int screenh = Game.ScreenResolution.Height;
+            const float height = 1080f;
+            float ratio = (float)screenw / screenh;
+            var width = height * ratio;
 
             float x = ((float) Position.X)/width;
             float y = ((float)Position.Y)/height;

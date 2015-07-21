@@ -349,7 +349,11 @@ namespace NativeUI
                     string cap = (CurrentSelection + 1) + " / " + Size;
                     Function.Call((Hash)0x54CE8AC98E120CAB, "jamyfafi");
                     UIResText.AddLongString(cap);
-                    int width = Game.ScreenResolution.Width;
+                    int screenw = Game.ScreenResolution.Width;
+                    int screenh = Game.ScreenResolution.Height;
+                    const float height = 1080f;
+                    float ratio = (float)screenw / screenh;
+                    var width = height * ratio;
                     int offset = Convert.ToInt32(Function.Call<float>((Hash)0x85F061DA64ED2F67, (int)0) * width * 0.35f);
                     _counterText.Position = new Point(430 - offset + Offset.X, 110 + Offset.Y);
                     _counterText.Caption = CounterPretext + cap;
@@ -364,7 +368,6 @@ namespace NativeUI
         {
             int mouseX = Convert.ToInt32(Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)GTA.Control.CursorX) * UI.WIDTH));
             int mouseY = Convert.ToInt32(Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)GTA.Control.CursorY) * UI.HEIGHT));
-            //UI.ShowSubtitle(String.Format("X: {0} Y: {1}", mouseX, mouseY)); //debug
             return (mouseX >= TopLeft.X && mouseX <= TopLeft.X + boxSize.Width)
                    && (mouseY > TopLeft.Y && mouseY < TopLeft.Y + boxSize.Height);
         }
@@ -379,7 +382,11 @@ namespace NativeUI
         {
             Function.Call((Hash)0x54CE8AC98E120CAB, "jamyfafi");
             UIResText.AddLongString(item.Text);
-            int width = Game.ScreenResolution.Width;
+            int screenw = Game.ScreenResolution.Width;
+            int screenh = Game.ScreenResolution.Height;
+            const float height = 1080f;
+            float ratio = (float)screenw / screenh;
+            var width = height * ratio;
             int labelSize = Convert.ToInt32(Function.Call<float>((Hash)0x85F061DA64ED2F67, (int)0) * width * 0.35f);
 
             int labelSizeX = 5 + labelSize + 5;
