@@ -165,6 +165,7 @@ namespace NativeUI
 
             SetKey(MenuControls.Back, GTA.Control.FrontendCancel);
             SetKey(MenuControls.Back, GTA.Control.FrontendPause);
+            SetKey(MenuControls.Back, GTA.Control.Aim);
 
             MenuPool.Add(this);
         }
@@ -363,11 +364,26 @@ namespace NativeUI
             Function.Call((Hash)0xE3A3DB414A373DAB); // Safezone end
         }
 
+        public SizeF GetScreenResolutionMantainRatio()
+        {
+            int screenw = Game.ScreenResolution.Width;
+            int screenh = Game.ScreenResolution.Height;
+            const float height = 1080f;
+            float ratio = (float)screenw / screenh;
+            var width = height * ratio;
+
+            return new SizeF(width, height);
+        }
 
         public bool IsMouseInBounds(Point TopLeft, Size boxSize)
         {
-            int mouseX = Convert.ToInt32(Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)GTA.Control.CursorX) * UI.WIDTH));
-            int mouseY = Convert.ToInt32(Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)GTA.Control.CursorY) * UI.HEIGHT));
+            var res = GetScreenResolutionMantainRatio();
+
+            int mouseX = Convert.ToInt32(Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)GTA.Control.CursorX) * res.Width));
+            int mouseY = Convert.ToInt32(Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)GTA.Control.CursorY) * res.Height));
+
+            UI.ShowSubtitle(String.Format("X: {0} Y: {1}", mouseX, mouseY));
+
             return (mouseX >= TopLeft.X && mouseX <= TopLeft.X + boxSize.Width)
                    && (mouseY > TopLeft.Y && mouseY < TopLeft.Y + boxSize.Height);
         }
@@ -382,18 +398,19 @@ namespace NativeUI
         {
             Function.Call((Hash)0x54CE8AC98E120CAB, "jamyfafi");
             UIResText.AddLongString(item.Text);
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
+            var res = GetScreenResolutionMantainRatio();
+            var screenw = res.Width;
+            var screenh = res.Height;
             const float height = 1080f;
             float ratio = (float)screenw / screenh;
             var width = height * ratio;
             int labelSize = Convert.ToInt32(Function.Call<float>((Hash)0x85F061DA64ED2F67, (int)0) * width * 0.35f);
 
-            int labelSizeX = 5 + labelSize + 5;
-            int arrowSizeX = 290 - labelSizeX;
-            return IsMouseInBounds(TopLeft, new Size(labelSizeX, 25))
+            int labelSizeX = 5 + labelSize + 10;
+            int arrowSizeX = 431 - labelSizeX;
+            return IsMouseInBounds(TopLeft, new Size(labelSizeX, 38))
                 ? 1
-                : IsMouseInBounds(new Point(TopLeft.X + labelSizeX, TopLeft.Y), new Size(arrowSizeX, 25)) ? 2 : 0;
+                : IsMouseInBounds(new Point(TopLeft.X + labelSizeX, TopLeft.Y), new Size(arrowSizeX, 38)) ? 2 : 0;
 
         }
 
@@ -404,8 +421,15 @@ namespace NativeUI
             double g = Math.Round(Convert.ToDouble(t), 2);
             g = (g * 100) - 90;
             g = 10 - g;
-            safezoneX = Convert.ToInt32(Math.Round(g*6.4));
-            safezoneY = Convert.ToInt32(Math.Round(g*3.6));
+
+            float hmp = 5.4f;
+            int screenw = Game.ScreenResolution.Width;
+            int screenh = Game.ScreenResolution.Height;
+            float ratio = (float)screenw / screenh;
+            float wmp = ratio*hmp;
+            
+            safezoneX = Convert.ToInt32(Math.Round(g*wmp));
+            safezoneY = Convert.ToInt32(Math.Round(g*hmp));
         }
 
 
@@ -609,12 +633,13 @@ namespace NativeUI
             int counter = 0;
             if (MenuItems.Count > MaxItemsOnScreen + 1)
                 limit = _maxItem;
+
             for (int i = _minItem; i <= limit; i++)
             {
                 int Xpos = Offset.X + safezoneOffsetX;
-                int Ypos = Offset.Y + 100 - 37 + ExtraYOffset + (counter*25) + safezoneOffsetY;
-                int Xsize = 290;
-                int Ysize = 25;
+                int Ypos = Offset.Y + 144 - 37 + ExtraYOffset + (counter*38) + safezoneOffsetY;
+                int Xsize = 431;
+                int Ysize = 38;
                 UIMenuItem uiMenuItem = MenuItems[i];
                 if (IsMouseInBounds(new Point(Xpos, Ypos), new Size(Xsize, Ysize)))
                 {
@@ -655,10 +680,10 @@ namespace NativeUI
                     uiMenuItem.Hovered = false;
                 counter++;
             }
-            int extraY = 100 + 25*(MaxItemsOnScreen + 1) + Offset.Y - 37 + ExtraYOffset + safezoneOffsetY;
+            int extraY = 144 + 38*(MaxItemsOnScreen + 1) + Offset.Y - 37 + ExtraYOffset + safezoneOffsetY;
             int extraX = safezoneOffsetX + Offset.X;
 
-            if (IsMouseInBounds(new Point(extraX, extraY), new Size(290, 12)))
+            if (IsMouseInBounds(new Point(extraX, extraY), new Size(431, 18)))
             {
                 _extraRectangleUp.Color = Color.FromArgb(255, 30, 30, 30);
                 if (Game.IsControlJustPressed(0, GTA.Control.Attack))
@@ -672,7 +697,7 @@ namespace NativeUI
             else
                 _extraRectangleUp.Color = Color.FromArgb(200, 0, 0, 0);
             
-            if (IsMouseInBounds(new Point(extraX, extraY+12), new Size(290, 12)))
+            if (IsMouseInBounds(new Point(extraX, extraY+18), new Size(431, 18)))
             {
                 _extraRectangleDown.Color = Color.FromArgb(255, 30, 30, 30);
                 if (Game.IsControlJustPressed(0, GTA.Control.Attack))

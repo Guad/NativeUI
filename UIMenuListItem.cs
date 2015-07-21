@@ -122,7 +122,7 @@ namespace NativeUI
             }
             else
             {
-                itemText.Position = new Point(420 - offset + Offset.X, itemText.Position.Y);
+                itemText.Position = new Point(430 - offset + Offset.X, itemText.Position.Y);
             }
             itemText.Draw();
         }
