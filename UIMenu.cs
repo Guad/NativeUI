@@ -37,6 +37,8 @@ namespace NativeUI
         private UIResText _descriptionText;
         private UIResText _counterText;
 
+        private string _customBanner = null;
+
 
         private int _activeItem = 1000;
 
@@ -113,6 +115,11 @@ namespace NativeUI
         /// <param name="offset">Point object with X and Y data for offsets. Applied to all menu elements.</param>
         public UIMenu(string title, string subtitle, Point offset) : this(title, subtitle, offset, "commonmenu", "interaction_bgd")
         {
+        }
+
+        public UIMenu(string title, string subtitle, Point offset, string customBanner) : this(title, subtitle, offset, "commonmenu", "interaction_bgd")
+        {
+            _customBanner = customBanner;
         }
 
 
@@ -308,7 +315,14 @@ namespace NativeUI
             _background.Size = Size > MaxItemsOnScreen + 1 ? new Size(431, 38*(MaxItemsOnScreen + 1)) : new Size(431, 38 * Size);
             _background.Draw();
 
-            _logo.Draw();
+            if(String.IsNullOrWhiteSpace(_customBanner))
+                _logo.Draw();
+            else
+            {
+                // TODO: DrawTexture
+                //_logo = new Sprite(spriteLibrary, spriteName, new Point(0 + Offset.X, 0 + Offset.Y), new Size(431, 107));
+                UI.DrawTexture(_customBanner, 0, 0, 1, new Point(Offset.X, Offset.Y), new Size(431, 107));
+            }
             MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
             _mainMenu.Draw();
             if (!String.IsNullOrWhiteSpace(MenuItems[_activeItem%(MenuItems.Count)].Description))
@@ -381,8 +395,6 @@ namespace NativeUI
 
             int mouseX = Convert.ToInt32(Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)GTA.Control.CursorX) * res.Width));
             int mouseY = Convert.ToInt32(Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)GTA.Control.CursorY) * res.Height));
-
-            UI.ShowSubtitle(String.Format("X: {0} Y: {1}", mouseX, mouseY));
 
             return (mouseX >= TopLeft.X && mouseX <= TopLeft.X + boxSize.Width)
                    && (mouseY > TopLeft.Y && mouseY < TopLeft.Y + boxSize.Height);
