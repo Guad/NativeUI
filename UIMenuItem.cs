@@ -208,5 +208,7 @@ namespace NativeUI
                     return Color.FromArgb(255, 255, 255, 255);
             }
         }
+
+        public UIMenu Parent { get; set; }
     }
 }

@@ -18,6 +18,10 @@ namespace NativeUI
 
     public delegate void ItemSelectEvent(UIMenu sender, UIMenuItem selectedItem, int index);
 
+    public delegate void MenuCloseEvent(UIMenu sender);
+
+    public delegate void MenuChangeEvent(UIMenu oldMenu, UIMenu newMenu, bool forward);
+
 
     /// <summary>
     /// Base class for NativeUI. Calls the next events: OnIndexChange, OnListChanged, OnCheckboxChange, OnItemSelect.
@@ -73,9 +77,23 @@ namespace NativeUI
         /// </summary>
         public event ItemSelectEvent OnItemSelect;
 
+        /// <summary>
+        /// Called when user closes the menu or goes back in a menu chain.
+        /// </summary>
+        public event MenuCloseEvent OnMenuClose;
+
+        /// <summary>
+        /// Called when user either clicks on a binded button or goes back to a parent menu.
+        /// </summary>
+        public event MenuChangeEvent OnMenuChange;
+
         //Keys
         private Dictionary<MenuControls, Tuple<List<Keys>, List<Tuple<GTA.Control, int>>>> _keyDictionary = new Dictionary<MenuControls, Tuple<List<Keys>, List<Tuple<GTA.Control, int>>>> ();
-        
+
+
+        //Tree structure
+        public Dictionary<UIMenuItem, UIMenu> Children { get; private set; }
+
 
         /// <summary>
         /// Basic Menu constructor.
@@ -109,6 +127,7 @@ namespace NativeUI
         public UIMenu(string title, string subtitle, Point offset, string spriteLibrary, string spriteName)
         {
             Offset = offset;
+            Children = new Dictionary<UIMenuItem, UIMenu>();
 
             _mainMenu = new UIContainer(new Point(0 + Offset.X, 0 + Offset.Y), new Size(700, 500), Color.FromArgb(0, 0, 0, 0));
             _logo = new Sprite(spriteLibrary, spriteName, new Point(0 + Offset.X, 0 + Offset.Y), new Size(290, 75));
@@ -143,6 +162,11 @@ namespace NativeUI
             SetKey(MenuControls.Left, GTA.Control.FrontendLeft);
             SetKey(MenuControls.Right, GTA.Control.FrontendRight);
             SetKey(MenuControls.Select, GTA.Control.FrontendAccept);
+
+            SetKey(MenuControls.Back, GTA.Control.FrontendCancel);
+            SetKey(MenuControls.Back, GTA.Control.FrontendPause);
+
+            MenuPool.Add(this);
         }
 
         private void RecaulculateDescriptionPosition()
@@ -204,8 +228,8 @@ namespace NativeUI
                     Control.FlyUpDown,
                     Control.VehicleFlyYawRight,
                     Control.VehicleHandbrake,
-                    Control.FrontendPause,
-                    Control.FrontendPauseAlternate,
+                    //Control.FrontendPause,
+                    //Control.FrontendPauseAlternate,
                 };
                 foreach (var control in list)
                 {
@@ -224,6 +248,7 @@ namespace NativeUI
         {
             item.Offset = Offset;
             item.Position((MenuItems.Count * 25) - 25 + ExtraYOffset);
+            item.Parent = this;
             MenuItems.Add(item);
 
             RecaulculateDescriptionPosition();
@@ -273,19 +298,12 @@ namespace NativeUI
         /// </summary>
         public void Draw()
         {
-            if (Visible)
-            {
-                DisEnableControls(false);
-            }
-            else
-            {
-                DisEnableControls(true);
-                return;
-            }
+            if (!Visible) return;
+
+            DisEnableControls(false);
             Function.Call((Hash)0xB8A850F20A067EB6, 76, 84);           // Safezone
             Function.Call((Hash)0xF5A2C681787E579D, 0f, 0f, 0f, 0f);   // stuff
-
-
+            
             _background.Size = Size > MaxItemsOnScreen + 1 ? new Size(290, 25*(MaxItemsOnScreen + 1)) : new Size(290, 25 * Size);
             _background.Draw();
 
@@ -343,6 +361,7 @@ namespace NativeUI
             Function.Call((Hash)0xE3A3DB414A373DAB); // Safezone end
         }
 
+
         public bool IsMouseInBounds(Point TopLeft, Size boxSize)
         {
             int mouseX = Convert.ToInt32(Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)GTA.Control.CursorX) * UI.WIDTH));
@@ -352,6 +371,7 @@ namespace NativeUI
                    && (mouseY > TopLeft.Y && mouseY < TopLeft.Y + boxSize.Height);
         }
         
+
         /// <summary>
         /// Function to get whether the cursor is in an arrow space, or in label.
         /// </summary>
@@ -374,6 +394,7 @@ namespace NativeUI
 
         }
 
+
         public void GetSafezoneBounds(out int safezoneX, out int safezoneY)
         {
             float t = Function.Call<float>(Hash._0xBAF107B6BB2C97F0);
@@ -383,6 +404,7 @@ namespace NativeUI
             safezoneX = Convert.ToInt32(Math.Round(g*6.4));
             safezoneY = Convert.ToInt32(Math.Round(g*3.6));
         }
+
 
         public void GoUpOverflow()
         {
@@ -417,6 +439,7 @@ namespace NativeUI
             IndexChange(CurrentSelection);
         }
 
+
         public void GoUp()
         {
             if (Size > MaxItemsOnScreen + 1) return;
@@ -426,6 +449,7 @@ namespace NativeUI
             Game.PlaySound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET");
             IndexChange(CurrentSelection);
         }
+
 
         public void GoDownOverflow()
         {
@@ -459,6 +483,7 @@ namespace NativeUI
             IndexChange(CurrentSelection);
         }
 
+
         public void GoDown()
         {
             if (Size > MaxItemsOnScreen + 1) return;
@@ -469,6 +494,7 @@ namespace NativeUI
             IndexChange(CurrentSelection);
         }
 
+
         public void GoLeft()
         {
             if (!(MenuItems[CurrentSelection] is UIMenuListItem)) return;
@@ -478,6 +504,7 @@ namespace NativeUI
             ListChange(it, it.Index);
         }
 
+
         public void GoRight()
         {
             if (!(MenuItems[CurrentSelection] is UIMenuListItem)) return;
@@ -486,6 +513,7 @@ namespace NativeUI
             Game.PlaySound("NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
             ListChange(it, it.Index);
         }
+
 
         public void SelectItem()
         {
@@ -500,9 +528,70 @@ namespace NativeUI
             {
                 Game.PlaySound("SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
                 ItemSelect(MenuItems[CurrentSelection], CurrentSelection);
+                if (!Children.ContainsKey(MenuItems[CurrentSelection])) return;
+                Visible = false;
+                Children[MenuItems[CurrentSelection]].Visible = true;
+                MenuChangeEv(Children[MenuItems[CurrentSelection]], true);
             }
         }
-        
+
+
+        public void GoBack()
+        {
+            Game.PlaySound("BACK", "HUD_FRONTEND_DEFAULT_SOUNDSET");
+            Visible = false;
+            if (ParentMenu != null)
+            {
+                ParentMenu.Visible = true;
+                MenuChangeEv(ParentMenu, false);
+            }
+            MenuCloseEv();
+        }
+
+        /// <summary>
+        /// Bind a menu to a button. When the button is clicked that menu will open.
+        /// </summary>
+        public void BindMenuToItem(UIMenu menuToBind, UIMenuItem itemToBindTo)
+        {
+            menuToBind.ParentMenu = this;
+            menuToBind.ParentItem = itemToBindTo;
+            if (Children.ContainsKey(itemToBindTo))
+                Children[itemToBindTo] = menuToBind;
+            else
+                Children.Add(itemToBindTo, menuToBind);
+        }
+
+
+        /// <summary>
+        /// Remove menu binding from button.
+        /// </summary>
+        /// <param name="releaseFrom">Button to release from.</param>
+        /// <returns>Returns true if the operation was successful.</returns>
+        public bool ReleaseMenuFromItem(UIMenuItem releaseFrom)
+        {
+            if (!Children.ContainsKey(releaseFrom)) return false;
+            Children[releaseFrom].ParentItem = null;
+            Children[releaseFrom].ParentMenu = null;
+            Children.Remove(releaseFrom);
+            return true;
+        }
+
+
+        /// <summary>
+        /// Remove menu binding from button with specific menu.
+        /// </summary>
+        /// <param name="menuToRelease">What menu to release</param>
+        /// <param name="releaseFrom">Button to release from.</param>
+        /// <returns>Returns true if the operation was successful.</returns>
+        public bool ReleaseMenuFromItem(UIMenuItem releaseFrom, UIMenu menuToRelease)
+        {
+            if (!Children.ContainsKey(releaseFrom) || Children[releaseFrom] != menuToRelease) return false;
+            menuToRelease.ParentItem = null;
+            menuToRelease.ParentMenu = null;
+            Children.Remove(releaseFrom);
+            return true;
+        }
+
         /// <summary>
         /// Call this in OnTick
         /// </summary>
@@ -595,6 +684,7 @@ namespace NativeUI
                 _extraRectangleDown.Color = Color.FromArgb(200, 0, 0, 0);
         }
 
+
         /// <summary>
         /// Set a key to control a menu. Can be multiple keys for each control.
         /// </summary>
@@ -656,6 +746,7 @@ namespace NativeUI
             _keyDictionary[control].Item2.Clear();
         }
 
+
         public bool HasControlJustBeenPressed(MenuControls control, Keys key = Keys.None)
         {
             List<Keys> tmpKeys = new List<Keys>(_keyDictionary[control].Item1);
@@ -670,7 +761,24 @@ namespace NativeUI
                 return true;
             return false;
         }
+
+
+        public bool HasControlJustBeenReleaseed(MenuControls control, Keys key = Keys.None)
+        {
+            List<Keys> tmpKeys = new List<Keys>(_keyDictionary[control].Item1);
+            List<Tuple<GTA.Control, int>> tmpControls = new List<Tuple<Control, int>>(_keyDictionary[control].Item2);
+
+            if (key != Keys.None)
+            {
+                if (tmpKeys.Any(Game.IsKeyPressed))
+                    return true;
+            }
+            if (tmpControls.Any(tuple => Game.IsControlJustReleased(tuple.Item2, tuple.Item1)))
+                return true;
+            return false;
+        }
         
+
         /// <summary>
         /// Process control-stroke. Call this in the OnTick event.
         /// </summary>
@@ -705,6 +813,11 @@ namespace NativeUI
             {
                 SelectItem();
             }
+
+            else if (HasControlJustBeenReleaseed(MenuControls.Back, key))
+            {
+                GoBack();
+            }
         }
 
 
@@ -719,6 +832,7 @@ namespace NativeUI
                 ProcessControl(key);
             }
         }
+
 
         private string FormatDescription(string input)
         {
@@ -747,10 +861,12 @@ namespace NativeUI
             return output;
         }
 
+
         /// <summary>
         /// Change whether this menu is visible to the user.
         /// </summary>
         public bool Visible { get; set; }
+
 
         /// <summary>
         /// Returns the current selected item's index.
@@ -797,26 +913,47 @@ namespace NativeUI
         /// </summary>
         public string Subtitle { get; }
 
+
         public string CounterPretext { get; set; }
+
+       
+        public UIMenu ParentMenu { get; set; }
+
+        
+        public UIMenuItem ParentItem { get; set; }
+
 
         protected virtual void IndexChange(int newindex)
         {
             OnIndexChange?.Invoke(this, newindex);
         }
 
+
         protected virtual void ListChange(UIMenuListItem sender, int newindex)
         {
             OnListChange?.Invoke(this, sender, newindex);
         }
+
 
         protected virtual void ItemSelect(UIMenuItem selecteditem, int index)
         {
             OnItemSelect?.Invoke(this, selecteditem, index);
         }
 
+
         protected virtual void CheckboxChange(UIMenuCheckboxItem sender, bool Checked)
         {
             OnCheckboxChange?.Invoke(this, sender, Checked);
+        }
+        
+        protected virtual void MenuCloseEv()
+        {
+            OnMenuClose?.Invoke(this);
+        }
+
+        protected virtual void MenuChangeEv(UIMenu newmenu, bool forward)
+        {
+            OnMenuChange?.Invoke(this, newmenu, forward);
         }
 
         public enum MenuControls
@@ -825,7 +962,8 @@ namespace NativeUI
             Down,
             Left,
             Right,
-            Select
+            Select,
+            Back
         }
     }
 }
