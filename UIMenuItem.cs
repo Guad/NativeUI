@@ -49,10 +49,12 @@ namespace NativeUI
             set
             {
                 _selected = value;
-                //_rectangle.Color = value ? Color.FromArgb(250, 255, 255, 255) : Color.FromArgb(100, 0, 0, 0);
+                
                 _text.Color = value ? Color.Black : Color.WhiteSmoke;
             }
         }
+
+        public virtual bool Hovered { get; set; }
 
         public virtual string Description { get; set; }
 
@@ -77,7 +79,11 @@ namespace NativeUI
         /// </summary>
         public virtual void Draw()
         {
-            _rectangle.Draw();
+            if (Hovered && !Selected)
+            {
+                _rectangle.Color = Color.FromArgb(20, 255, 255, 255);
+                _rectangle.Draw();
+            }
             if (Selected)
                 _selectedSprite.Draw();
             if (LeftBadge != BadgeStyle.None)

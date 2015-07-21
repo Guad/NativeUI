@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using GTA;
+using GTA.Native;
 using NativeUI;
 
 public class MenuExample : Script
@@ -17,7 +18,7 @@ public class MenuExample : Script
         Tick += OnTick;
         KeyDown += OnKeyDown;
 
-        mainMenu = new UIMenu("Native UI", "~b~NATIVEUI SHOWCASE", new Point(20, 10));
+        mainMenu = new UIMenu("Native UI", "~b~NATIVEUI SHOWCASE");
         mainMenu.AddItem(ketchupCheckbox = new UIMenuCheckboxItem("Add ketchup?", false, "Do you wish to add ketchup?"));
         var foods = new List<dynamic>
         {
@@ -73,6 +74,7 @@ public class MenuExample : Script
     public void OnTick(object o, EventArgs e)
     {
         mainMenu.ProcessControl();
+        mainMenu.ProcessMouse();
         mainMenu.Draw();
     }
 

@@ -46,9 +46,9 @@ namespace NativeUI
         {
             int y = 0;
             Items = new List<dynamic>(items);
-            _arrowLeft = new Sprite("commonmenu", "arrowleft", new Point(110, 108 + y), new Size(10, 10));
-            _arrowRight = new Sprite("commonmenu", "arrowright", new Point(265, 108 + y), new Size(10, 10));
-            itemText = new UIText("", new Point(290, y + 104), 0.3f, Color.White, GTA.Font.ChaletLondon, false);
+            _arrowLeft = new Sprite("commonmenu", "arrowleft", new Point(110, 105 + y), new Size(15, 15));
+            _arrowRight = new Sprite("commonmenu", "arrowright", new Point(280, 105 + y), new Size(15, 15));
+            itemText = new UIText("", new Point(290, y + 104), 0.33f, Color.White, GTA.Font.ChaletLondon, false);
             Index = index;
         }
 
@@ -59,8 +59,8 @@ namespace NativeUI
         /// <param name="y">New Y position.</param>
         public override void Position(int y)
         {
-            _arrowLeft.Position = new Point(110 + Offset.X, 108 + y + Offset.Y);
-            _arrowRight.Position = new Point(265 + Offset.X, 108 + y + Offset.Y);
+            _arrowLeft.Position = new Point(100 + Offset.X, 106 + y + Offset.Y);
+            _arrowRight.Position = new Point(270 + Offset.X, 106 + y + Offset.Y);
             itemText.Position = new Point(290 + Offset.X, y + 104 + Offset.Y);
             base.Position(y);
         }
@@ -99,21 +99,28 @@ namespace NativeUI
             SizeF strSize;
             using (Graphics g = Graphics.FromImage(new Bitmap(1, 1)))
             {
-                strSize = g.MeasureString(caption, new System.Drawing.Font("Helvetica", 11, FontStyle.Regular, GraphicsUnit.Pixel));
+                strSize = g.MeasureString(caption, new System.Drawing.Font("Helvetica", 12, FontStyle.Regular, GraphicsUnit.Pixel));
             }
             int offset = Convert.ToInt32(strSize.Width);
 
             itemText.Color = Selected ? Color.Black : Color.WhiteSmoke;
-            itemText.Position = new Point(262 - offset + Offset.X, itemText.Position.Y);
+            
             itemText.Caption = caption;
 
             _arrowLeft.Color = Selected ? Color.Black : Color.WhiteSmoke;
             _arrowRight.Color = Selected ? Color.Black : Color.WhiteSmoke;
 
-            _arrowLeft.Position = new Point(250 - offset + Offset.X, _arrowLeft.Position.Y);
-
-            _arrowLeft.Draw();
-            _arrowRight.Draw();
+            _arrowLeft.Position = new Point(255 - offset + Offset.X, _arrowLeft.Position.Y);
+            if (Selected)
+            {
+                _arrowLeft.Draw();
+                _arrowRight.Draw();
+                itemText.Position = new Point(268 - offset + Offset.X, itemText.Position.Y);
+            }
+            else
+            {
+                itemText.Position = new Point(282 - offset + Offset.X, itemText.Position.Y);
+            }
             itemText.Draw();
         }
     }
