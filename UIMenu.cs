@@ -275,12 +275,10 @@ namespace NativeUI
         {
             if (Visible)
             {
-                //Function.Call(Hash.DISABLE_CONTROL_ACTION, 0, (int) GTA.Control.Phone, true);
                 DisEnableControls(false);
             }
             else
             {
-                //Function.Call(Hash.ENABLE_CONTROL_ACTION, 0, (int)GTA.Control.Phone, true);
                 DisEnableControls(true);
                 return;
             }
@@ -353,8 +351,7 @@ namespace NativeUI
             return (mouseX >= TopLeft.X && mouseX <= TopLeft.X + boxSize.Width)
                    && (mouseY > TopLeft.Y && mouseY < TopLeft.Y + boxSize.Height);
         }
-
-
+        
         /// <summary>
         /// Function to get whether the cursor is in an arrow space, or in label.
         /// </summary>
@@ -387,6 +384,106 @@ namespace NativeUI
             safezoneY = Convert.ToInt32(Math.Round(g*3.6));
         }
 
+        public void GoUp()
+        {
+            if (_activeItem % MenuItems.Count <= _minItem)
+            {
+                if (_activeItem % MenuItems.Count == 0)
+                {
+                    _minItem = MenuItems.Count - MaxItemsOnScreen - 1;
+                    _maxItem = MenuItems.Count - 1;
+                    MenuItems[_activeItem % (MenuItems.Count)].Selected = false;
+                    _activeItem = 1000 - (1000 % MenuItems.Count);
+                    _activeItem += MenuItems.Count - 1;
+                    MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
+                }
+                else
+                {
+                    _minItem--;
+                    _maxItem--;
+                    MenuItems[_activeItem % (MenuItems.Count)].Selected = false;
+                    _activeItem--;
+                    MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
+                }
+            }
+            else
+            {
+                MenuItems[_activeItem % (MenuItems.Count)].Selected = false;
+                _activeItem--;
+                MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
+            }
+            Game.PlaySound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET");
+            IndexChange(CurrentSelection);
+        }
+
+        public void GoDown()
+        {
+            if (_activeItem % MenuItems.Count >= _maxItem)
+            {
+                if (_activeItem % MenuItems.Count == MenuItems.Count - 1)
+                {
+                    _minItem = 0;
+                    _maxItem = MaxItemsOnScreen;
+                    MenuItems[_activeItem % (MenuItems.Count)].Selected = false;
+                    _activeItem = 1000 - (1000 % MenuItems.Count);
+                    MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
+                }
+                else
+                {
+                    _minItem++;
+                    _maxItem++;
+                    MenuItems[_activeItem % (MenuItems.Count)].Selected = false;
+                    _activeItem++;
+                    MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
+                }
+            }
+            else
+            {
+                MenuItems[_activeItem % (MenuItems.Count)].Selected = false;
+                _activeItem++;
+                MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
+            }
+            Game.PlaySound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET");
+            IndexChange(CurrentSelection);
+        }
+
+        public void GoLeft()
+        {
+            if (!(MenuItems[CurrentSelection] is UIMenuListItem)) return;
+            var it = (UIMenuListItem)MenuItems[CurrentSelection];
+            it.Index--;
+            Game.PlaySound("NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
+            ListChange(it, it.Index);
+        }
+
+        public void GoRight()
+        {
+            if (!(MenuItems[CurrentSelection] is UIMenuListItem)) return;
+            var it = (UIMenuListItem)MenuItems[CurrentSelection];
+            it.Index++;
+            Game.PlaySound("NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
+            ListChange(it, it.Index);
+        }
+
+        public void SelectItem()
+        {
+            if (MenuItems[CurrentSelection] is UIMenuCheckboxItem)
+            {
+                var it = (UIMenuCheckboxItem)MenuItems[CurrentSelection];
+                it.Checked = !it.Checked;
+                Game.PlaySound("SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
+                CheckboxChange(it, it.Checked);
+            }
+            else
+            {
+                Game.PlaySound("SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
+                ItemSelect(MenuItems[CurrentSelection], CurrentSelection);
+            }
+        }
+
+
+
+
         /// <summary>
         /// Call this in OnTick
         /// </summary>
@@ -413,19 +510,11 @@ namespace NativeUI
                 {
                     uiMenuItem.Hovered = true;
                     if (Game.IsControlJustPressed(0, GTA.Control.Attack))
-                    {
                         if (uiMenuItem.Selected)
                         {
-                            if (MenuItems[i] is UIMenuCheckboxItem)
-                            {
-                                var it = (UIMenuCheckboxItem)MenuItems[i];
-                                it.Checked = !it.Checked;
-                                Game.PlaySound("SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
-                                CheckboxChange(it, it.Checked);
-                            }
-                            else if (MenuItems[i] is UIMenuListItem &&
-                                     IsMouseInListItemArrows((UIMenuListItem) MenuItems[i], new Point(Xpos, Ypos),
-                                         new Point(safezoneOffsetX, safezoneOffsetY)) > 0)
+                            if (MenuItems[i] is UIMenuListItem &&
+                                IsMouseInListItemArrows((UIMenuListItem) MenuItems[i], new Point(Xpos, Ypos),
+                                    new Point(safezoneOffsetX, safezoneOffsetY)) > 0)
                             {
                                 int res = IsMouseInListItemArrows((UIMenuListItem) MenuItems[i], new Point(Xpos, Ypos),
                                     new Point(safezoneOffsetX, safezoneOffsetY));
@@ -434,23 +523,23 @@ namespace NativeUI
                                     Game.PlaySound("SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
                                     ItemSelect(MenuItems[i], i);
                                 }
-                                else if(res == 2) // Arrow clicked: next
+                                else if (res == 2) // Arrow clicked: next
                                 {
-                                    var it = (UIMenuListItem)MenuItems[i];
+                                    var it = (UIMenuListItem) MenuItems[i];
                                     it.Index++;
                                     Game.PlaySound("NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
                                     ListChange(it, it.Index);
                                 }
                             }
                             else
-                            {
-                                Game.PlaySound("SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
-                                ItemSelect(MenuItems[i], i);
-                            }
+                                SelectItem();
                         }
                         else
+                        {
                             CurrentSelection = i;
-                    }
+                            Game.PlaySound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET");
+                            IndexChange(CurrentSelection);
+                        }
                 }
                 else
                     uiMenuItem.Hovered = false;
@@ -464,82 +553,19 @@ namespace NativeUI
             {
                 _extraRectangleUp.Color = Color.FromArgb(255, 30, 30, 30);
                 if (Game.IsControlJustPressed(0, GTA.Control.Attack))
-                {
-                    //Move Up
-                    if (_activeItem % MenuItems.Count <= _minItem)
-                    {
-                        if (_activeItem % MenuItems.Count == 0)
-                        {
-                            _minItem = MenuItems.Count - MaxItemsOnScreen - 1;
-                            _maxItem = MenuItems.Count - 1;
-                            MenuItems[_activeItem % (MenuItems.Count)].Selected = false;
-                            _activeItem = 1000 - (1000 % MenuItems.Count);
-                            _activeItem += MenuItems.Count - 1;
-                            MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
-                        }
-                        else
-                        {
-                            _minItem--;
-                            _maxItem--;
-                            MenuItems[_activeItem % (MenuItems.Count)].Selected = false;
-                            _activeItem--;
-                            MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
-                        }
-                    }
-                    else
-                    {
-                        MenuItems[_activeItem % (MenuItems.Count)].Selected = false;
-                        _activeItem--;
-                        MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
-                    }
-                    Game.PlaySound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET");
-                    IndexChange(CurrentSelection);
-                }
+                    GoUp();
             }
             else
-            {
                 _extraRectangleUp.Color = Color.FromArgb(200, 0, 0, 0);
-            }
             
             if (IsMouseInBounds(new Point(extraX, extraY+12), new Size(290, 12)))
             {
                 _extraRectangleDown.Color = Color.FromArgb(255, 30, 30, 30);
                 if (Game.IsControlJustPressed(0, GTA.Control.Attack))
-                {
-                    //Move Down
-                    if (_activeItem % MenuItems.Count >= _maxItem)
-                    {
-                        if (_activeItem % MenuItems.Count == MenuItems.Count - 1)
-                        {
-                            _minItem = 0;
-                            _maxItem = MaxItemsOnScreen;
-                            MenuItems[_activeItem % (MenuItems.Count)].Selected = false;
-                            _activeItem = 1000 - (1000 % MenuItems.Count);
-                            MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
-                        }
-                        else
-                        {
-                            _minItem++;
-                            _maxItem++;
-                            MenuItems[_activeItem % (MenuItems.Count)].Selected = false;
-                            _activeItem++;
-                            MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
-                        }
-                    }
-                    else
-                    {
-                        MenuItems[_activeItem % (MenuItems.Count)].Selected = false;
-                        _activeItem++;
-                        MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
-                    }
-                    Game.PlaySound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET");
-                    IndexChange(CurrentSelection);
-                }
+                    GoDown();
             }
             else
-            {
                 _extraRectangleDown.Color = Color.FromArgb(200, 0, 0, 0);
-            }
         }
 
         /// <summary>
@@ -626,97 +652,25 @@ namespace NativeUI
             if(!Visible) return;
             if (HasControlJustBeenPressed(MenuControls.Up, key) || Game.IsControlJustPressed(0, GTA.Control.CursorScrollUp))
             {
-                if (_activeItem % MenuItems.Count <= _minItem)
-                {
-                    if (_activeItem % MenuItems.Count == 0)
-                    {
-                        _minItem = MenuItems.Count - MaxItemsOnScreen - 1;
-                        _maxItem = MenuItems.Count - 1;
-                        MenuItems[_activeItem % (MenuItems.Count)].Selected = false;
-                        _activeItem = 1000 - (1000 % MenuItems.Count);
-                        _activeItem += MenuItems.Count - 1;
-                        MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
-                    }
-                    else
-                    {
-                        _minItem--;
-                        _maxItem--;
-                        MenuItems[_activeItem % (MenuItems.Count)].Selected = false;
-                        _activeItem--;
-                        MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
-                    }
-                }
-                else
-                {
-                    MenuItems[_activeItem % (MenuItems.Count)].Selected = false;
-                    _activeItem--;
-                    MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
-                }
-                Game.PlaySound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET");
-                IndexChange(CurrentSelection);
+                GoUp();
             }
             else if (HasControlJustBeenPressed(MenuControls.Down, key) || Game.IsControlJustPressed(0, GTA.Control.CursorScrollDown))
             {
-                if (_activeItem % MenuItems.Count >= _maxItem)
-                {
-                    if (_activeItem % MenuItems.Count == MenuItems.Count - 1)
-                    {
-                        _minItem = 0;
-                        _maxItem = MaxItemsOnScreen;
-                        MenuItems[_activeItem % (MenuItems.Count)].Selected = false;
-                        _activeItem = 1000 - (1000 % MenuItems.Count);
-                        MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
-                    }
-                    else
-                    {
-                        _minItem++;
-                        _maxItem++;
-                        MenuItems[_activeItem % (MenuItems.Count)].Selected = false;
-                        _activeItem++;
-                        MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
-                    }
-                }
-                else
-                {
-                    MenuItems[_activeItem % (MenuItems.Count)].Selected = false;
-                    _activeItem++;
-                    MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
-                }
-                Game.PlaySound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET");
-                IndexChange(CurrentSelection);
+                GoDown();
             }
             else if (HasControlJustBeenPressed(MenuControls.Left, key))
             {
-                if (!(MenuItems[CurrentSelection] is UIMenuListItem)) return;
-                var it = (UIMenuListItem) MenuItems[CurrentSelection];
-                it.Index--;
-                Game.PlaySound("NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
-                ListChange(it, it.Index);
+                GoLeft();
             }
 
             else if (HasControlJustBeenPressed(MenuControls.Right, key))
             {
-                if (!(MenuItems[CurrentSelection] is UIMenuListItem)) return;
-                var it = (UIMenuListItem) MenuItems[CurrentSelection];
-                it.Index++;
-                Game.PlaySound("NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
-                ListChange(it, it.Index);
+                GoRight();
             }
 
             else if (HasControlJustBeenPressed(MenuControls.Select, key))
             {
-                if (MenuItems[CurrentSelection] is UIMenuCheckboxItem)
-                {
-                    var it = (UIMenuCheckboxItem) MenuItems[CurrentSelection];
-                    it.Checked = !it.Checked;
-                    Game.PlaySound("SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
-                    CheckboxChange(it, it.Checked);
-                }
-                else
-                {
-                    Game.PlaySound("SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
-                    ItemSelect(MenuItems[CurrentSelection], CurrentSelection);
-                }
+                SelectItem();
             }
         }
 
