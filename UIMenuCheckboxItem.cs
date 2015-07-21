@@ -27,7 +27,7 @@ namespace NativeUI
             : base(text, description)
         {
             int y = 0;
-            _checkedSprite = new Sprite("commonmenu", "shop_box_blank", new Point(255, y + 95), new Size(35, 35));
+            _checkedSprite = new Sprite("commonmenu", "shop_box_blank", new Point(410, y + 95), new Size(50, 50));
             Checked = check;
         }
 
@@ -45,7 +45,7 @@ namespace NativeUI
         public override void Position(int y)
         {
             base.Position(y);
-            _checkedSprite.Position = new Point(255 + Offset.X, y + 95 + Offset.Y);
+            _checkedSprite.Position = new Point(380 + Offset.X, y + 139 + Offset.Y);
         }
         
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Runtime.InteropServices.ComTypes;
 using System.Windows.Forms;
 using GTA;
 using GTA.Native;
@@ -88,6 +87,7 @@ public class MenuExample : Script
     public void OnTick(object o, EventArgs e)
     {
         MenuPool.ProcessMenus();
+        
     }
 
     public void OnKeyDown(object o, KeyEventArgs e)

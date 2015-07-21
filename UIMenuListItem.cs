@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Drawing;
 using GTA;
+using GTA.Native;
 
 namespace NativeUI
 {
     public class UIMenuListItem : UIMenuItem
     {
-        private UIText itemText;
+        private UIResText itemText;
 
         private Sprite _arrowLeft;
         private Sprite _arrowRight;
@@ -46,9 +47,10 @@ namespace NativeUI
         {
             int y = 0;
             Items = new List<dynamic>(items);
-            _arrowLeft = new Sprite("commonmenu", "arrowleft", new Point(110, 105 + y), new Size(15, 15));
-            _arrowRight = new Sprite("commonmenu", "arrowright", new Point(280, 105 + y), new Size(15, 15));
-            itemText = new UIText("", new Point(290, y + 104), 0.33f, Color.White, GTA.Font.ChaletLondon, false);
+            _arrowLeft = new Sprite("commonmenu", "arrowleft", new Point(110, 105 + y), new Size(30, 30));
+            _arrowRight = new Sprite("commonmenu", "arrowright", new Point(280, 105 + y), new Size(30, 30));
+            itemText = new UIResText("", new Point(290, y + 104), 0.33f, Color.White, GTA.Font.ChaletLondon, false);
+            
             Index = index;
         }
 
@@ -59,9 +61,9 @@ namespace NativeUI
         /// <param name="y">New Y position.</param>
         public override void Position(int y)
         {
-            _arrowLeft.Position = new Point(100 + Offset.X, 106 + y + Offset.Y);
-            _arrowRight.Position = new Point(270 + Offset.X, 106 + y + Offset.Y);
-            itemText.Position = new Point(290 + Offset.X, y + 104 + Offset.Y);
+            _arrowLeft.Position = new Point(300 + Offset.X, 148 + y + Offset.Y);
+            _arrowRight.Position = new Point(400 + Offset.X, 148 + y + Offset.Y);
+            itemText.Position = new Point(300 + Offset.X, y + 149 + Offset.Y);
             base.Position(y);
         }
 
@@ -95,13 +97,10 @@ namespace NativeUI
         {
             base.Draw();
             string caption = Items[Index % Items.Count].ToString();
-
-            SizeF strSize;
-            using (Graphics g = Graphics.FromImage(new Bitmap(1, 1)))
-            {
-                strSize = g.MeasureString(caption, new System.Drawing.Font("Helvetica", 12, FontStyle.Regular, GraphicsUnit.Pixel));
-            }
-            int offset = Convert.ToInt32(strSize.Width);
+            Function.Call((Hash)0x54CE8AC98E120CAB, "jamyfafi");
+            UIResText.AddLongString(caption);
+            int width = Game.ScreenResolution.Width;
+            int offset = Convert.ToInt32(Function.Call<float>((Hash)0x85F061DA64ED2F67, (int)0) * width * 0.33f);
 
             itemText.Color = Selected ? Color.Black : Color.WhiteSmoke;
             
@@ -110,16 +109,16 @@ namespace NativeUI
             _arrowLeft.Color = Selected ? Color.Black : Color.WhiteSmoke;
             _arrowRight.Color = Selected ? Color.Black : Color.WhiteSmoke;
 
-            _arrowLeft.Position = new Point(255 - offset + Offset.X, _arrowLeft.Position.Y);
+            _arrowLeft.Position = new Point(380 - offset + Offset.X, _arrowLeft.Position.Y);
             if (Selected)
             {
                 _arrowLeft.Draw();
                 _arrowRight.Draw();
-                itemText.Position = new Point(268 - offset + Offset.X, itemText.Position.Y);
+                itemText.Position = new Point(410 - offset + Offset.X, itemText.Position.Y);
             }
             else
             {
-                itemText.Position = new Point(282 - offset + Offset.X, itemText.Position.Y);
+                itemText.Position = new Point(420 - offset + Offset.X, itemText.Position.Y);
             }
             itemText.Draw();
         }

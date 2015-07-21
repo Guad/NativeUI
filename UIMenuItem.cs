@@ -5,8 +5,8 @@ namespace NativeUI
 {
     public class UIMenuItem
     {
-        private readonly UIRectangle _rectangle;
-        private readonly UIText _text;
+        private readonly UIResRectangle _rectangle;
+        private readonly UIResText _text;
         private bool _selected;
         private Sprite _selectedSprite;
 
@@ -28,15 +28,14 @@ namespace NativeUI
         /// <param name="description">Description.</param>
         public UIMenuItem(string text, string description)
         {
-            int y = 0;
             Text = text;
-            _rectangle = new UIRectangle(new Point(0, y + 100), new Size(290, 25), Color.FromArgb(150, 0, 0, 0));
-            _text = new UIText(text, new Point(5, y + 103), 0.33f, Color.WhiteSmoke, GTA.Font.ChaletLondon, false);
+            _rectangle = new UIResRectangle(new Point(0, 0), new Size(431, 38), Color.FromArgb(150, 0, 0, 0));
+            _text = new UIResText(text, new Point(5, 0), 0.33f, Color.WhiteSmoke, GTA.Font.ChaletLondon, false);
             Description = description;
-            _selectedSprite = new Sprite("commonmenu", "gradient_nav", new Point(0, y + 100), new Size(290, 25));
+            _selectedSprite = new Sprite("commonmenu", "gradient_nav", new Point(0, 0), new Size(431, 38));
 
-            _badgeLeft = new Sprite("commonmenu", "", new Point(0, y + 95), new Size(28, 28));
-            _badgeRight = new Sprite("commonmenu", "", new Point(270, y + 95), new Size(28, 28));
+            _badgeLeft = new Sprite("commonmenu", "", new Point(0, 0), new Size(40, 40));
+            _badgeRight = new Sprite("commonmenu", "", new Point(0, 0), new Size(40, 40));
         }
 
 
@@ -57,20 +56,19 @@ namespace NativeUI
         public virtual bool Hovered { get; set; }
 
         public virtual string Description { get; set; }
-
-
+        
         /// <summary>
         /// Set item's position.
         /// </summary>
         /// <param name="y"></param>
         public virtual void Position(int y)
         {
-            _rectangle.Position = new Point(0 + Offset.X, y + 100 + Offset.Y);
-            _selectedSprite.Position = new Point(0 + Offset.X, y + 100 + Offset.Y);
-            _text.Position = new Point(5 + Offset.X, y + 103 + Offset.Y);
+            _rectangle.Position = new Point(Offset.X, y + 144 + Offset.Y);
+            _selectedSprite.Position = new Point(0 + Offset.X, y + 144 + Offset.Y);
+            _text.Position = new Point(5 + Offset.X, y + 147 + Offset.Y);
 
-            _badgeLeft.Position = new Point(0 + Offset.X, y + 98 + Offset.Y);
-            _badgeRight.Position = new Point(260 + Offset.X, y + 98 + Offset.Y);
+            _badgeLeft.Position = new Point(0 + Offset.X, y + 142 + Offset.Y);
+            _badgeRight.Position = new Point(385 + Offset.X, y + 142 + Offset.Y);
         }
 
 
@@ -88,7 +86,7 @@ namespace NativeUI
                 _selectedSprite.Draw();
             if (LeftBadge != BadgeStyle.None)
             {
-                _text.Position = new Point(25 + Offset.X, _text.Position.Y);
+                _text.Position = new Point(35 + Offset.X, _text.Position.Y);
                 _badgeLeft.TextureName = BadgeToSprite(LeftBadge, Selected);
                 _badgeLeft.Color = BadgeToColor(LeftBadge, Selected);
                 _badgeLeft.Draw();
