@@ -384,8 +384,9 @@ namespace NativeUI
             safezoneY = Convert.ToInt32(Math.Round(g*3.6));
         }
 
-        public void GoUp()
+        public void GoUpOverflow()
         {
+            if (Size <= MaxItemsOnScreen + 1) return;
             if (_activeItem % MenuItems.Count <= _minItem)
             {
                 if (_activeItem % MenuItems.Count == 0)
@@ -416,8 +417,19 @@ namespace NativeUI
             IndexChange(CurrentSelection);
         }
 
-        public void GoDown()
+        public void GoUp()
         {
+            if (Size > MaxItemsOnScreen + 1) return;
+            MenuItems[_activeItem % (MenuItems.Count)].Selected = false;
+            _activeItem--;
+            MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
+            Game.PlaySound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET");
+            IndexChange(CurrentSelection);
+        }
+
+        public void GoDownOverflow()
+        {
+            if (Size <= MaxItemsOnScreen + 1) return;
             if (_activeItem % MenuItems.Count >= _maxItem)
             {
                 if (_activeItem % MenuItems.Count == MenuItems.Count - 1)
@@ -443,6 +455,16 @@ namespace NativeUI
                 _activeItem++;
                 MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
             }
+            Game.PlaySound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET");
+            IndexChange(CurrentSelection);
+        }
+
+        public void GoDown()
+        {
+            if (Size > MaxItemsOnScreen + 1) return;
+            MenuItems[_activeItem % (MenuItems.Count)].Selected = false;
+            _activeItem++;
+            MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
             Game.PlaySound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET");
             IndexChange(CurrentSelection);
         }
@@ -480,22 +502,18 @@ namespace NativeUI
                 ItemSelect(MenuItems[CurrentSelection], CurrentSelection);
             }
         }
-
-
-
-
+        
         /// <summary>
         /// Call this in OnTick
         /// </summary>
         public void ProcessMouse()
         {
             if (!Visible) return;
-
             int safezoneOffsetX;
             int safezoneOffsetY;
             GetSafezoneBounds(out safezoneOffsetX, out safezoneOffsetY);
             Function.Call(Hash._SHOW_CURSOR_THIS_FRAME);
-            int limit = MenuItems.Count;
+            int limit = MenuItems.Count - 1;
             int counter = 0;
             if (MenuItems.Count > MaxItemsOnScreen + 1)
                 limit = _maxItem;
@@ -545,7 +563,6 @@ namespace NativeUI
                     uiMenuItem.Hovered = false;
                 counter++;
             }
-
             int extraY = 100 + 25*(MaxItemsOnScreen + 1) + Offset.Y - 25 + ExtraYOffset + safezoneOffsetY;
             int extraX = safezoneOffsetX + Offset.X;
 
@@ -553,7 +570,12 @@ namespace NativeUI
             {
                 _extraRectangleUp.Color = Color.FromArgb(255, 30, 30, 30);
                 if (Game.IsControlJustPressed(0, GTA.Control.Attack))
-                    GoUp();
+                {
+                    if(Size > MaxItemsOnScreen+1)
+                        GoUpOverflow();
+                    else
+                        GoUp();
+                }
             }
             else
                 _extraRectangleUp.Color = Color.FromArgb(200, 0, 0, 0);
@@ -562,7 +584,12 @@ namespace NativeUI
             {
                 _extraRectangleDown.Color = Color.FromArgb(255, 30, 30, 30);
                 if (Game.IsControlJustPressed(0, GTA.Control.Attack))
-                    GoDown();
+                {
+                    if (Size > MaxItemsOnScreen + 1)
+                        GoDownOverflow();
+                    else
+                        GoDown();
+                }
             }
             else
                 _extraRectangleDown.Color = Color.FromArgb(200, 0, 0, 0);
@@ -652,11 +679,17 @@ namespace NativeUI
             if(!Visible) return;
             if (HasControlJustBeenPressed(MenuControls.Up, key) || Game.IsControlJustPressed(0, GTA.Control.CursorScrollUp))
             {
-                GoUp();
+                if (Size > MaxItemsOnScreen + 1)
+                    GoUpOverflow();
+                else
+                    GoUp();
             }
             else if (HasControlJustBeenPressed(MenuControls.Down, key) || Game.IsControlJustPressed(0, GTA.Control.CursorScrollDown))
             {
-                GoDown();
+                if (Size > MaxItemsOnScreen + 1)
+                    GoDownOverflow();
+                else
+                    GoDown();
             }
             else if (HasControlJustBeenPressed(MenuControls.Left, key))
             {
