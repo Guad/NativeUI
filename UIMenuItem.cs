@@ -30,7 +30,7 @@ namespace NativeUI
         {
             Text = text;
             _rectangle = new UIResRectangle(new Point(0, 0), new Size(431, 38), Color.FromArgb(150, 0, 0, 0));
-            _text = new UIResText(text, new Point(5, 0), 0.33f, Color.WhiteSmoke, GTA.Font.ChaletLondon, false);
+            _text = new UIResText(text, new Point(8, 0), 0.33f, Color.WhiteSmoke, GTA.Font.ChaletLondon, false);
             Description = description;
             _selectedSprite = new Sprite("commonmenu", "gradient_nav", new Point(0, 0), new Size(431, 38));
 
@@ -65,7 +65,7 @@ namespace NativeUI
         {
             _rectangle.Position = new Point(Offset.X, y + 144 + Offset.Y);
             _selectedSprite.Position = new Point(0 + Offset.X, y + 144 + Offset.Y);
-            _text.Position = new Point(5 + Offset.X, y + 147 + Offset.Y);
+            _text.Position = new Point(8 + Offset.X, y + 147 + Offset.Y);
 
             _badgeLeft.Position = new Point(0 + Offset.X, y + 142 + Offset.Y);
             _badgeRight.Position = new Point(385 + Offset.X, y + 142 + Offset.Y);
@@ -93,7 +93,7 @@ namespace NativeUI
             }
             else
             {
-                _text.Position = new Point(5 + Offset.X, _text.Position.Y);
+                _text.Position = new Point(8 + Offset.X, _text.Position.Y);
             }
             if (RightBadge != BadgeStyle.None)
             {

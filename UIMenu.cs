@@ -142,7 +142,7 @@ namespace NativeUI
             if (!String.IsNullOrWhiteSpace(subtitle))
             {
                 _mainMenu.Items.Add(new UIResRectangle(new Point(0, 107), new Size(431, 37), Color.Black));
-                _mainMenu.Items.Add(new UIResText(subtitle, new Point(5, 110), 0.35f, Color.WhiteSmoke, 0, false));
+                _mainMenu.Items.Add(new UIResText(subtitle, new Point(8, 110), 0.35f, Color.WhiteSmoke, 0, false));
 
                 if (subtitle.StartsWith("~"))
                 {
@@ -242,8 +242,6 @@ namespace NativeUI
                 foreach (var control in list)
                 {
                     Function.Call(Hash.ENABLE_CONTROL_ACTION, 0, (int)control);
-                    Function.Call(Hash.ENABLE_CONTROL_ACTION, 1, (int)control);
-                    Function.Call(Hash.ENABLE_CONTROL_ACTION, 2, (int)control);
                 }
             }
         }
@@ -636,7 +634,7 @@ namespace NativeUI
         /// </summary>
         public void ProcessMouse()
         {
-            if (!Visible) return;
+            if (!Visible || MenuPool.ControllerUsed) return;
             int safezoneOffsetX;
             int safezoneOffsetY;
             GetSafezoneBounds(out safezoneOffsetX, out safezoneOffsetY);
@@ -827,6 +825,8 @@ namespace NativeUI
             if(!Visible) return;
             if (HasControlJustBeenPressed(MenuControls.Up, key) || Game.IsControlJustPressed(0, GTA.Control.CursorScrollUp))
             {
+                //MenuPool.ControllerUsed = Game.IsControlJustPressed(2, (GTA.Control)27);
+
                 if (Size > MaxItemsOnScreen + 1)
                     GoUpOverflow();
                 else
@@ -834,6 +834,8 @@ namespace NativeUI
             }
             else if (HasControlJustBeenPressed(MenuControls.Down, key) || Game.IsControlJustPressed(0, GTA.Control.CursorScrollDown))
             {
+                //MenuPool.ControllerUsed = Game.IsControlJustPressed(2, (GTA.Control)8);
+
                 if (Size > MaxItemsOnScreen + 1)
                     GoDownOverflow();
                 else
@@ -841,21 +843,25 @@ namespace NativeUI
             }
             else if (HasControlJustBeenPressed(MenuControls.Left, key))
             {
+                //MenuPool.ControllerUsed = Game.IsControlJustPressed(2, (GTA.Control)34);
                 GoLeft();
             }
 
             else if (HasControlJustBeenPressed(MenuControls.Right, key))
             {
+                //MenuPool.ControllerUsed = Game.IsControlJustPressed(2, (GTA.Control)9);
                 GoRight();
             }
 
             else if (HasControlJustBeenPressed(MenuControls.Select, key))
             {
+                //MenuPool.ControllerUsed = Game.IsControlJustPressed(2, (GTA.Control)18);
                 SelectItem();
             }
 
             else if (HasControlJustBeenReleaseed(MenuControls.Back, key))
             {
+                //MenuPool.ControllerUsed = Game.IsControlJustPressed(2, (GTA.Control)45);
                 GoBack();
             }
         }

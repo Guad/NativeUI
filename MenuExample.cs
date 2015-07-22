@@ -14,6 +14,7 @@ public class MenuExample : Script
     private UIMenuListItem dishesListItem;
     private UIMenuItem cookItem;
 
+
     public MenuExample()
     {
         Tick += OnTick;
@@ -87,7 +88,6 @@ public class MenuExample : Script
     public void OnTick(object o, EventArgs e)
     {
         MenuPool.ProcessMenus();
-        
     }
 
     public void OnKeyDown(object o, KeyEventArgs e)

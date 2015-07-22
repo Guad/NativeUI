@@ -7,6 +7,8 @@ namespace NativeUI
 {
     public static class MenuPool
     {
+        public static bool ControllerUsed { get; set; }
+
         private static readonly List<UIMenu> MenuList = new List<UIMenu>();
 
         public static void Add(UIMenu menu)
