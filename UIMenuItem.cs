@@ -13,6 +13,13 @@ namespace NativeUI
         private Sprite _badgeLeft;
         private Sprite _badgeRight;
 
+        //Events
+
+        /// <summary>
+        /// Called when user selects the current item.
+        /// </summary>
+        public event ItemActivatedEvent Activated;
+
         /// <summary>
         /// Basic menu button.
         /// </summary>
@@ -56,7 +63,12 @@ namespace NativeUI
         public virtual bool Hovered { get; set; }
 
         public virtual string Description { get; set; }
-        
+
+        internal virtual void ItemActivate(UIMenu sender)
+        {
+            Activated?.Invoke(sender, this);
+        }
+
         /// <summary>
         /// Set item's position.
         /// </summary>
