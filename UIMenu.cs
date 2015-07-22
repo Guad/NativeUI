@@ -22,6 +22,7 @@ namespace NativeUI
 
     public delegate void MenuChangeEvent(UIMenu oldMenu, UIMenu newMenu, bool forward);
 
+    public delegate void ItemActivatedEvent(UIMenu sender, UIMenuItem selectedItem);
 
     /// <summary>
     /// Base class for NativeUI. Calls the next events: OnIndexChange, OnListChanged, OnCheckboxChange, OnItemSelect.
@@ -565,6 +566,7 @@ namespace NativeUI
             {
                 Game.PlaySound("OK", "HUD_FRONTEND_DEFAULT_SOUNDSET");
                 ItemSelect(MenuItems[CurrentSelection], CurrentSelection);
+                MenuItems[CurrentSelection].ItemActivate(this);
                 if (!Children.ContainsKey(MenuItems[CurrentSelection])) return;
                 Visible = false;
                 Children[MenuItems[CurrentSelection]].Visible = true;
