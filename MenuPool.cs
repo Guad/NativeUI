@@ -53,6 +53,11 @@ namespace NativeUI
             }
         }
 
+        public static bool IsAnyMenuOpen()
+        {
+            return MenuList.Any(menu => menu.Visible);
+        }
+
         public static void ProcessMenus()
         {
             ProcessControl();

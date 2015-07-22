@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using GTA;
 using GTA.Native;
 using Control = GTA.Control;
@@ -29,7 +30,7 @@ namespace NativeUI
     public class UIMenu
     {
         private readonly UIContainer _mainMenu;
-        private readonly Sprite _logo;
+        private Sprite _logo;
         private readonly Sprite _background;
 
         private readonly UIResRectangle _descriptionBar;
@@ -39,8 +40,12 @@ namespace NativeUI
 
         private string _customBanner = null;
 
-
         private int _activeItem = 1000;
+
+        private Scaleform instructionalButtonsScaleform;
+        private bool _visible;
+
+        private bool _justOpened = true;
 
         //Pagination
         private const int MaxItemsOnScreen = 9;
@@ -95,8 +100,7 @@ namespace NativeUI
 
         //Tree structure
         public Dictionary<UIMenuItem, UIMenu> Children { get; private set; }
-
-
+        
         /// <summary>
         /// Basic Menu constructor.
         /// </summary>
@@ -138,11 +142,11 @@ namespace NativeUI
 
             _mainMenu = new UIContainer(new Point(0 + Offset.X, 0 + Offset.Y), new Size(700, 500), Color.FromArgb(0, 0, 0, 0));
             _logo = new Sprite(spriteLibrary, spriteName, new Point(0 + Offset.X, 0 + Offset.Y), new Size(431, 107));
-            _mainMenu.Items.Add(new UIResText(title, new Point(215, 20), 1.15f, Color.White, Font.HouseScript, true));
+            _mainMenu.Items.Add(Title = new UIResText(title, new Point(215, 20), 1.15f, Color.White, Font.HouseScript, true));
             if (!String.IsNullOrWhiteSpace(subtitle))
             {
                 _mainMenu.Items.Add(new UIResRectangle(new Point(0, 107), new Size(431, 37), Color.Black));
-                _mainMenu.Items.Add(new UIResText(subtitle, new Point(8, 110), 0.35f, Color.WhiteSmoke, 0, false));
+                _mainMenu.Items.Add(Subtitle = new UIResText(subtitle, new Point(8, 110), 0.35f, Color.WhiteSmoke, 0, false));
 
                 if (subtitle.StartsWith("~"))
                 {
@@ -151,8 +155,6 @@ namespace NativeUI
                 _counterText = new UIResText("", new Point(360 + Offset.X, 110 + Offset.Y), 0.35f, Color.WhiteSmoke, 0, false);
                 ExtraYOffset = 37;
             }
-            Title = title;
-            Subtitle = subtitle;
 
             _upAndDownSprite = new Sprite("commonmenu", "shop_arrows_upanddown", new Point(190 + Offset.X, 147 + 37 * (MaxItemsOnScreen + 1) + Offset.Y - 37 + ExtraYOffset), new Size(50, 50));
             _extraRectangleUp = new UIResRectangle(new Point(0 + Offset.X, 144 + 38 * (MaxItemsOnScreen + 1) + Offset.Y - 37 + ExtraYOffset), new Size(431, 18), Color.FromArgb(200, 0, 0, 0));
@@ -173,6 +175,10 @@ namespace NativeUI
             SetKey(MenuControls.Back, GTA.Control.FrontendCancel);
             SetKey(MenuControls.Back, GTA.Control.FrontendPause);
             SetKey(MenuControls.Back, GTA.Control.Aim);
+
+            instructionalButtonsScaleform = new Scaleform(0);
+            instructionalButtonsScaleform.Load("instructional_buttons");
+            
 
             MenuPool.Add(this);
         }
@@ -243,7 +249,55 @@ namespace NativeUI
                 {
                     Function.Call(Hash.ENABLE_CONTROL_ACTION, 0, (int)control);
                 }
+
+                Function.Call(Hash.SET_INPUT_EXCLUSIVE, 2, (int)GTA.Control.PhoneUp);
+                Function.Call(Hash.SET_INPUT_EXCLUSIVE, 2, (int)GTA.Control.PhoneDown);
+                Function.Call(Hash.SET_INPUT_EXCLUSIVE, 2, (int)GTA.Control.PhoneLeft);
+                Function.Call(Hash.SET_INPUT_EXCLUSIVE, 2, (int)GTA.Control.PhoneRight);
             }
+        }
+
+        private bool buttonsEnabled = false;
+
+        public void EnableInstructionalButtons(bool enable)
+        {
+            buttonsEnabled = enable;
+        }
+
+        /// <summary>
+        /// Set the banner to your own Sprite.
+        /// </summary>
+        /// <param name="spriteBanner">Sprite object. The position and size does not matter.</param>
+        public void SetBannerType(Sprite spriteBanner)
+        {
+            //_logo = new Sprite(spriteLibrary, spriteName, new Point(0 + Offset.X, 0 + Offset.Y), new Size(431, 107));
+            _logo = spriteBanner;
+            _logo.Size = new Size(431, 107);
+            _logo.Position = new Point(Offset.X, Offset.Y);
+        }
+
+        
+        private UIResRectangle _tmpRectangle;
+        /// <summary>
+        ///  Set the banner to your own Rectangle.
+        /// </summary>
+        /// <param name="rectangle">UIResRectangle object. Position and size does not matter.</param>
+        public void SetBannerType(UIResRectangle rectangle)
+        {
+            //_logo = new Sprite(spriteLibrary, spriteName, new Point(0 + Offset.X, 0 + Offset.Y), new Size(431, 107));
+            _logo = null;
+            _tmpRectangle = rectangle;
+            _tmpRectangle.Position = new Point(Offset.X, Offset.Y);
+            _tmpRectangle.Size = new Size(431, 107);
+        }
+
+        /// <summary>
+        /// Set the banner to your own custom sprite.
+        /// </summary>
+        /// <param name="pathToCustomSprite">Path to your sprite image.</param>
+        public void SetBannerType(string pathToCustomSprite)
+        {
+            _customBanner = pathToCustomSprite;
         }
 
         /// <summary>
@@ -307,14 +361,20 @@ namespace NativeUI
             if (!Visible) return;
 
             DisEnableControls(false);
+            
             Function.Call((Hash)0xB8A850F20A067EB6, 76, 84);           // Safezone
             Function.Call((Hash)0xF5A2C681787E579D, 0f, 0f, 0f, 0f);   // stuff
-            
+            if(buttonsEnabled)
+                instructionalButtonsScaleform.Render2D();
+
             _background.Size = Size > MaxItemsOnScreen + 1 ? new Size(431, 38*(MaxItemsOnScreen + 1)) : new Size(431, 38 * Size);
             _background.Draw();
 
             if(String.IsNullOrWhiteSpace(_customBanner))
-                _logo.Draw();
+                if(_logo != null)
+                    _logo.Draw();
+                else if(_tmpRectangle != null)
+                    _tmpRectangle.Draw();
             else
             {
                 // TODO: DrawTexture
@@ -634,7 +694,7 @@ namespace NativeUI
         /// </summary>
         public void ProcessMouse()
         {
-            if (!Visible || MenuPool.ControllerUsed) return;
+            if (!Visible || _justOpened) return;
             int safezoneOffsetX;
             int safezoneOffsetY;
             GetSafezoneBounds(out safezoneOffsetX, out safezoneOffsetY);
@@ -823,9 +883,15 @@ namespace NativeUI
         public void ProcessControl(Keys key = Keys.None)
         {
             if(!Visible) return;
+            if (_justOpened)
+            {
+                _justOpened = false;
+                return;
+            }
             if (HasControlJustBeenPressed(MenuControls.Up, key) || Game.IsControlJustPressed(0, GTA.Control.CursorScrollUp))
             {
                 //MenuPool.ControllerUsed = Game.IsControlJustPressed(2, (GTA.Control)27);
+                MenuPool.ControllerUsed = Game.IsControlJustPressed(2, GTA.Control.PhoneUp);
 
                 if (Size > MaxItemsOnScreen + 1)
                     GoUpOverflow();
@@ -835,6 +901,7 @@ namespace NativeUI
             else if (HasControlJustBeenPressed(MenuControls.Down, key) || Game.IsControlJustPressed(0, GTA.Control.CursorScrollDown))
             {
                 //MenuPool.ControllerUsed = Game.IsControlJustPressed(2, (GTA.Control)8);
+                MenuPool.ControllerUsed = Game.IsControlJustPressed(2, GTA.Control.PhoneDown);
 
                 if (Size > MaxItemsOnScreen + 1)
                     GoDownOverflow();
@@ -844,12 +911,14 @@ namespace NativeUI
             else if (HasControlJustBeenPressed(MenuControls.Left, key))
             {
                 //MenuPool.ControllerUsed = Game.IsControlJustPressed(2, (GTA.Control)34);
+                MenuPool.ControllerUsed = Game.IsControlJustPressed(2, GTA.Control.PhoneLeft);
                 GoLeft();
             }
 
             else if (HasControlJustBeenPressed(MenuControls.Right, key))
             {
                 //MenuPool.ControllerUsed = Game.IsControlJustPressed(2, (GTA.Control)9);
+                MenuPool.ControllerUsed = Game.IsControlJustPressed(2, GTA.Control.PhoneRight);
                 GoRight();
             }
 
@@ -911,7 +980,30 @@ namespace NativeUI
         /// <summary>
         /// Change whether this menu is visible to the user.
         /// </summary>
-        public bool Visible { get; set; }
+        public bool Visible
+        {
+            get { return _visible; }
+            set
+            {
+                _visible = value;
+                _justOpened = value;
+                instructionalButtonsScaleform.CallFunction("CLEAR_ALL");
+                instructionalButtonsScaleform.CallFunction("CLEAR_RENDER");
+                instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT_EMPTY");
+                if (!Visible) return;
+                instructionalButtonsScaleform.CallFunction("SET_DISPLAY_CONFIG", 1280, 720, 0.05, 0.95, 0.05, 0.95, true, false, false,
+                    1365.33, 768);
+                instructionalButtonsScaleform.CallFunction("SET_MAX_WIDTH", 1);
+                //instructionalButtonsScaleform.CallFunction("TOGGLE_MOUSE_BUTTONS", 1);
+                instructionalButtonsScaleform.CallFunction("CREATE_CONTAINER");
+
+                instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 0, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)GTA.Control.PhoneSelect, 0), "Select");
+                instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 1, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)GTA.Control.PhoneCancel, 0), "Back");
+                    
+                instructionalButtonsScaleform.CallFunction("DRAW_INSTRUCTIONAL_BUTTONS", 0);
+                instructionalButtonsScaleform.CallFunction("FLASH_BUTTON_BY_ID", 31, 100, 1);
+            }
+        }
 
 
         /// <summary>
@@ -951,13 +1043,13 @@ namespace NativeUI
         /// <summary>
         /// Returns the current title.
         /// </summary>
-        public string Title { get; }
+        public UIResText Title { get; }
 
 
         /// <summary>
         /// Returns the current subtitle.
         /// </summary>
-        public string Subtitle { get; }
+        public UIResText Subtitle { get; }
 
 
         public string CounterPretext { get; set; }
@@ -1013,4 +1105,3 @@ namespace NativeUI
         }
     }
 }
-

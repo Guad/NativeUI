@@ -14,7 +14,6 @@ public class MenuExample : Script
     private UIMenuListItem dishesListItem;
     private UIMenuItem cookItem;
 
-
     public MenuExample()
     {
         Tick += OnTick;
@@ -50,8 +49,8 @@ public class MenuExample : Script
             newMenu.AddItem(new UIMenuItem("PageFiller", "Sample description that takes more than one line. Moreso, it takes way more than two lines since it's so long. Wow, check out this length!"));
         }
         newMenu.RefreshIndex();
-
         mainMenu.BindMenuToItem(newMenu, menuItem);
+        
     }
 
     public void OnItemChange(UIMenu sender, int index)
