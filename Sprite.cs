@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
+using System.Reflection;
 using GTA;
 using GTA.Native;
 
@@ -87,6 +89,31 @@ namespace NativeUI
             int sizeH = Convert.ToInt32((size.Height / ratio)*reduceY);
 
             UI.DrawTexture(path, 1, 1, 50, new Point(Convert.ToInt32(position.X*reduceX), Convert.ToInt32(position.Y*reduceY)), new Size(Convert.ToInt32(size.Width * reduceX), sizeH));
+        }
+
+        public static string WriteFileFromResources(Assembly yourAssembly, string fullResourceName)
+        {
+            string tmpPath = Path.GetTempFileName();
+            return WriteFileFromResources(yourAssembly, fullResourceName, tmpPath);
+        }
+
+        public static string WriteFileFromResources(Assembly yourAssembly, string fullResourceName, string savePath)
+        {
+            using (Stream stream = yourAssembly.GetManifestResourceStream(fullResourceName))
+            {
+                if (stream != null)
+                {
+                    byte[] buffer = new byte[stream.Length];
+                    stream.Read(buffer, 0, Convert.ToInt32(stream.Length));
+
+                    using (FileStream fileStream = File.Create(savePath))
+                    {
+                        fileStream.Write(buffer, 0, Convert.ToInt32(stream.Length));
+                        fileStream.Close();
+                    }
+                }
+            }
+            return Path.GetFullPath(savePath);
         }
     }
 }
