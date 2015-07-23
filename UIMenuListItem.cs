@@ -15,6 +15,8 @@ namespace NativeUI
 
         private List<dynamic> Items;
 
+        public event ItemListEvent OnListChanged;
+
         private int _index = 0;
         
         public int Index
@@ -125,6 +127,11 @@ namespace NativeUI
                 itemText.Position = new Point(430 - offset + Offset.X, itemText.Position.Y);
             }
             itemText.Draw();
+        }
+
+        internal virtual void ListChangedTrigger(int newindex)
+        {
+            OnListChanged?.Invoke(this, newindex);
         }
     }
 }

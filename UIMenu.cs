@@ -47,7 +47,6 @@ namespace NativeUI
 
         private int _activeItem = 1000;
 
-        private Scaleform instructionalButtonsScaleform;
         private bool _visible;
 
         private bool _justOpened = true;
@@ -145,6 +144,8 @@ namespace NativeUI
             Offset = offset;
             Children = new Dictionary<UIMenuItem, UIMenu>();
 
+            UpdateScaleform();
+
             _mainMenu = new UIContainer(new Point(0, 0), new Size(700, 500), Color.FromArgb(0, 0, 0, 0));
             _logo = new Sprite(spriteLibrary, spriteName, new Point(0 + Offset.X, 0 + Offset.Y), new Size(431, 107));
             _mainMenu.Items.Add(Title = new UIResText(title, new Point(215 + Offset.X, 20 + Offset.Y), 1.15f, Color.White, Font.HouseScript, true));
@@ -179,13 +180,7 @@ namespace NativeUI
 
             SetKey(MenuControls.Back, GTA.Control.FrontendCancel);
             SetKey(MenuControls.Back, GTA.Control.FrontendPause);
-            SetKey(MenuControls.Back, GTA.Control.Aim);
-
-            instructionalButtonsScaleform = new Scaleform(0);
-            instructionalButtonsScaleform.Load("instructional_buttons");
-            
-
-            MenuPool.Add(this);
+            SetKey(MenuControls.Back, GTA.Control.PhoneCancel);
         }
 
         private void RecaulculateDescriptionPosition()
@@ -217,6 +212,7 @@ namespace NativeUI
             // -Mouse
             // -Walk/Move
             // -
+            
             if (!enable)
             {
                 var list = new List<GTA.Control>
@@ -252,12 +248,7 @@ namespace NativeUI
                 foreach (var control in list)
                 {
                     Function.Call(Hash.ENABLE_CONTROL_ACTION, 0, (int)control);
-                }
-
-                Function.Call(Hash.SET_INPUT_EXCLUSIVE, 2, (int)GTA.Control.PhoneUp);
-                Function.Call(Hash.SET_INPUT_EXCLUSIVE, 2, (int)GTA.Control.PhoneDown);
-                Function.Call(Hash.SET_INPUT_EXCLUSIVE, 2, (int)GTA.Control.PhoneLeft);
-                Function.Call(Hash.SET_INPUT_EXCLUSIVE, 2, (int)GTA.Control.PhoneRight);
+                } 
             }
         }
 
@@ -373,7 +364,7 @@ namespace NativeUI
 
             DisEnableControls(false);
             if(buttonsEnabled)
-                instructionalButtonsScaleform.Render2D();
+                _instructionalButtonsScaleform.Render2D();
             
             Function.Call((Hash)0xB8A850F20A067EB6, 76, 84);           // Safezone
             Function.Call((Hash)0xF5A2C681787E579D, 0f, 0f, 0f, 0f);   // stuff
@@ -615,6 +606,7 @@ namespace NativeUI
             it.Index--;
             Game.PlaySound("NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
             ListChange(it, it.Index);
+            it.ListChangedTrigger(it.Index);
         }
 
 
@@ -625,6 +617,7 @@ namespace NativeUI
             it.Index++;
             Game.PlaySound("NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
             ListChange(it, it.Index);
+            it.ListChangedTrigger(it.Index);
         }
 
 
@@ -741,18 +734,20 @@ namespace NativeUI
                             {
                                 int res = IsMouseInListItemArrows((UIMenuListItem) MenuItems[i], new Point(Xpos, Ypos),
                                     new Point(safezoneOffsetX, safezoneOffsetY));
-                                if (res == 1) // Label clicked
+                                switch (res)
                                 {
-                                    Game.PlaySound("SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
-                                    MenuItems[i].ItemActivate(this);
-                                    ItemSelect(MenuItems[i], i);
-                                }
-                                else if (res == 2) // Arrow clicked: next
-                                {
-                                    var it = (UIMenuListItem) MenuItems[i];
-                                    it.Index++;
-                                    Game.PlaySound("NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
-                                    ListChange(it, it.Index);
+                                    case 1:
+                                        Game.PlaySound("SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
+                                        MenuItems[i].ItemActivate(this);
+                                        ItemSelect(MenuItems[i], i);
+                                        break;
+                                    case 2:
+                                        var it = (UIMenuListItem) MenuItems[i];
+                                        it.Index++;
+                                        Game.PlaySound("NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
+                                        ListChange(it, it.Index);
+                                        it.ListChangedTrigger(it.Index);
+                                        break;
                                 }
                             }
                             else
@@ -772,7 +767,7 @@ namespace NativeUI
             }
             int extraY = 144 + 38*(MaxItemsOnScreen + 1) + Offset.Y - 37 + ExtraYOffset + safezoneOffsetY;
             int extraX = safezoneOffsetX + Offset.X;
-
+            if(Size <= MaxItemsOnScreen + 1) return;
             if (IsMouseInBounds(new Point(extraX, extraY), new Size(431, 18)))
             {
                 _extraRectangleUp.Color = Color.FromArgb(255, 30, 30, 30);
@@ -1054,25 +1049,28 @@ namespace NativeUI
             }
         }
 
-
-        private void UpdateScaleform()
+        private Scaleform _instructionalButtonsScaleform;
+        public void UpdateScaleform()
         {
-            instructionalButtonsScaleform.CallFunction("CLEAR_ALL");
-            instructionalButtonsScaleform.CallFunction("CLEAR_RENDER");
-            instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT_EMPTY");
-            if (!Visible) return;
-            instructionalButtonsScaleform.CallFunction("SET_DISPLAY_CONFIG", 1280, 720, 0.05, 0.95, 0.05, 0.95, true, false, false,
-                1365.33, 768);
-            instructionalButtonsScaleform.CallFunction("SET_MAX_WIDTH", 1);
-            //instructionalButtonsScaleform.CallFunction("TOGGLE_MOUSE_BUTTONS", 1);
-            instructionalButtonsScaleform.CallFunction("CREATE_CONTAINER");
+            _instructionalButtonsScaleform = new Scaleform(0);
+            _instructionalButtonsScaleform.Load("instructional_buttons");
 
-            instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 0, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)GTA.Control.PhoneSelect, 0), "Select");
-            instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 1, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)GTA.Control.PhoneCancel, 0), "Back");
+            _instructionalButtonsScaleform.CallFunction("CLEAR_ALL");
+            _instructionalButtonsScaleform.CallFunction("CLEAR_RENDER");
+            //instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT_EMPTY");
+            if (!Visible) return;
+            _instructionalButtonsScaleform.CallFunction("SET_DISPLAY_CONFIG", 1280, 720, 0.05, 0.95, 0.05, 0.95, true, false, false,
+                1365.33, 768);
+            _instructionalButtonsScaleform.CallFunction("SET_MAX_WIDTH", 1);
+            //instructionalButtonsScaleform.CallFunction("TOGGLE_MOUSE_BUTTONS", 1);
+            _instructionalButtonsScaleform.CallFunction("CREATE_CONTAINER");
+
+            _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 0, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)GTA.Control.PhoneSelect, 0), "Select");
+            _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 1, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)GTA.Control.PhoneCancel, 0), "Back");
             int count = 2;
             foreach (var button in _scaleformButtons)
             {
-                instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", count,
+                _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", count,
                     button.Key.GetType() == typeof(GTA.Control)
                         ? Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)button.Key, 0)
                         : "t_" + button.Key, button.Value);
@@ -1084,15 +1082,15 @@ namespace NativeUI
             {
                 if (MenuItems[CurrentSelection] == scaleformButton.Key)
                 {
-                    instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", count,
+                    _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", count,
                     scaleformButton.Value.Item1.GetType() == typeof(GTA.Control)
                         ? Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)scaleformButton.Value.Item1, 0)
                         : "t_" + scaleformButton.Value.Item1, scaleformButton.Value.Item2);
                     count2++;
                 }
             }
-            instructionalButtonsScaleform.CallFunction("DRAW_INSTRUCTIONAL_BUTTONS", 0);
-            instructionalButtonsScaleform.CallFunction("FLASH_BUTTON_BY_ID", 31, 100, 1);
+            _instructionalButtonsScaleform.CallFunction("DRAW_INSTRUCTIONAL_BUTTONS", 0);
+            //instructionalButtonsScaleform.CallFunction("FLASH_BUTTON_BY_ID", 31, 100, 1);
         }
 
         /// <summary>
@@ -1102,7 +1100,7 @@ namespace NativeUI
         {
             get { return _visible; }
             set
-            {   // TODO: Move to onindexchange
+            {   
                 _visible = value;
                 _justOpened = value;
                 UpdateScaleform();
