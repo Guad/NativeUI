@@ -20,6 +20,7 @@ namespace NativeUI
         /// </summary>
         public event ItemActivatedEvent Activated;
 
+        
         /// <summary>
         /// Basic menu button.
         /// </summary>
@@ -68,7 +69,7 @@ namespace NativeUI
         {
             Activated?.Invoke(sender, this);
         }
-
+        
         /// <summary>
         /// Set item's position.
         /// </summary>
@@ -99,7 +100,8 @@ namespace NativeUI
             if (LeftBadge != BadgeStyle.None)
             {
                 _text.Position = new Point(35 + Offset.X, _text.Position.Y);
-                _badgeLeft.TextureName = BadgeToSprite(LeftBadge, Selected);
+                _badgeLeft.TextureDict = BadgeToSpriteLib(LeftBadge);
+                _badgeLeft.TextureName = BadgeToSpriteName(LeftBadge, Selected);
                 _badgeLeft.Color = BadgeToColor(LeftBadge, Selected);
                 _badgeLeft.Draw();
             }
@@ -109,7 +111,8 @@ namespace NativeUI
             }
             if (RightBadge != BadgeStyle.None)
             {
-                _badgeRight.TextureName = BadgeToSprite(RightBadge, Selected);
+                _badgeRight.TextureDict = BadgeToSpriteLib(RightBadge);
+                _badgeRight.TextureName = BadgeToSpriteName(RightBadge, Selected);
                 _badgeRight.Color = BadgeToColor(RightBadge, Selected);
                 _badgeRight.Draw();
             }
@@ -151,7 +154,16 @@ namespace NativeUI
             Tick,
         }
 
-        private string BadgeToSprite(BadgeStyle badge, bool selected)
+        private string BadgeToSpriteLib(BadgeStyle badge)
+        {
+            switch (badge)
+            {
+                default:
+                    return "commonmenu";
+            }   
+        }
+
+        private string BadgeToSpriteName(BadgeStyle badge, bool selected)
         {
             switch (badge)
             {

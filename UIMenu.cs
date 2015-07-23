@@ -25,6 +25,10 @@ namespace NativeUI
 
     public delegate void ItemActivatedEvent(UIMenu sender, UIMenuItem selectedItem);
 
+    public delegate void ItemCheckboxEvent(UIMenuCheckboxItem sender, bool Checked);
+
+    public delegate void ItemListEvent(UIMenuListItem sender, int newIndex);
+
     /// <summary>
     /// Base class for NativeUI. Calls the next events: OnIndexChange, OnListChanged, OnCheckboxChange, OnItemSelect.
     /// </summary>
@@ -141,13 +145,13 @@ namespace NativeUI
             Offset = offset;
             Children = new Dictionary<UIMenuItem, UIMenu>();
 
-            _mainMenu = new UIContainer(new Point(0 + Offset.X, 0 + Offset.Y), new Size(700, 500), Color.FromArgb(0, 0, 0, 0));
+            _mainMenu = new UIContainer(new Point(0, 0), new Size(700, 500), Color.FromArgb(0, 0, 0, 0));
             _logo = new Sprite(spriteLibrary, spriteName, new Point(0 + Offset.X, 0 + Offset.Y), new Size(431, 107));
-            _mainMenu.Items.Add(Title = new UIResText(title, new Point(215, 20), 1.15f, Color.White, Font.HouseScript, true));
+            _mainMenu.Items.Add(Title = new UIResText(title, new Point(215 + Offset.X, 20 + Offset.Y), 1.15f, Color.White, Font.HouseScript, true));
             if (!String.IsNullOrWhiteSpace(subtitle))
             {
-                _mainMenu.Items.Add(new UIResRectangle(new Point(0, 107), new Size(431, 37), Color.Black));
-                _mainMenu.Items.Add(Subtitle = new UIResText(subtitle, new Point(8, 110), 0.35f, Color.WhiteSmoke, 0, false));
+                _mainMenu.Items.Add(new UIResRectangle(new Point(0 + offset.X, 107 + Offset.Y), new Size(431, 37), Color.Black));
+                _mainMenu.Items.Add(Subtitle = new UIResText(subtitle, new Point(8 + Offset.X, 110 + Offset.Y), 0.35f, Color.WhiteSmoke, 0, false));
 
                 if (subtitle.StartsWith("~"))
                 {
@@ -186,9 +190,9 @@ namespace NativeUI
 
         private void RecaulculateDescriptionPosition()
         {
-            _descriptionBar.Position = new Point(Offset.X, 149 - 37 + ExtraYOffset);
-            _descriptionRectangle.Position = new Point(Offset.X, 149 - 37 + ExtraYOffset);
-            _descriptionText.Position = new Point(Offset.X + 5, 152 - 37 + ExtraYOffset);
+            _descriptionBar.Position = new Point(Offset.X, 149 - 37 + ExtraYOffset + Offset.Y);
+            _descriptionRectangle.Position = new Point(Offset.X, 149 - 37 + ExtraYOffset + Offset.Y);
+            _descriptionText.Position = new Point(Offset.X + 5, 152 - 37 + ExtraYOffset + Offset.Y);
 
             int count = Size;
             if (count > MaxItemsOnScreen + 1)
@@ -235,6 +239,7 @@ namespace NativeUI
                     Control.Sprint,
                     Control.Jump,
                     Control.Enter,
+                    Control.VehicleExit,
                     Control.VehicleAccelerate,
                     Control.VehicleBrake,
                     Control.VehicleMoveLeftRight,
@@ -243,8 +248,6 @@ namespace NativeUI
                     Control.FlyUpDown,
                     Control.VehicleFlyYawRight,
                     Control.VehicleHandbrake,
-                    //Control.FrontendPause,
-                    //Control.FrontendPauseAlternate,
                 };
                 foreach (var control in list)
                 {
@@ -337,6 +340,13 @@ namespace NativeUI
         /// </summary>
         public void RefreshIndex()
         {
+            if (MenuItems.Count == 0)
+            {
+                _activeItem = 1000;
+                _maxItem = MaxItemsOnScreen;
+                _minItem = 0;
+                return;
+            }
             MenuItems[_activeItem % (MenuItems.Count)].Selected = false;
             _activeItem = 1000 - (1000 % MenuItems.Count);
             _maxItem = MaxItemsOnScreen;
@@ -362,25 +372,30 @@ namespace NativeUI
             if (!Visible) return;
 
             DisEnableControls(false);
+            if(buttonsEnabled)
+                instructionalButtonsScaleform.Render2D();
             
             Function.Call((Hash)0xB8A850F20A067EB6, 76, 84);           // Safezone
             Function.Call((Hash)0xF5A2C681787E579D, 0f, 0f, 0f, 0f);   // stuff
-            if(buttonsEnabled)
-                instructionalButtonsScaleform.Render2D();
 
             _background.Size = Size > MaxItemsOnScreen + 1 ? new Size(431, 38*(MaxItemsOnScreen + 1)) : new Size(431, 38 * Size);
             _background.Draw();
 
-            if(String.IsNullOrWhiteSpace(_customBanner))
-                if(_logo != null)
+            if (String.IsNullOrWhiteSpace(_customBanner))
+            {
+                if (_logo != null)
                     _logo.Draw();
-                else if(_tmpRectangle != null)
+                else if (_tmpRectangle != null)
                     _tmpRectangle.Draw();
+            }
             else
             {
                 // TODO: DrawTexture
-                //_logo = new Sprite(spriteLibrary, spriteName, new Point(0 + Offset.X, 0 + Offset.Y), new Size(431, 107));
-                UI.DrawTexture(_customBanner, 0, 0, 1, new Point(Offset.X, Offset.Y), new Size(431, 107));
+                //UI.DrawTexture(_customBanner, 1, 1, 40, new Point(Offset.X, Offset.Y), new Size(290, 75));
+                int safeX;
+                int safeY;
+                GetSafezoneBounds(out safeX, out safeY);
+                Sprite.DrawTexture(_customBanner, new Point(safeX + Offset.X, safeY + Offset.Y), new Size(431, 107));
             }
             MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
             _mainMenu.Draw();
@@ -621,6 +636,7 @@ namespace NativeUI
                 it.Checked = !it.Checked;
                 Game.PlaySound("OK", "HUD_FRONTEND_DEFAULT_SOUNDSET");
                 CheckboxChange(it, it.Checked);
+                it.CheckboxEventTrigger();
             }
             else
             {
@@ -728,6 +744,7 @@ namespace NativeUI
                                 if (res == 1) // Label clicked
                                 {
                                     Game.PlaySound("SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET");
+                                    MenuItems[i].ItemActivate(this);
                                     ItemSelect(MenuItems[i], i);
                                 }
                                 else if (res == 2) // Arrow clicked: next
@@ -746,6 +763,7 @@ namespace NativeUI
                             CurrentSelection = i;
                             Game.PlaySound("NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET");
                             IndexChange(CurrentSelection);
+                            UpdateScaleform();
                         }
                 }
                 else
@@ -894,11 +912,11 @@ namespace NativeUI
             {
                 //MenuPool.ControllerUsed = Game.IsControlJustPressed(2, (GTA.Control)27);
                 MenuPool.ControllerUsed = Game.IsControlJustPressed(2, GTA.Control.PhoneUp);
-
                 if (Size > MaxItemsOnScreen + 1)
                     GoUpOverflow();
                 else
                     GoUp();
+                UpdateScaleform();
             }
             else if (HasControlJustBeenPressed(MenuControls.Down, key) || Game.IsControlJustPressed(0, GTA.Control.CursorScrollDown))
             {
@@ -909,6 +927,7 @@ namespace NativeUI
                     GoDownOverflow();
                 else
                     GoDown();
+                UpdateScaleform();
             }
             else if (HasControlJustBeenPressed(MenuControls.Left, key))
             {
@@ -979,6 +998,103 @@ namespace NativeUI
         }
 
 
+        private Dictionary<dynamic, string> _scaleformButtons = new Dictionary<dynamic, string>();
+
+        public void AddButtonToScaleform(string button, string text)
+        {
+            if (_scaleformButtons.ContainsKey(button))
+                _scaleformButtons[button] = text;
+            else
+                _scaleformButtons.Add(button, text);
+        }
+
+        public void AddButtonToScaleform(GTA.Control button, string text)
+        {
+            if (_scaleformButtons.ContainsKey(button))
+                _scaleformButtons[button] = text;
+            else
+                _scaleformButtons.Add(button, text);
+        }
+
+        public void RemoveButtonFromScaleform(GTA.Control button)
+        {
+            if (_scaleformButtons.ContainsKey(button))
+                _scaleformButtons.Remove(button);
+        }
+
+        public void RemoveButtonFromScaleform(string button)
+        {
+            if (_scaleformButtons.ContainsKey(button))
+                _scaleformButtons.Remove(button);
+        }
+
+        private Dictionary<UIMenuItem, Tuple<dynamic, string>> _itemScaleformButtons = new Dictionary<UIMenuItem, Tuple<dynamic, string>>();
+
+        public void AddButtonToScaleform(string button, string text, UIMenuItem itemToBindto)
+        {
+            if (_itemScaleformButtons.ContainsKey(itemToBindto))
+            {
+                _itemScaleformButtons[itemToBindto] = new Tuple<dynamic, string>(button, text);
+            }
+            else
+            {
+                _itemScaleformButtons.Add(itemToBindto, new Tuple<dynamic, string>(button, text));
+            }
+        }
+
+        public void AddButtonToScaleform(GTA.Control button, string text, UIMenuItem itemToBindto)
+        {
+            if (_itemScaleformButtons.ContainsKey(itemToBindto))
+            {
+                _itemScaleformButtons[itemToBindto] = new Tuple<dynamic, string>(button, text);
+            }
+            else
+            {
+                _itemScaleformButtons.Add(itemToBindto, new Tuple<dynamic, string>(button, text));
+            }
+        }
+
+
+        private void UpdateScaleform()
+        {
+            instructionalButtonsScaleform.CallFunction("CLEAR_ALL");
+            instructionalButtonsScaleform.CallFunction("CLEAR_RENDER");
+            instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT_EMPTY");
+            if (!Visible) return;
+            instructionalButtonsScaleform.CallFunction("SET_DISPLAY_CONFIG", 1280, 720, 0.05, 0.95, 0.05, 0.95, true, false, false,
+                1365.33, 768);
+            instructionalButtonsScaleform.CallFunction("SET_MAX_WIDTH", 1);
+            //instructionalButtonsScaleform.CallFunction("TOGGLE_MOUSE_BUTTONS", 1);
+            instructionalButtonsScaleform.CallFunction("CREATE_CONTAINER");
+
+            instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 0, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)GTA.Control.PhoneSelect, 0), "Select");
+            instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 1, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)GTA.Control.PhoneCancel, 0), "Back");
+            int count = 2;
+            foreach (var button in _scaleformButtons)
+            {
+                instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", count,
+                    button.Key.GetType() == typeof(GTA.Control)
+                        ? Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)button.Key, 0)
+                        : "t_" + button.Key, button.Value);
+
+                count++;
+            }
+            int count2 = count + 1;
+            foreach (var scaleformButton in _itemScaleformButtons)
+            {
+                if (MenuItems[CurrentSelection] == scaleformButton.Key)
+                {
+                    instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", count,
+                    scaleformButton.Value.Item1.GetType() == typeof(GTA.Control)
+                        ? Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)scaleformButton.Value.Item1, 0)
+                        : "t_" + scaleformButton.Value.Item1, scaleformButton.Value.Item2);
+                    count2++;
+                }
+            }
+            instructionalButtonsScaleform.CallFunction("DRAW_INSTRUCTIONAL_BUTTONS", 0);
+            instructionalButtonsScaleform.CallFunction("FLASH_BUTTON_BY_ID", 31, 100, 1);
+        }
+
         /// <summary>
         /// Change whether this menu is visible to the user.
         /// </summary>
@@ -986,24 +1102,10 @@ namespace NativeUI
         {
             get { return _visible; }
             set
-            {
+            {   // TODO: Move to onindexchange
                 _visible = value;
                 _justOpened = value;
-                instructionalButtonsScaleform.CallFunction("CLEAR_ALL");
-                instructionalButtonsScaleform.CallFunction("CLEAR_RENDER");
-                instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT_EMPTY");
-                if (!Visible) return;
-                instructionalButtonsScaleform.CallFunction("SET_DISPLAY_CONFIG", 1280, 720, 0.05, 0.95, 0.05, 0.95, true, false, false,
-                    1365.33, 768);
-                instructionalButtonsScaleform.CallFunction("SET_MAX_WIDTH", 1);
-                //instructionalButtonsScaleform.CallFunction("TOGGLE_MOUSE_BUTTONS", 1);
-                instructionalButtonsScaleform.CallFunction("CREATE_CONTAINER");
-
-                instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 0, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)GTA.Control.PhoneSelect, 0), "Select");
-                instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 1, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)GTA.Control.PhoneCancel, 0), "Back");
-                    
-                instructionalButtonsScaleform.CallFunction("DRAW_INSTRUCTIONAL_BUTTONS", 0);
-                instructionalButtonsScaleform.CallFunction("FLASH_BUTTON_BY_ID", 31, 100, 1);
+                UpdateScaleform();
             }
         }
 

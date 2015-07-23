@@ -13,12 +13,24 @@ namespace NativeUI
         public bool Visible;
         public float Heading;
 
-        public string TextureDict;
+        public string TextureDict
+        {
+            get { return _textureDict; }
+            set
+            {
+                _textureDict = value;
+                if(!Function.Call<bool>(Hash.HAS_STREAMED_TEXTURE_DICT_LOADED, value))
+                    Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, value, true);
+            }
+        }
+
         public string TextureName;
+        private string _textureDict;
 
         public Sprite(string textureDict, string textureName, Point position, Size size, float heading, Color color) //BASE
         {
-            Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, textureDict, true);
+            if (!Function.Call<bool>(Hash.HAS_STREAMED_TEXTURE_DICT_LOADED, textureDict))
+                Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, textureDict, true);
             TextureDict = textureDict;
             TextureName = textureName;
 
@@ -31,7 +43,8 @@ namespace NativeUI
 
         public Sprite(string textureDict, string textureName, Point position, Size size)
         {
-            Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, textureDict, true);
+            if (!Function.Call<bool>(Hash.HAS_STREAMED_TEXTURE_DICT_LOADED, textureDict))
+                Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, textureDict, true);
             TextureDict = textureDict;
             TextureName = textureName;
 
@@ -60,6 +73,24 @@ namespace NativeUI
             Function.Call(Hash.DRAW_SPRITE, TextureDict, TextureName, x, y, w, h, Heading, Color.R, Color.G, Color.B, Color.A);
         }
 
+        public static void DrawTexture(string path, Point position, Size size)
+        {
+            int screenw = Game.ScreenResolution.Width;
+            int screenh = Game.ScreenResolution.Height;
+            float height = 1080f;
+            float ratio = (float)screenw / screenh;
+            float width = height * ratio;
+            
+            float reduceX = UI.WIDTH/(float)width;
+            float reduceY = UI.HEIGHT / (float)height;
 
+            int sizeH = Convert.ToInt32(size.Height*reduceY);
+            if (Math.Abs(ratio - 1.77777777778f) < 0.0001)
+            {
+                sizeH = Convert.ToInt32((size.Height * reduceY) / 2f) + 5; //it just werks
+            }
+
+            UI.DrawTexture(path, 1, 1, 50, new Point(Convert.ToInt32(position.X*reduceX), Convert.ToInt32(position.Y*reduceY)), new Size(Convert.ToInt32(size.Width * reduceX), sizeH));
+        }
     }
 }

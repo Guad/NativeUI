@@ -5,7 +5,8 @@ namespace NativeUI
     public class UIMenuCheckboxItem : UIMenuItem
     {
         private Sprite _checkedSprite;
-
+        
+        public event ItemCheckboxEvent CheckboxEvent;
 
         /// <summary>
         /// Checkbox item with a toggleable checkbox.
@@ -64,6 +65,11 @@ namespace NativeUI
                 _checkedSprite.TextureName = Checked ? "shop_box_tick" : "shop_box_blank";
             }
             _checkedSprite.Draw();
+        }
+
+        public void CheckboxEventTrigger()
+        {
+            CheckboxEvent?.Invoke(this, Checked);
         }
     }
 }
