@@ -168,7 +168,7 @@ namespace NativeUI
 
             _descriptionBar = new UIResRectangle(new Point(Offset.X, 123), new Size(431, 4), Color.Black);
             _descriptionRectangle = new Sprite("commonmenu", "gradient_bgd", new Point(Offset.X, 127), new Size(431, 30));
-            _descriptionText = new UIResText("Description", new Point(Offset.X + 5, 125), 0.33f, Color.FromArgb(255, 255, 255, 255), Font.ChaletLondon, false);
+            _descriptionText = new UIResText("Description", new Point(Offset.X + 5, 125), 0.35f, Color.FromArgb(255, 255, 255, 255), Font.ChaletLondon, false);
 
             _background = new Sprite("commonmenu", "gradient_bgd", new Point(Offset.X, 144 + Offset.Y - 37 + ExtraYOffset), new Size(290, 25));
 
@@ -187,7 +187,7 @@ namespace NativeUI
         {
             _descriptionBar.Position = new Point(Offset.X, 149 - 37 + ExtraYOffset + Offset.Y);
             _descriptionRectangle.Position = new Point(Offset.X, 149 - 37 + ExtraYOffset + Offset.Y);
-            _descriptionText.Position = new Point(Offset.X + 5, 152 - 37 + ExtraYOffset + Offset.Y);
+            _descriptionText.Position = new Point(Offset.X + 8, 155 - 37 + ExtraYOffset + Offset.Y);
 
             int count = Size;
             if (count > MaxItemsOnScreen + 1)
@@ -195,7 +195,7 @@ namespace NativeUI
 
             _descriptionBar.Position = new Point(Offset.X, 38*count + _descriptionBar.Position.Y);
             _descriptionRectangle.Position = new Point(Offset.X, 38*count + _descriptionRectangle.Position.Y);
-            _descriptionText.Position = new Point(Offset.X + 5, 38*count + _descriptionText.Position.Y);
+            _descriptionText.Position = new Point(Offset.X + 8, 38*count + _descriptionText.Position.Y);
         }
 
         private void DisEnableControls(bool enable)
@@ -353,8 +353,7 @@ namespace NativeUI
             MenuItems.Clear();
             RecaulculateDescriptionPosition();
         }
-
-
+        
         /// <summary>
         /// Draw the menu and all of it's components.
         /// </summary>
@@ -394,7 +393,7 @@ namespace NativeUI
             {
                 _descriptionText.Caption = FormatDescription(MenuItems[_activeItem%(MenuItems.Count)].Description);
                 int numLines = _descriptionText.Caption.Split('\n').Length;
-                _descriptionRectangle.Size = new Size(431, numLines * 30 + 2);
+                _descriptionRectangle.Size = new Size(431, (numLines * 25) + 15);
 
                 _descriptionBar.Draw();
                 _descriptionRectangle.Draw();
@@ -494,12 +493,12 @@ namespace NativeUI
 
         public void GetSafezoneBounds(out int safezoneX, out int safezoneY)
         {
-            float t = Function.Call<float>(Hash._0xBAF107B6BB2C97F0);
+            float t = Function.Call<float>(Hash._0xBAF107B6BB2C97F0); // Safezone size.
             double g = Math.Round(Convert.ToDouble(t), 2);
             g = (g * 100) - 90;
             g = 10 - g;
 
-            float hmp = 5.4f;
+            const float hmp = 5.4f;
             int screenw = Game.ScreenResolution.Width;
             int screenh = Game.ScreenResolution.Height;
             float ratio = (float)screenw / screenh;
@@ -967,22 +966,26 @@ namespace NativeUI
 
         private string FormatDescription(string input)
         {
-            int maxPixelsPerLine = 250;
+            int maxPixelsPerLine = 425;
             int aggregatePixels = 0;
             string output = "";
             string[] words = input.Split(' ');
             foreach (string word in words)
             {
-                SizeF strSize;
-                using (Graphics g = Graphics.FromImage(new Bitmap(1, 1)))
-                {
-                    strSize = g.MeasureString(word, new System.Drawing.Font("Helvetica", 11, FontStyle.Regular, GraphicsUnit.Pixel));
-                }
-                aggregatePixels += Convert.ToInt32(strSize.Width);
+                Function.Call((Hash)0x54CE8AC98E120CAB, "jamyfafi");
+                UIResText.AddLongString(word);
+                int screenw = Game.ScreenResolution.Width;
+                int screenh = Game.ScreenResolution.Height;
+                const float height = 1080f;
+                float ratio = (float)screenw / screenh;
+                var width = height * ratio;
+                int offset = Convert.ToInt32(Function.Call<float>((Hash)0x85F061DA64ED2F67, (int)0) * width * 0.35f);
+
+                aggregatePixels += Convert.ToInt32(offset);
                 if (aggregatePixels > maxPixelsPerLine)
                 {
                     output += "\n" + word + " ";
-                    aggregatePixels = Convert.ToInt32(strSize.Width);
+                    aggregatePixels = Convert.ToInt32(offset);
                 }
                 else
                 {
@@ -1047,6 +1050,12 @@ namespace NativeUI
             {
                 _itemScaleformButtons.Add(itemToBindto, new Tuple<dynamic, string>(button, text));
             }
+        }
+
+        public void RemoveButtonFromScaleform(UIMenuItem item)
+        {
+            if (_itemScaleformButtons.ContainsKey(item))
+                _itemScaleformButtons.Remove(item);
         }
 
         private Scaleform _instructionalButtonsScaleform;

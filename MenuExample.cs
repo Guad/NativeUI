@@ -14,12 +14,17 @@ public class MenuExample : Script
     private UIMenuListItem dishesListItem;
     private UIMenuItem cookItem;
 
+    private MenuPool _menuPool;
+
     public MenuExample()
     {
         Tick += OnTick;
         KeyDown += OnKeyDown;
+        _menuPool = new MenuPool();
 
         mainMenu = new UIMenu("Native UI", "~b~NATIVEUI SHOWCASE");
+        _menuPool.Add(mainMenu);
+
         mainMenu.AddItem(ketchupCheckbox = new UIMenuCheckboxItem("Add ketchup?", false, "Do you wish to add ketchup?"));
         var foods = new List<dynamic>
         {
@@ -44,6 +49,7 @@ public class MenuExample : Script
         mainMenu.OnIndexChange += OnItemChange;
 
         newMenu = new UIMenu("Native UI", "~r~NATIVEUI SHOWCASE");
+        _menuPool.Add(newMenu);
         for (int i = 0; i < 20; i++)
         {
             newMenu.AddItem(new UIMenuItem("PageFiller", "Sample description that takes more than one line. Moreso, it takes way more than two lines since it's so long. Wow, check out this length!"));
@@ -86,7 +92,7 @@ public class MenuExample : Script
 
     public void OnTick(object o, EventArgs e)
     {
-        MenuPool.ProcessMenus();
+        _menuPool.ProcessMenus();
     }
 
     public void OnKeyDown(object o, KeyEventArgs e)

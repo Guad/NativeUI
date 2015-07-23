@@ -84,11 +84,7 @@ namespace NativeUI
             float reduceX = UI.WIDTH/(float)width;
             float reduceY = UI.HEIGHT / (float)height;
 
-            int sizeH = Convert.ToInt32(size.Height*reduceY);
-            if (Math.Abs(ratio - 1.77777777778f) < 0.0001)
-            {
-                sizeH = Convert.ToInt32((size.Height * reduceY) / 2f) + 5; //it just werks
-            }
+            int sizeH = Convert.ToInt32((size.Height / ratio)*reduceY);
 
             UI.DrawTexture(path, 1, 1, 50, new Point(Convert.ToInt32(position.X*reduceX), Convert.ToInt32(position.Y*reduceY)), new Size(Convert.ToInt32(size.Width * reduceX), sizeH));
         }
