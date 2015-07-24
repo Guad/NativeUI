@@ -4,6 +4,9 @@ using GTA.Native;
 
 namespace NativeUI
 {
+    /// <summary>
+    /// A rectangle in 1080 pixels height system.
+    /// </summary>
     public class UIResRectangle : UIRectangle
     {
         public UIResRectangle() : base()
@@ -14,7 +17,7 @@ namespace NativeUI
 
         public UIResRectangle(Point pos, Size size, Color color) : base(pos, size, color)
         { }
-
+        
         public override void Draw(Size offset)
         {
             if (!Enabled) return;

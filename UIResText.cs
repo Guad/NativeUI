@@ -6,19 +6,35 @@ using Font = GTA.Font;
 
 namespace NativeUI
 {
+    /// <summary>
+    /// A Text object in the 1080 pixels height base system.
+    /// </summary>
     public class UIResText : UIText
     {
-         public UIResText(string caption, Point position, float scale) : base(caption, position, scale)
-        { }
+        public UIResText(string caption, Point position, float scale) : base(caption, position, scale)
+        {
+            TextAlignment = Alignment.Left;
+        }
 
-        public UIResText(string caption, Point position, float scale, Color color) : base(caption, position, scale, color)
-        { }
+        public UIResText(string caption, Point position, float scale, Color color)
+            : base(caption, position, scale, color)
+        {
+            TextAlignment = Alignment.Left;
+        }
 
-        public UIResText(string caption, Point position, float scale, Color color, Font font, bool centered) : base(caption, position, scale, color, font, centered)
-        { }
+        public UIResText(string caption, Point position, float scale, Color color, Font font, Alignment justify)
+            : base(caption, position, scale, color, font, false)
+        {
+            TextAlignment = justify;
+        }
 
-        public bool RightJustify { get; set; }
 
+        public Alignment TextAlignment { get; set; }
+
+        /// <summary>
+        /// Push a long string into the stack.
+        /// </summary>
+        /// <param name="str"></param>
         public static void AddLongString(string str)
         {
             const int strLen = 99;
@@ -43,14 +59,26 @@ namespace NativeUI
             Function.Call(Hash.SET_TEXT_FONT, (int)Font);
             Function.Call(Hash.SET_TEXT_SCALE, 1.0f, Scale);
             Function.Call(Hash.SET_TEXT_COLOUR, Color.R, Color.G, Color.B, Color.A);
-            if(Centered)
-                Function.Call(Hash.SET_TEXT_CENTRE, true);
-            else if(RightJustify)
-                Function.Call(Hash.SET_TEXT_RIGHT_JUSTIFY, true);
+            switch (TextAlignment)
+            {
+                case Alignment.Centered:
+                    Function.Call(Hash.SET_TEXT_CENTRE, true);
+                    break;
+                case Alignment.Right:
+                    Function.Call(Hash.SET_TEXT_RIGHT_JUSTIFY, true);
+                    break;
+            }
 
             Function.Call(Hash._SET_TEXT_ENTRY, "jamyfafi");
             AddLongString(Caption);
             Function.Call(Hash._DRAW_TEXT, x, y);
+        }
+
+        public enum Alignment
+        {
+            Left,
+            Centered,
+            Right,
         }
     }
 }

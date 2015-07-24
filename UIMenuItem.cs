@@ -2,7 +2,10 @@
 using GTA;
 
 namespace NativeUI
-{
+{                
+    /// <summary>
+    /// Simple item with a label.
+    /// </summary>
     public class UIMenuItem
     {
         private readonly UIResRectangle _rectangle;
@@ -12,8 +15,6 @@ namespace NativeUI
 
         private Sprite _badgeLeft;
         private Sprite _badgeRight;
-
-        //Events
 
         /// <summary>
         /// Called when user selects the current item.
@@ -37,8 +38,10 @@ namespace NativeUI
         public UIMenuItem(string text, string description)
         {
             Text = text;
+            Enabled = true;
+
             _rectangle = new UIResRectangle(new Point(0, 0), new Size(431, 38), Color.FromArgb(150, 0, 0, 0));
-            _text = new UIResText(text, new Point(8, 0), 0.33f, Color.WhiteSmoke, GTA.Font.ChaletLondon, false);
+            _text = new UIResText(text, new Point(8, 0), 0.33f, Color.WhiteSmoke, GTA.Font.ChaletLondon, UIResText.Alignment.Left);
             Description = description;
             _selectedSprite = new Sprite("commonmenu", "gradient_nav", new Point(0, 0), new Size(431, 38));
 
@@ -56,20 +59,35 @@ namespace NativeUI
             set
             {
                 _selected = value;
-                
-                _text.Color = value ? Color.Black : Color.WhiteSmoke;
+
+                _text.Color = Enabled ? value ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
             }
         }
 
+        
+        /// <summary>
+        /// Whether this item is currently being hovered on with a mouse.
+        /// </summary>
         public virtual bool Hovered { get; set; }
 
-        public virtual string Description { get; set; }
+
+        /// <summary>
+        /// This item's description.
+        /// </summary>
+        public string Description { get; set; }
+
+
+        /// <summary>
+        /// Whether this item is enabled or disabled (text is greyed out and you cannot select it).
+        /// </summary>
+        public bool Enabled { get; set; }
 
         internal virtual void ItemActivate(UIMenu sender)
         {
             Activated?.Invoke(sender, this);
         }
         
+
         /// <summary>
         /// Set item's position.
         /// </summary>
@@ -97,6 +115,8 @@ namespace NativeUI
             }
             if (Selected)
                 _selectedSprite.Draw();
+            if (!Enabled)
+                _text.Color = Color.FromArgb(163, 159, 148);
             if (LeftBadge != BadgeStyle.None)
             {
                 _text.Position = new Point(35 + Offset.X, _text.Position.Y);
@@ -119,13 +139,49 @@ namespace NativeUI
             _text.Draw();
         }
 
+
+        /// <summary>
+        /// This item's offset.
+        /// </summary>
         public Point Offset { get; set; }
 
+
+        /// <summary>
+        /// Returns this item's label.
+        /// </summary>
         public string Text { get; set; }
 
-        public virtual BadgeStyle LeftBadge { get; set; }
 
-        public virtual BadgeStyle RightBadge { get; set; }
+        /// <summary>
+        /// Set the left badge. Set it to None to remove the badge.
+        /// </summary>
+        /// <param name="badge"></param>
+        public virtual void SetLeftBadge(BadgeStyle badge)
+        {
+            LeftBadge = badge;
+        }
+
+
+        /// <summary>
+        /// Set the right badge. Set it to None to remove the badge.
+        /// </summary>
+        /// <param name="badge"></param>
+        public virtual void SetRightBadge(BadgeStyle badge)
+        {
+            RightBadge = badge;
+        }
+
+
+        /// <summary>
+        /// Returns the current left badge.
+        /// </summary>
+        public BadgeStyle LeftBadge { get; private set; }
+
+
+        /// <summary>
+        /// Returns the current right badge.
+        /// </summary>
+        public BadgeStyle RightBadge { get; private set; }
 
         public enum BadgeStyle
         {
@@ -218,7 +274,7 @@ namespace NativeUI
             }
         }
 
-        public Color BadgeToColor(BadgeStyle badge, bool selected)
+        private Color BadgeToColor(BadgeStyle badge, bool selected)
         {
             switch (badge)
             {
@@ -231,6 +287,10 @@ namespace NativeUI
             }
         }
 
+
+        /// <summary>
+        /// Returns the menu this item is in.
+        /// </summary>
         public UIMenu Parent { get; set; }
     }
 }

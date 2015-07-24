@@ -39,8 +39,8 @@ public class MenuExample : Script
 
         var menuItem = new UIMenuItem("Go to another menu.");
         mainMenu.AddItem(menuItem);
-        cookItem.LeftBadge = UIMenuItem.BadgeStyle.Star;
-        cookItem.RightBadge = UIMenuItem.BadgeStyle.Tick;
+        cookItem.SetLeftBadge(UIMenuItem.BadgeStyle.Star);
+        cookItem.SetRightBadge(UIMenuItem.BadgeStyle.Tick);
         mainMenu.RefreshIndex();
 
         mainMenu.OnItemSelect += OnItemSelect;
@@ -61,7 +61,7 @@ public class MenuExample : Script
 
     public void OnItemChange(UIMenu sender, int index)
     {
-        sender.MenuItems[index].LeftBadge = UIMenuItem.BadgeStyle.None;
+        sender.MenuItems[index].SetLeftBadge(UIMenuItem.BadgeStyle.None);
     }
 
     public void OnCheckboxChange(UIMenu sender, UIMenuCheckboxItem checkbox, bool Checked)

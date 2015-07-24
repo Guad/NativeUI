@@ -1,11 +1,15 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace NativeUI
-{
+{          
     public class UIMenuCheckboxItem : UIMenuItem
     {
         private Sprite _checkedSprite;
         
+        /// <summary>
+        /// Triggered when the checkbox state is changed.
+        /// </summary>
         public event ItemCheckboxEvent CheckboxEvent;
 
         /// <summary>
@@ -70,6 +74,11 @@ namespace NativeUI
         public void CheckboxEventTrigger()
         {
             CheckboxEvent?.Invoke(this, Checked);
+        }
+
+        public override void SetRightBadge(BadgeStyle badge)
+        {
+            throw new Exception("UIMenuCheckboxItem cannot have a right badge.");
         }
     }
 }

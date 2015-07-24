@@ -15,10 +15,17 @@ namespace NativeUI
 
         private List<dynamic> Items;
 
+
+        /// <summary>
+        /// Triggered when the list is changed.
+        /// </summary>
         public event ItemListEvent OnListChanged;
 
         private int _index = 0;
         
+        /// <summary>
+        /// Returns the current selected index.
+        /// </summary>
         public int Index
         {
             get { return _index % Items.Count; }
@@ -51,7 +58,7 @@ namespace NativeUI
             Items = new List<dynamic>(items);
             _arrowLeft = new Sprite("commonmenu", "arrowleft", new Point(110, 105 + y), new Size(30, 30));
             _arrowRight = new Sprite("commonmenu", "arrowright", new Point(280, 105 + y), new Size(30, 30));
-            itemText = new UIResText("", new Point(290, y + 104), 0.33f, Color.White, GTA.Font.ChaletLondon, false);
+            itemText = new UIResText("", new Point(290, y + 104), 0.33f, Color.White, GTA.Font.ChaletLondon, UIResText.Alignment.Left);
             
             Index = index;
         }
@@ -108,12 +115,12 @@ namespace NativeUI
             var width = height * ratio;
             int offset = Convert.ToInt32(Function.Call<float>((Hash)0x85F061DA64ED2F67, (int)0) * width * 0.33f);
 
-            itemText.Color = Selected ? Color.Black : Color.WhiteSmoke;
+            itemText.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
             
             itemText.Caption = caption;
 
-            _arrowLeft.Color = Selected ? Color.Black : Color.WhiteSmoke;
-            _arrowRight.Color = Selected ? Color.Black : Color.WhiteSmoke;
+            _arrowLeft.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
+            _arrowRight.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
 
             _arrowLeft.Position = new Point(380 - offset + Offset.X, _arrowLeft.Position.Y);
             if (Selected)
@@ -132,6 +139,11 @@ namespace NativeUI
         internal virtual void ListChangedTrigger(int newindex)
         {
             OnListChanged?.Invoke(this, newindex);
+        }
+
+        public override void SetRightBadge(BadgeStyle badge)
+        {
+            throw new Exception("UIMenuListItem cannot have a right badge.");
         }
     }
 }
