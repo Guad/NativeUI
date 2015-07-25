@@ -8,9 +8,9 @@ namespace NativeUI
 
         public UIMenuItem ItemBind { get; private set; }
 
-        private string _buttonString;
-        private GTA.Control _buttonControl;
-        private bool _usingControls;
+        private readonly string _buttonString;
+        private readonly GTA.Control _buttonControl;
+        private readonly bool _usingControls;
 
         /// <summary>
         /// Add a dynamic button to the instructional buttons array.

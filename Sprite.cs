@@ -78,10 +78,10 @@ namespace NativeUI
             var width = height*ratio;
 
 
-            float w = ((float)Size.Width / width);
-            float h = ((float)Size.Height / height);
-            float x = ((float)Position.X / width) + w * 0.5f;
-            float y = ((float)Position.Y / height) + h * 0.5f;
+            float w = (Size.Width / width);
+            float h = (Size.Height / height);
+            float x = (Position.X / width) + w * 0.5f;
+            float y = (Position.Y / height) + h * 0.5f;
             
             Function.Call(Hash.DRAW_SPRITE, TextureDict, TextureName, x, y, w, h, Heading, Color.R, Color.G, Color.B, Color.A);
         }
@@ -102,8 +102,8 @@ namespace NativeUI
             float ratio = (float)screenw / screenh;
             float width = height * ratio;
             
-            float reduceX = UI.WIDTH/(float)width;
-            float reduceY = UI.HEIGHT / (float)height;
+            float reduceX = UI.WIDTH / width;
+            float reduceY = UI.HEIGHT / height;
 
             int sizeH = Convert.ToInt32((size.Height / ratio)*reduceY);
             Point extra = new Point(0,0);

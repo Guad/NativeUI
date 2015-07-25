@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
 namespace NativeUI
@@ -11,9 +10,6 @@ namespace NativeUI
     public class MenuPool
     {
         public static bool ControllerUsed { get; set; } //Not used
-
-        public MenuPool()
-        { }
 
         private readonly List<UIMenu> _menuList = new List<UIMenu>();
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using GTA;
 
 namespace NativeUI
 {                
@@ -12,12 +11,12 @@ namespace NativeUI
         private readonly UIResRectangle _rectangle;
         private readonly UIResText _text;
         private bool _selected;
-        private Sprite _selectedSprite;
+        private readonly Sprite _selectedSprite;
 
-        private Sprite _badgeLeft;
-        private Sprite _badgeRight;
+        private readonly Sprite _badgeLeft;
+        private readonly Sprite _badgeRight;
 
-        private UIResText _labelText;
+        private readonly UIResText _labelText;
 
         /// <summary>
         /// Called when user selects the current item.

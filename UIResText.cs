@@ -46,7 +46,7 @@ namespace NativeUI
         }
 
 
-        public static float MeasureStringWidth(string str, GTA.Font font, float scale)
+        public static float MeasureStringWidth(string str, Font font, float scale)
         {
             int screenw = Game.ScreenResolution.Width;
             int screenh = Game.ScreenResolution.Height;
@@ -56,7 +56,7 @@ namespace NativeUI
             return MeasureStringWidthNoConvert(str, font, scale) * width;
         }
 
-        public static float MeasureStringWidthNoConvert(string str, GTA.Font font, float scale)
+        public static float MeasureStringWidthNoConvert(string str, Font font, float scale)
         {
             Function.Call((Hash)0x54CE8AC98E120CAB, "jamyfafi");
             AddLongString(str);
@@ -72,8 +72,8 @@ namespace NativeUI
             float ratio = (float)screenw / screenh;
             var width = height * ratio;
 
-            float x = ((float)Position.X) / width;
-            float y = ((float)Position.Y) / height;
+            float x = (Position.X) / width;
+            float y = (Position.Y) / height;
 
 
             Function.Call(Hash.SET_TEXT_FONT, (int)Font);
