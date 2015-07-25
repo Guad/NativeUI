@@ -45,6 +45,25 @@ namespace NativeUI
             }
         }
 
+
+        public static float MeasureStringWidth(string str, GTA.Font font, float scale)
+        {
+            int screenw = Game.ScreenResolution.Width;
+            int screenh = Game.ScreenResolution.Height;
+            const float height = 1080f;
+            float ratio = (float)screenw / screenh;
+            float width = height * ratio;
+            return MeasureStringWidthNoConvert(str, font, scale) * width;
+        }
+
+        public static float MeasureStringWidthNoConvert(string str, GTA.Font font, float scale)
+        {
+            Function.Call((Hash)0x54CE8AC98E120CAB, "jamyfafi");
+            AddLongString(str);
+            return Function.Call<float>((Hash)0x85F061DA64ED2F67, (int)font) * scale;
+        }
+
+
         public override void Draw(Size offset)
         {
             int screenw = Game.ScreenResolution.Width;
@@ -53,8 +72,9 @@ namespace NativeUI
             float ratio = (float)screenw / screenh;
             var width = height * ratio;
 
-            float x = ((float) Position.X)/width;
-            float y = ((float)Position.Y)/height;
+            float x = ((float)Position.X) / width;
+            float y = ((float)Position.Y) / height;
+
 
             Function.Call(Hash.SET_TEXT_FONT, (int)Font);
             Function.Call(Hash.SET_TEXT_SCALE, 1.0f, Scale);
@@ -66,11 +86,14 @@ namespace NativeUI
                     break;
                 case Alignment.Right:
                     Function.Call(Hash.SET_TEXT_RIGHT_JUSTIFY, true);
+                    Function.Call(Hash.SET_TEXT_WRAP, 0, x);
                     break;
             }
 
             Function.Call(Hash._SET_TEXT_ENTRY, "jamyfafi");
             AddLongString(Caption);
+            
+
             Function.Call(Hash._DRAW_TEXT, x, y);
         }
 

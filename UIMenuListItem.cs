@@ -58,8 +58,8 @@ namespace NativeUI
             Items = new List<dynamic>(items);
             _arrowLeft = new Sprite("commonmenu", "arrowleft", new Point(110, 105 + y), new Size(30, 30));
             _arrowRight = new Sprite("commonmenu", "arrowright", new Point(280, 105 + y), new Size(30, 30));
-            itemText = new UIResText("", new Point(290, y + 104), 0.33f, Color.White, GTA.Font.ChaletLondon, UIResText.Alignment.Left);
-            
+            itemText = new UIResText("", new Point(290, y + 104), 0.35f, Color.White, GTA.Font.ChaletLondon, UIResText.Alignment.Left);
+            itemText.TextAlignment = UIResText.Alignment.Right;
             Index = index;
         }
 
@@ -70,9 +70,9 @@ namespace NativeUI
         /// <param name="y">New Y position.</param>
         public override void Position(int y)
         {
-            _arrowLeft.Position = new Point(300 + Offset.X, 148 + y + Offset.Y);
-            _arrowRight.Position = new Point(400 + Offset.X, 148 + y + Offset.Y);
-            itemText.Position = new Point(300 + Offset.X, y + 149 + Offset.Y);
+            _arrowLeft.Position = new Point(300 + Offset.X, 147 + y + Offset.Y);
+            _arrowRight.Position = new Point(400 + Offset.X, 147 + y + Offset.Y);
+            itemText.Position = new Point(300 + Offset.X, y + 147 + Offset.Y);
             base.Position(y);
         }
 
@@ -113,7 +113,7 @@ namespace NativeUI
             const float height = 1080f;
             float ratio = (float)screenw / screenh;
             var width = height * ratio;
-            int offset = Convert.ToInt32(Function.Call<float>((Hash)0x85F061DA64ED2F67, (int)0) * width * 0.33f);
+            int offset = Convert.ToInt32(Function.Call<float>((Hash)0x85F061DA64ED2F67, (int)0) * width * 0.35f);
 
             itemText.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
             
@@ -122,16 +122,16 @@ namespace NativeUI
             _arrowLeft.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
             _arrowRight.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
 
-            _arrowLeft.Position = new Point(380 - offset + Offset.X, _arrowLeft.Position.Y);
+            _arrowLeft.Position = new Point(365 - offset + Offset.X, _arrowLeft.Position.Y);
             if (Selected)
             {
                 _arrowLeft.Draw();
                 _arrowRight.Draw();
-                itemText.Position = new Point(410 - offset + Offset.X, itemText.Position.Y);
+                itemText.Position = new Point(400 + Offset.X, itemText.Position.Y);
             }
             else
             {
-                itemText.Position = new Point(430 - offset + Offset.X, itemText.Position.Y);
+                itemText.Position = new Point(420 + Offset.X, itemText.Position.Y);
             }
             itemText.Draw();
         }

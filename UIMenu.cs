@@ -279,10 +279,10 @@ namespace NativeUI
         /// <summary>
         /// Enable or disable the instructional buttons.
         /// </summary>
-        /// <param name="enable"></param>
-        public void DisableInstructionalButtons(bool enable)
+        /// <param name="disable"></param>
+        public void DisableInstructionalButtons(bool disable)
         {
-            _buttonsEnabled = enable;
+            _buttonsEnabled = !disable;
         }
             
 

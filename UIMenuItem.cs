@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using GTA;
 
 namespace NativeUI
@@ -15,6 +16,8 @@ namespace NativeUI
 
         private Sprite _badgeLeft;
         private Sprite _badgeRight;
+
+        private UIResText _labelText;
 
         /// <summary>
         /// Called when user selects the current item.
@@ -47,6 +50,8 @@ namespace NativeUI
 
             _badgeLeft = new Sprite("commonmenu", "", new Point(0, 0), new Size(40, 40));
             _badgeRight = new Sprite("commonmenu", "", new Point(0, 0), new Size(40, 40));
+
+            _labelText = new UIResText("", new Point(0, 0), 0.35f) {TextAlignment = UIResText.Alignment.Right};
         }
 
 
@@ -100,6 +105,8 @@ namespace NativeUI
 
             _badgeLeft.Position = new Point(0 + Offset.X, y + 142 + Offset.Y);
             _badgeRight.Position = new Point(385 + Offset.X, y + 142 + Offset.Y);
+
+            _labelText.Position = new Point(420 + Offset.X, y + 148 + Offset.Y);
         }
 
 
@@ -129,6 +136,7 @@ namespace NativeUI
             {
                 _text.Position = new Point(8 + Offset.X, _text.Position.Y);
             }
+
             if (RightBadge != BadgeStyle.None)
             {
                 _badgeRight.TextureDict = BadgeToSpriteLib(RightBadge);
@@ -137,6 +145,13 @@ namespace NativeUI
                 _badgeRight.Draw();
             }
             _text.Draw();
+
+            if (!String.IsNullOrWhiteSpace(RightLabel))
+            {
+                _labelText.Caption = RightLabel;
+                _labelText.Color = _text.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
+                _labelText.Draw();
+            }
         }
 
 
@@ -170,6 +185,21 @@ namespace NativeUI
         {
             RightBadge = badge;
         }
+
+
+        /// <summary>
+        /// Set the right label.
+        /// </summary>
+        /// <param name="text">Text as label. Set it to "" to remove the label.</param>
+        public virtual void SetRightLabel(string text)
+        {
+            RightLabel = text;
+        }
+        
+        /// <summary>
+        /// Returns the current right label.
+        /// </summary>
+        public string RightLabel { get; private set; }
 
 
         /// <summary>
