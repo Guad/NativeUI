@@ -119,7 +119,7 @@ namespace NativeUI
         /// </summary>
         /// <param name="yourAssembly">Your executing assembly.</param>
         /// <param name="fullResourceName">Resource name including your solution name. E.G MyMenuMod.banner.png</param>
-        /// <returns></returns>
+        /// <returns>Absolute path to the written file.</returns>
         public static string WriteFileFromResources(Assembly yourAssembly, string fullResourceName)
         {
             string tmpPath = Path.GetTempFileName();
@@ -133,7 +133,7 @@ namespace NativeUI
         /// <param name="yourAssembly">Your executing assembly.</param>
         /// <param name="fullResourceName">Resource name including your solution name. E.G MyMenuMod.banner.png</param>
         /// <param name="savePath">Path to where save the file, including the filename.</param>
-        /// <returns></returns>
+        /// <returns>Absolute path to the written file.</returns>
         public static string WriteFileFromResources(Assembly yourAssembly, string fullResourceName, string savePath)
         {
             using (Stream stream = yourAssembly.GetManifestResourceStream(fullResourceName))
