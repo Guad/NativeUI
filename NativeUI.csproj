@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="MenuExample.cs" />
+    <Compile Include="InstructionalButton.cs" />
     <Compile Include="MenuPool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sprite.cs" />

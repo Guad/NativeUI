@@ -1096,107 +1096,17 @@ namespace NativeUI
             }
             return output;
         }
-         
-        private Dictionary<dynamic, string> _scaleformButtons = new Dictionary<dynamic, string>();
-        /// <summary>
-        /// Adds a keyboard button to the instructional buttons array.
-        /// </summary>
-        /// <param name="button">Custom keyboard button, like "I", or "O", or "F5".</param>
-        /// <param name="text">Help text that goes with the button.</param>
-        public void AddButtonToScaleform(string button, string text)
+
+        private List<InstructionalButton> _instructionalButtons = new List<InstructionalButton>();
+
+        public void AddInstructionalButton(InstructionalButton button)
         {
-            if (_scaleformButtons.ContainsKey(button))
-                _scaleformButtons[button] = text;
-            else
-                _scaleformButtons.Add(button, text);
+            _instructionalButtons.Add(button);
         }
 
-
-        /// <summary>
-        /// Add a dynamic button to the instructional buttons array.
-        /// Changes whether the controller is being used and changes depending on keybinds.
-        /// </summary>
-        /// <param name="button">GTA.Control that gets converted into a button.</param>
-        /// <param name="text">Help text that goes with the button.</param>
-        public void AddButtonToScaleform(GTA.Control button, string text)
+        public void RemoveInstructionalButton(InstructionalButton button)
         {
-            if (_scaleformButtons.ContainsKey(button))
-                _scaleformButtons[button] = text;
-            else
-                _scaleformButtons.Add(button, text);
-        }
-
-
-        /// <summary>
-        /// Remove a dynamic button from the scaleform.
-        /// </summary>
-        /// <param name="button">Button to remove.</param>
-        public void RemoveButtonFromScaleform(GTA.Control button)
-        {
-            if (_scaleformButtons.ContainsKey(button))
-                _scaleformButtons.Remove(button);
-        }
-
-
-        /// <summary>
-        /// Remove a button from the scaleform by string.
-        /// </summary>
-        /// <param name="button">Button to remove.</param>
-        public void RemoveButtonFromScaleform(string button)
-        {
-            if (_scaleformButtons.ContainsKey(button))
-                _scaleformButtons.Remove(button);
-        }
-
-
-
-        private Dictionary<UIMenuItem, Tuple<dynamic, string>> _itemScaleformButtons = new Dictionary<UIMenuItem, Tuple<dynamic, string>>();
-        /// <summary>
-        /// Add an keyboard button to the instructional buttons array that only is shows when a specific item is selected.
-        /// </summary>
-        /// <param name="button">Keyboard key string to add as a button</param>
-        /// <param name="text">Help text that goes with the button.</param>
-        /// <param name="itemToBindto">Tip is only shown while this item is selected.</param>
-        public void AddButtonToScaleform(string button, string text, UIMenuItem itemToBindto)
-        {
-            if (_itemScaleformButtons.ContainsKey(itemToBindto))
-            {
-                _itemScaleformButtons[itemToBindto] = new Tuple<dynamic, string>(button, text);
-            }
-            else
-            {
-                _itemScaleformButtons.Add(itemToBindto, new Tuple<dynamic, string>(button, text));
-            }
-        }
-
-
-        /// <summary>
-        /// Add an control to the instructional buttons array that only is shows when a specific item is selected.
-        /// </summary>
-        /// <param name="button">GTA.Control to add as a button</param>
-        /// <param name="text">Help text that goes with the button.</param>
-        /// <param name="itemToBindto">Tip is only shown while this item is selected.</param>
-        public void AddButtonToScaleform(GTA.Control button, string text, UIMenuItem itemToBindto)
-        {
-            if (_itemScaleformButtons.ContainsKey(itemToBindto))
-            {
-                _itemScaleformButtons[itemToBindto] = new Tuple<dynamic, string>(button, text);
-            }
-            else
-            {
-                _itemScaleformButtons.Add(itemToBindto, new Tuple<dynamic, string>(button, text));
-            }
-        }
-
-
-        /// <summary>
-        /// Releases an item's instructional buttons.
-        /// </summary>
-        /// <param name="item"></param>
-        public void RemoveButtonFromScaleform(UIMenuItem item)
-        {
-            if (_itemScaleformButtons.ContainsKey(item))
-                _itemScaleformButtons.Remove(item);
+            _instructionalButtons.Remove(button);
         }
 
         private Scaleform _instructionalButtonsScaleform;
@@ -1214,29 +1124,15 @@ namespace NativeUI
             _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 0, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)GTA.Control.PhoneSelect, 0), "Select");
             _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 1, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)GTA.Control.PhoneCancel, 0), "Back");
             int count = 2;
-            foreach (var button in _scaleformButtons)
+            foreach (var button in _instructionalButtons)
             {
-                _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", count,
-                    button.Key.GetType() == typeof(GTA.Control)
-                        ? Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)button.Key, 0)
-                        : "t_" + button.Key, button.Value);
-
-                count++;
-            }
-            int count2 = count + 1;
-            foreach (var scaleformButton in _itemScaleformButtons)
-            {
-                if (MenuItems[CurrentSelection] == scaleformButton.Key)
+                if (button.ItemBind == null || MenuItems[CurrentSelection] == button.ItemBind)
                 {
-                    _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", count,
-                    scaleformButton.Value.Item1.GetType() == typeof(GTA.Control)
-                        ? Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)scaleformButton.Value.Item1, 0)
-                        : "t_" + scaleformButton.Value.Item1, scaleformButton.Value.Item2);
-                    count2++;
+                    _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", count, button.GetButtonID(), button.Text);
+                    count++;
                 }
             }
             _instructionalButtonsScaleform.CallFunction("DRAW_INSTRUCTIONAL_BUTTONS", -1);
-            //instructionalButtonsScaleform.CallFunction("FLASH_BUTTON_BY_ID", 31, 100, 1);
         }
 
 
