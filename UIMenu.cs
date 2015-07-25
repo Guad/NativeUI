@@ -1207,10 +1207,7 @@ namespace NativeUI
         {   
             if (!Visible) return;
             _instructionalButtonsScaleform.CallFunction("CLEAR_ALL");
-            //_instructionalButtonsScaleform.CallFunction("CLEAR_RENDER");
-            _instructionalButtonsScaleform.CallFunction("SET_DISPLAY_CONFIG", 1280, 720, 0.05, 0.95, 0.05, 0.95, true, false, false,
-                1365.33, 768);
-            //_instructionalButtonsScaleform.CallFunction("SET_MAX_WIDTH", 1);
+            _instructionalButtonsScaleform.CallFunction("TOGGLE_MOUSE_BUTTONS", 0);
             _instructionalButtonsScaleform.CallFunction("CREATE_CONTAINER");
             
 
