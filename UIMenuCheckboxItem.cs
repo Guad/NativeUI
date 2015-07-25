@@ -50,7 +50,7 @@ namespace NativeUI
         public override void Position(int y)
         {
             base.Position(y);
-            _checkedSprite.Position = new Point(380 + Offset.X, y + 139 + Offset.Y);
+            _checkedSprite.Position = new Point(380 + Offset.X + Parent.WidthOffset, y + 139 + Offset.Y);
         }
         
 
@@ -60,6 +60,7 @@ namespace NativeUI
         public override void Draw()
         {
             base.Draw();
+            _checkedSprite.Position = _checkedSprite.Position = new Point(380 + Offset.X + Parent.WidthOffset, _checkedSprite.Position.Y);
             if (Selected)
             {
                 _checkedSprite.TextureName = Checked ? "shop_box_tickb" : "shop_box_blankb";
@@ -79,6 +80,11 @@ namespace NativeUI
         public override void SetRightBadge(BadgeStyle badge)
         {
             throw new Exception("UIMenuCheckboxItem cannot have a right badge.");
+        }
+
+        public override void SetRightLabel(string text)
+        {
+            throw new Exception("UIMenuListItem cannot have a right label.");
         }
     }
 }

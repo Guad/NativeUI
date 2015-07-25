@@ -115,6 +115,9 @@ namespace NativeUI
         /// </summary>
         public virtual void Draw()
         {
+            _rectangle.Size = new Size(431 + Parent.WidthOffset, 38);
+            _selectedSprite.Size = new Size(431 + Parent.WidthOffset, 38);
+
             if (Hovered && !Selected)
             {
                 _rectangle.Color = Color.FromArgb(20, 255, 255, 255);
@@ -139,6 +142,7 @@ namespace NativeUI
 
             if (RightBadge != BadgeStyle.None)
             {
+                _badgeRight.Position = new Point(385 + Offset.X + Parent.WidthOffset, _badgeRight.Position.Y);
                 _badgeRight.TextureDict = BadgeToSpriteLib(RightBadge);
                 _badgeRight.TextureName = BadgeToSpriteName(RightBadge, Selected);
                 _badgeRight.Color = BadgeToColor(RightBadge, Selected);
@@ -148,6 +152,7 @@ namespace NativeUI
 
             if (!String.IsNullOrWhiteSpace(RightLabel))
             {
+                _labelText.Position = new Point(420 + Offset.X + Parent.WidthOffset, _labelText.Position.Y);
                 _labelText.Caption = RightLabel;
                 _labelText.Color = _text.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
                 _labelText.Draw();

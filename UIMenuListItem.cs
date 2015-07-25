@@ -70,9 +70,9 @@ namespace NativeUI
         /// <param name="y">New Y position.</param>
         public override void Position(int y)
         {
-            _arrowLeft.Position = new Point(300 + Offset.X, 147 + y + Offset.Y);
-            _arrowRight.Position = new Point(400 + Offset.X, 147 + y + Offset.Y);
-            itemText.Position = new Point(300 + Offset.X, y + 147 + Offset.Y);
+            _arrowLeft.Position = new Point(300 + Offset.X + Parent.WidthOffset, 147 + y + Offset.Y);
+            _arrowRight.Position = new Point(400 + Offset.X + Parent.WidthOffset, 147 + y + Offset.Y);
+            itemText.Position = new Point(300 + Offset.X + Parent.WidthOffset, y + 147 + Offset.Y);
             base.Position(y);
         }
 
@@ -122,16 +122,16 @@ namespace NativeUI
             _arrowLeft.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
             _arrowRight.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
 
-            _arrowLeft.Position = new Point(365 - offset + Offset.X, _arrowLeft.Position.Y);
+            _arrowLeft.Position = new Point(365 - offset + Offset.X + Parent.WidthOffset, _arrowLeft.Position.Y);
             if (Selected)
             {
                 _arrowLeft.Draw();
                 _arrowRight.Draw();
-                itemText.Position = new Point(400 + Offset.X, itemText.Position.Y);
+                itemText.Position = new Point(400 + Offset.X + Parent.WidthOffset, itemText.Position.Y);
             }
             else
             {
-                itemText.Position = new Point(420 + Offset.X, itemText.Position.Y);
+                itemText.Position = new Point(420 + Offset.X + Parent.WidthOffset, itemText.Position.Y);
             }
             itemText.Draw();
         }
@@ -144,6 +144,11 @@ namespace NativeUI
         public override void SetRightBadge(BadgeStyle badge)
         {
             throw new Exception("UIMenuListItem cannot have a right badge.");
+        }
+
+        public override void SetRightLabel(string text)
+        {
+            throw new Exception("UIMenuListItem cannot have a right label.");
         }
     }
 }
