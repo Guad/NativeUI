@@ -428,8 +428,6 @@ namespace NativeUI
             Function.Call((Hash)0xB8A850F20A067EB6, 76, 84);           // Safezone
             Function.Call((Hash)0xF5A2C681787E579D, 0f, 0f, 0f, 0f);   // stuff
 
-            _background.Size = Size > MaxItemsOnScreen + 1 ? new Size(431 + WidthOffset, 38*(MaxItemsOnScreen + 1)) : new Size(431 + WidthOffset, 38 * Size);
-            _background.Draw();
 
             if (String.IsNullOrWhiteSpace(_customBanner))
             {
@@ -443,8 +441,16 @@ namespace NativeUI
                 Point safe = GetSafezoneBounds();
                 Sprite.DrawTexture(_customBanner, new Point(safe.X + _offset.X, safe.Y + _offset.Y), new Size(431 + WidthOffset, 107));
             }
-            MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
             _mainMenu.Draw();
+            if (MenuItems.Count == 0)
+            {
+                Function.Call((Hash)0xE3A3DB414A373DAB); // Safezone end
+                return;
+            }
+
+            _background.Size = Size > MaxItemsOnScreen + 1 ? new Size(431 + WidthOffset, 38*(MaxItemsOnScreen + 1)) : new Size(431 + WidthOffset, 38 * Size);
+            _background.Draw();
+            MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
             if (!String.IsNullOrWhiteSpace(MenuItems[_activeItem%(MenuItems.Count)].Description))
             {
                 _descriptionText.Caption = MenuItems[_activeItem%(MenuItems.Count)].Description;
@@ -788,7 +794,7 @@ namespace NativeUI
         /// </summary>
         public void ProcessMouse()
         {
-            if (!Visible || _justOpened) return;
+            if (!Visible || _justOpened || MenuItems.Count == 0) return;
             Point safezoneOffset = GetSafezoneBounds();
             Function.Call(Hash._SHOW_CURSOR_THIS_FRAME);
             int limit = MenuItems.Count - 1;
@@ -1034,6 +1040,13 @@ namespace NativeUI
                 _justOpened = false;
                 return;
             }
+
+            if (HasControlJustBeenReleaseed(MenuControls.Back, key))
+            {
+                //MenuPool.ControllerUsed = Game.IsControlJustPressed(2, (GTA.Control)45);
+                GoBack();
+            }
+            if (MenuItems.Count == 0) return;
             if (IsControlBeingPressed(MenuControls.Up, key) || Game.IsControlJustPressed(0, Control.CursorScrollUp))
             {
                 //MenuPool.ControllerUsed = Game.IsControlJustPressed(2, (GTA.Control)27);
@@ -1044,7 +1057,9 @@ namespace NativeUI
                     GoUp();
                 UpdateScaleform();
             }
-            else if (IsControlBeingPressed(MenuControls.Down, key) || Game.IsControlJustPressed(0, Control.CursorScrollDown))
+
+            else if (IsControlBeingPressed(MenuControls.Down, key) ||
+                     Game.IsControlJustPressed(0, Control.CursorScrollDown))
             {
                 //MenuPool.ControllerUsed = Game.IsControlJustPressed(2, (GTA.Control)8);
                 MenuPool.ControllerUsed = Game.IsControlJustPressed(2, Control.PhoneDown);
@@ -1055,6 +1070,7 @@ namespace NativeUI
                     GoDown();
                 UpdateScaleform();
             }
+
             else if (IsControlBeingPressed(MenuControls.Left, key))
             {
                 //MenuPool.ControllerUsed = Game.IsControlJustPressed(2, (GTA.Control)34);
@@ -1075,11 +1091,6 @@ namespace NativeUI
                 SelectItem();
             }
 
-            else if (HasControlJustBeenReleaseed(MenuControls.Back, key))
-            {
-                //MenuPool.ControllerUsed = Game.IsControlJustPressed(2, (GTA.Control)45);
-                GoBack();
-            }
         }
 
 
