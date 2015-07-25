@@ -63,6 +63,7 @@ namespace NativeUI
             return Function.Call<float>((Hash)0x85F061DA64ED2F67, (int)font) * scale;
         }
 
+        public Size WordWrap { get; set; }
 
         public override void Draw(Size offset)
         {
@@ -74,8 +75,7 @@ namespace NativeUI
 
             float x = (Position.X) / width;
             float y = (Position.Y) / height;
-
-
+            
             Function.Call(Hash.SET_TEXT_FONT, (int)Font);
             Function.Call(Hash.SET_TEXT_SCALE, 1.0f, Scale);
             Function.Call(Hash.SET_TEXT_COLOUR, Color.R, Color.G, Color.B, Color.A);
@@ -88,6 +88,12 @@ namespace NativeUI
                     Function.Call(Hash.SET_TEXT_RIGHT_JUSTIFY, true);
                     Function.Call(Hash.SET_TEXT_WRAP, 0, x);
                     break;
+            }
+
+            if (WordWrap != new Size(0, 0))
+            {
+                float xsize = (Position.X + WordWrap.Width)/width;
+                Function.Call(Hash.SET_TEXT_WRAP, x, xsize);
             }
 
             Function.Call(Hash._SET_TEXT_ENTRY, "jamyfafi");

@@ -203,6 +203,8 @@ namespace NativeUI
 
         private void RecaulculateDescriptionPosition()
         {
+            _descriptionText.WordWrap = new Size(425 + WidthOffset, 0);
+
             _descriptionBar.Position = new Point(_offset.X, 149 - 37 + _extraYOffset + _offset.Y);
             _descriptionRectangle.Position = new Point(_offset.X, 149 - 37 + _extraYOffset + _offset.Y);
             _descriptionText.Position = new Point(_offset.X + 8, 155 - 37 + _extraYOffset + _offset.Y);
@@ -445,9 +447,9 @@ namespace NativeUI
             _mainMenu.Draw();
             if (!String.IsNullOrWhiteSpace(MenuItems[_activeItem%(MenuItems.Count)].Description))
             {
+                _descriptionText.Caption = MenuItems[_activeItem%(MenuItems.Count)].Description;
                 RecaulculateDescriptionPosition();
-                _descriptionText.Caption = FormatDescription(MenuItems[_activeItem%(MenuItems.Count)].Description);
-                int numLines = _descriptionText.Caption.Split('\n').Length;
+                int numLines = FormatDescription(_descriptionText.Caption).Split('\n').Length;
                 _descriptionRectangle.Size = new Size(431 + WidthOffset, (numLines * 25) + 15);
 
                 _descriptionBar.Draw();
