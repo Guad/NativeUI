@@ -986,6 +986,40 @@ namespace NativeUI
                 return true;
             return false;
         }
+
+        private int controlCounter = 0;
+        /// <summary>
+        /// Check whether a menucontrol is being pressed.
+        /// </summary>
+        /// <param name="control"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public bool IsControlBeingPressed(MenuControls control, Keys key = Keys.None)
+        {
+            List<Keys> tmpKeys = new List<Keys>(_keyDictionary[control].Item1);
+            List<Tuple<GTA.Control, int>> tmpControls = new List<Tuple<Control, int>>(_keyDictionary[control].Item2);
+            if (controlCounter > 0)
+            {
+                controlCounter++;
+                if (controlCounter > 30)
+                    controlCounter = 0;
+                return false;
+            }
+            if (key != Keys.None)
+            {
+                if (tmpKeys.Any(Game.IsKeyPressed))
+                {
+                    controlCounter = 1;
+                    return true;
+                }
+            }
+            if (tmpControls.Any(tuple => Game.IsControlPressed(tuple.Item2, tuple.Item1)))
+            {
+                controlCounter = 1;
+                return true;
+            }
+            return false;
+        }
         
 
         /// <summary>
@@ -999,7 +1033,7 @@ namespace NativeUI
                 _justOpened = false;
                 return;
             }
-            if (HasControlJustBeenPressed(MenuControls.Up, key) || Game.IsControlJustPressed(0, GTA.Control.CursorScrollUp))
+            if (IsControlBeingPressed(MenuControls.Up, key) || Game.IsControlJustPressed(0, GTA.Control.CursorScrollUp))
             {
                 //MenuPool.ControllerUsed = Game.IsControlJustPressed(2, (GTA.Control)27);
                 MenuPool.ControllerUsed = Game.IsControlJustPressed(2, GTA.Control.PhoneUp);
@@ -1009,7 +1043,7 @@ namespace NativeUI
                     GoUp();
                 UpdateScaleform();
             }
-            else if (HasControlJustBeenPressed(MenuControls.Down, key) || Game.IsControlJustPressed(0, GTA.Control.CursorScrollDown))
+            else if (IsControlBeingPressed(MenuControls.Down, key) || Game.IsControlJustPressed(0, GTA.Control.CursorScrollDown))
             {
                 //MenuPool.ControllerUsed = Game.IsControlJustPressed(2, (GTA.Control)8);
                 MenuPool.ControllerUsed = Game.IsControlJustPressed(2, GTA.Control.PhoneDown);
@@ -1020,14 +1054,14 @@ namespace NativeUI
                     GoDown();
                 UpdateScaleform();
             }
-            else if (HasControlJustBeenPressed(MenuControls.Left, key))
+            else if (IsControlBeingPressed(MenuControls.Left, key))
             {
                 //MenuPool.ControllerUsed = Game.IsControlJustPressed(2, (GTA.Control)34);
                 MenuPool.ControllerUsed = Game.IsControlJustPressed(2, GTA.Control.PhoneLeft);
                 GoLeft();
             }
 
-            else if (HasControlJustBeenPressed(MenuControls.Right, key))
+            else if (IsControlBeingPressed(MenuControls.Right, key))
             {
                 //MenuPool.ControllerUsed = Game.IsControlJustPressed(2, (GTA.Control)9);
                 MenuPool.ControllerUsed = Game.IsControlJustPressed(2, GTA.Control.PhoneRight);
@@ -1128,7 +1162,7 @@ namespace NativeUI
             {
                 if (button.ItemBind == null || MenuItems[CurrentSelection] == button.ItemBind)
                 {
-                    _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", count, button.GetButtonID(), button.Text);
+                    _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", count, button.GetButtonId(), button.Text);
                     count++;
                 }
             }
