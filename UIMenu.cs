@@ -107,7 +107,7 @@ namespace NativeUI
 
 
         //Keys
-        private Dictionary<MenuControls, Tuple<List<Keys>, List<Tuple<GTA.Control, int>>>> _keyDictionary = new Dictionary<MenuControls, Tuple<List<Keys>, List<Tuple<GTA.Control, int>>>> ();
+        private readonly Dictionary<MenuControls, Tuple<List<Keys>, List<Tuple<Control, int>>>> _keyDictionary = new Dictionary<MenuControls, Tuple<List<Keys>, List<Tuple<Control, int>>>> ();
                          
         //Tree structure
         public Dictionary<UIMenuItem, UIMenu> Children { get; private set; }

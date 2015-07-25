@@ -98,7 +98,7 @@ namespace NativeUI
             int screenw = Game.ScreenResolution.Width;
             int screenh = Game.ScreenResolution.Height;
             
-            float height = 1080f;
+            const float height = 1080f;
             float ratio = (float)screenw / screenh;
             float width = height * ratio;
             
