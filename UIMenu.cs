@@ -190,15 +190,14 @@ namespace NativeUI
             _background = new Sprite("commonmenu", "gradient_bgd", new Point(_offset.X, 144 + _offset.Y - 37 + _extraYOffset), new Size(290, 25));
 
             
-            SetKey(MenuControls.Up, Control.FrontendUp);
-            SetKey(MenuControls.Down, Control.FrontendDown);
-            SetKey(MenuControls.Left, Control.FrontendLeft);
-            SetKey(MenuControls.Right, Control.FrontendRight);
+            SetKey(MenuControls.Up, Control.PhoneUp);
+            SetKey(MenuControls.Down, Control.PhoneDown);
+            SetKey(MenuControls.Left, Control.PhoneLeft);
+            SetKey(MenuControls.Right, Control.PhoneRight);
             SetKey(MenuControls.Select, Control.FrontendAccept);
 
-            SetKey(MenuControls.Back, Control.FrontendCancel);
-            SetKey(MenuControls.Back, Control.FrontendPause);
             SetKey(MenuControls.Back, Control.PhoneCancel);
+            SetKey(MenuControls.Back, Control.FrontendPause);
         }
 
         private void RecaulculateDescriptionPosition()
