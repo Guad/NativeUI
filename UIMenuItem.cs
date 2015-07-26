@@ -39,7 +39,6 @@ namespace NativeUI
         /// <param name="description">Description.</param>
         public UIMenuItem(string text, string description)
         {
-            Text = text;
             Enabled = true;
 
             _rectangle = new UIResRectangle(new Point(0, 0), new Size(431, 38), Color.FromArgb(150, 0, 0, 0));
@@ -168,7 +167,11 @@ namespace NativeUI
         /// <summary>
         /// Returns this item's label.
         /// </summary>
-        public string Text { get; set; }
+        public string Text
+        {
+            get { return _text.Caption; }
+            set { _text.Caption = value; }
+        }
 
 
         /// <summary>
