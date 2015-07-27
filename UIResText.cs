@@ -58,7 +58,7 @@ namespace NativeUI
 
         public static float MeasureStringWidthNoConvert(string str, Font font, float scale)
         {
-            Function.Call((Hash)0x54CE8AC98E120CAB, "jamyfafi");
+            Function.Call((Hash)0x54CE8AC98E120CAB, "STRING");
             AddLongString(str);
             return Function.Call<float>((Hash)0x85F061DA64ED2F67, (int)font) * scale;
         }

@@ -73,6 +73,9 @@ namespace NativeUI
         
         public List<UIMenuItem> MenuItems = new List<UIMenuItem>();
 
+        public bool MouseEdgeEnabled = true;
+        public bool ControlDisablingEnabled = true;
+
         //Events
 
         /// <summary>
@@ -253,7 +256,7 @@ namespace NativeUI
         /// Enable or disable all controls but the necessary to operate a menu.
         /// </summary>
         /// <param name="enable"></param>
-        private void DisEnableControls(bool enable)
+        public void DisEnableControls(bool enable)
         {
             Hash thehash = enable ? Hash.ENABLE_CONTROL_ACTION : Hash.DISABLE_CONTROL_ACTION;
             foreach (var con in Enum.GetValues(typeof(Control)))
@@ -420,7 +423,9 @@ namespace NativeUI
         {
             if (!Visible) return;
 
-            DisEnableControls(false);
+            if(ControlDisablingEnabled)
+                DisEnableControls(false);
+
             if(_buttonsEnabled)
                 _instructionalButtonsScaleform.Render2D();
             
@@ -794,12 +799,28 @@ namespace NativeUI
         public void ProcessMouse()
         {
             if (!Visible || _justOpened || MenuItems.Count == 0) return;
+
             Point safezoneOffset = GetSafezoneBounds();
             Function.Call(Hash._SHOW_CURSOR_THIS_FRAME);
             int limit = MenuItems.Count - 1;
             int counter = 0;
             if (MenuItems.Count > MaxItemsOnScreen + 1)
                 limit = _maxItem;
+
+            if (IsMouseInBounds(new Point(0, 0), new Size(30, 1080)) && MouseEdgeEnabled)
+            {
+                GameplayCamera.RelativeHeading += 5f;
+                Function.Call(Hash._0x8DB8CFFD58B62552, 6);
+            }
+            else if (IsMouseInBounds(new Point(Convert.ToInt32(GetScreenResolutionMantainRatio().Width - 30f), 0), new Size(30, 1080)) &&  MouseEdgeEnabled)
+            {
+                GameplayCamera.RelativeHeading -= 5f;
+                Function.Call(Hash._0x8DB8CFFD58B62552, 7);
+            }
+            else if(MouseEdgeEnabled)
+            {
+                Function.Call(Hash._0x8DB8CFFD58B62552, 1);
+            }
 
             for (int i = _minItem; i <= limit; i++)
             {
