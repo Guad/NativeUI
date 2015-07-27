@@ -510,7 +510,7 @@ namespace NativeUI
         /// Returns the 1080pixels-based screen resolution while mantaining current aspect ratio.
         /// </summary>
         /// <returns></returns>
-        public SizeF GetScreenResolutionMantainRatio()
+        public static SizeF GetScreenResolutionMantainRatio()
         {
             int screenw = Game.ScreenResolution.Width;
             int screenh = Game.ScreenResolution.Height;
@@ -528,7 +528,7 @@ namespace NativeUI
         /// <param name="topLeft">top left point of your rectangle.</param>
         /// <param name="boxSize">size of your rectangle.</param>
         /// <returns></returns>
-        public bool IsMouseInBounds(Point topLeft, Size boxSize)
+        public static bool IsMouseInBounds(Point topLeft, Size boxSize)
         {
             var res = GetScreenResolutionMantainRatio();
 
@@ -572,7 +572,7 @@ namespace NativeUI
         /// Returns the safezone bounds in pixel, relative to the 1080pixel based system.
         /// </summary>
         /// <returns></returns>
-        public Point GetSafezoneBounds()
+        public static Point GetSafezoneBounds()
         {
             float t = Function.Call<float>(Hash._0xBAF107B6BB2C97F0); // Safezone size.
             double g = Math.Round(Convert.ToDouble(t), 2);
