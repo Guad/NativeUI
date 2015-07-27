@@ -75,6 +75,7 @@ namespace NativeUI
 
         public bool MouseEdgeEnabled = true;
         public bool ControlDisablingEnabled = true;
+        public bool ResetCursorOnOpen = true;
 
         //Events
 
@@ -757,8 +758,11 @@ namespace NativeUI
             Visible = false;
             if (ParentMenu != null)
             {
+                var tmp = Cursor.Position;
                 ParentMenu.Visible = true;
                 MenuChangeEv(ParentMenu, false);
+                if(ResetCursorOnOpen)
+                    Cursor.Position = tmp;
             }
             MenuCloseEv();
         }
@@ -1213,6 +1217,10 @@ namespace NativeUI
                 _visible = value;
                 _justOpened = value;
                 UpdateScaleform();
+                if (ParentMenu != null || !value) return;
+                if (!ResetCursorOnOpen) return;
+                Cursor.Position = new Point(500, 500);
+                Function.Call(Hash._0x8DB8CFFD58B62552, 1);
             }
         }
 
