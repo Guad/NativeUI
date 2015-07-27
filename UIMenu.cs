@@ -1219,7 +1219,7 @@ namespace NativeUI
                 UpdateScaleform();
                 if (ParentMenu != null || !value) return;
                 if (!ResetCursorOnOpen) return;
-                Cursor.Position = new Point(500, 500);
+                Cursor.Position = new Point(Screen.PrimaryScreen.Bounds.Width/2, Screen.PrimaryScreen.Bounds.Height/2);
                 Function.Call(Hash._0x8DB8CFFD58B62552, 1);
             }
         }
