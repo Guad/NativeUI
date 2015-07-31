@@ -114,7 +114,7 @@ namespace NativeUI
         private readonly Dictionary<MenuControls, Tuple<List<Keys>, List<Tuple<Control, int>>>> _keyDictionary = new Dictionary<MenuControls, Tuple<List<Keys>, List<Tuple<Control, int>>>> ();
                          
         //Tree structure
-        public Dictionary<UIMenuItem, UIMenu> Children { get; private set; }
+        public Dictionary<UIMenuItem, UIMenu> Children { get; }
         
         /// <summary>
         /// Basic Menu constructor.
@@ -438,8 +438,10 @@ namespace NativeUI
             {
                 if (_logo != null)
                     _logo.Draw();
-                else if (_tmpRectangle != null)
-                    _tmpRectangle.Draw();
+                else
+                {
+                    _tmpRectangle?.Draw();
+                }
             }
             else
             {
@@ -1167,7 +1169,7 @@ namespace NativeUI
             return output;
         }
 
-        private List<InstructionalButton> _instructionalButtons = new List<InstructionalButton>();
+        private readonly List<InstructionalButton> _instructionalButtons = new List<InstructionalButton>();
 
         public void AddInstructionalButton(InstructionalButton button)
         {
@@ -1194,13 +1196,10 @@ namespace NativeUI
             _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 0, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)Control.PhoneSelect, 0), "Select");
             _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 1, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)Control.PhoneCancel, 0), "Back");
             int count = 2;
-            foreach (var button in _instructionalButtons)
+            foreach (var button in _instructionalButtons.Where(button => button.ItemBind == null || MenuItems[CurrentSelection] == button.ItemBind))
             {
-                if (button.ItemBind == null || MenuItems[CurrentSelection] == button.ItemBind)
-                {
-                    _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", count, button.GetButtonId(), button.Text);
-                    count++;
-                }
+                _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", count, button.GetButtonId(), button.Text);
+                count++;
             }
             _instructionalButtonsScaleform.CallFunction("DRAW_INSTRUCTIONAL_BUTTONS", -1);
         }
@@ -1253,10 +1252,7 @@ namespace NativeUI
         /// <summary>
         /// Returns the amount of items in the menu.
         /// </summary>
-        public int Size
-        {
-            get { return MenuItems.Count; }
-        }
+        public int Size => MenuItems.Count;
 
 
         /// <summary>

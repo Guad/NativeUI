@@ -31,7 +31,7 @@ namespace NativeUI
         public UIMenuCheckboxItem(string text, bool check, string description)
             : base(text, description)
         {
-            int y = 0;
+            const int y = 0;
             _checkedSprite = new Sprite("commonmenu", "shop_box_blank", new Point(410, y + 95), new Size(50, 50));
             Checked = check;
         }

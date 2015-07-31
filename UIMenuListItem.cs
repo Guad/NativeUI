@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using GTA;
-using GTA.Native;
 using Font = GTA.Font;
 
 namespace NativeUI
@@ -55,12 +53,12 @@ namespace NativeUI
         public UIMenuListItem(string text, List<dynamic> items, int index, string description)
             : base(text, description)
         {
-            int y = 0;
+            const int y = 0;
             _items = new List<dynamic>(items);
             _arrowLeft = new Sprite("commonmenu", "arrowleft", new Point(110, 105 + y), new Size(30, 30));
             _arrowRight = new Sprite("commonmenu", "arrowright", new Point(280, 105 + y), new Size(30, 30));
-            _itemText = new UIResText("", new Point(290, y + 104), 0.35f, Color.White, Font.ChaletLondon, UIResText.Alignment.Left);
-            _itemText.TextAlignment = UIResText.Alignment.Right;
+            _itemText = new UIResText("", new Point(290, y + 104), 0.35f, Color.White, Font.ChaletLondon,
+                UIResText.Alignment.Left) {TextAlignment = UIResText.Alignment.Right};
             Index = index;
         }
 
