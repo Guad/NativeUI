@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using GTA;
 using Font = GTA.Font;
 
 namespace NativeUI
@@ -105,7 +106,7 @@ namespace NativeUI
         {
             base.Draw();
             string caption = _items[Index % _items.Count].ToString();
-            int offset = Convert.ToInt32(UIResText.MeasureStringWidth(caption, Font.ChaletLondon, 0.35f));
+            int offset = StringMeasurer.MeasureString(caption);
 
             _itemText.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
             
@@ -119,7 +120,7 @@ namespace NativeUI
             {
                 _arrowLeft.Draw();
                 _arrowRight.Draw();
-                _itemText.Position = new Point(400 + Offset.X + Parent.WidthOffset, _itemText.Position.Y);
+                _itemText.Position = new Point(405 + Offset.X + Parent.WidthOffset, _itemText.Position.Y);
             }
             else
             {

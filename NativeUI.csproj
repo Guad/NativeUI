@@ -54,6 +54,7 @@
     <Compile Include="MenuPool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sprite.cs" />
+    <Compile Include="StringMeasurer.cs" />
     <Compile Include="UIMenu.cs" />
     <Compile Include="UIMenuCheckboxItem.cs" />
     <Compile Include="UIMenuItem.cs" />
