@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using Control = GTA.Control;
 
 namespace NativeUI
 {
@@ -9,7 +10,29 @@ namespace NativeUI
     /// </summary>
     public class MenuPool
     {
-        public static bool ControllerUsed { get; set; } //Not used
+        public bool MouseEdgeEnabled { set { _menuList.ForEach(m => m.MouseEdgeEnabled = value); } }
+
+        public bool ControlDisablingEnabled { set { _menuList.ForEach(m => m.ControlDisablingEnabled = value); } }
+
+        public bool ResetCursorOnOpen { set { _menuList.ForEach(m => m.ResetCursorOnOpen = value); } }
+
+        public bool FormatDescriptions { set { _menuList.ForEach(m => m.FormatDescriptions = value); } }
+
+        public string AUDIO_LIBRARY { set { _menuList.ForEach(m => m.AUDIO_LIBRARY = value); } }
+
+        public string AUDIO_UPDOWN { set { _menuList.ForEach(m => m.AUDIO_UPDOWN = value); } }
+
+        public string AUDIO_SELECT { set { _menuList.ForEach(m => m.AUDIO_SELECT = value); } }
+
+        public string AUDIO_BACK { set { _menuList.ForEach(m => m.AUDIO_BACK = value); } }
+
+        public string AUDIO_ERROR { set { _menuList.ForEach(m => m.AUDIO_ERROR = value); } }
+
+        public int WidthOffset { set { _menuList.ForEach(m => m.SetMenuWidthOffset(value)); } }
+
+        public string CounterPretext { set { _menuList.ForEach(m => m.CounterPretext = value); } }
+        
+        public bool DisableInstructionalButtons { set { _menuList.ForEach(m => m.DisableInstructionalButtons(value)); } }
 
         private readonly List<UIMenu> _menuList = new List<UIMenu>();
 
@@ -112,5 +135,42 @@ namespace NativeUI
                 menu.Visible = false;
             }
         }
+
+        public void SetBannerType(Sprite bannerType)
+        {
+            _menuList.ForEach(m => m.SetBannerType(bannerType));
+        }
+
+        public void SetBannerType(UIResRectangle bannerType)
+        {
+            _menuList.ForEach(m => m.SetBannerType(bannerType));
+        }
+
+        public void SetBannerType(string bannerPath)
+        {
+            _menuList.ForEach(m => m.SetBannerType(bannerPath));
+        }
+
+        public void SetKey(UIMenu.MenuControls menuControl, Control control)
+        {
+            _menuList.ForEach(m => m.SetKey(menuControl, control));
+        }
+
+        public void SetKey(UIMenu.MenuControls menuControl, Control control, int controllerIndex)
+        {
+            _menuList.ForEach(m => m.SetKey(menuControl, control, controllerIndex));
+        }
+
+        public void SetKey(UIMenu.MenuControls menuControl, Keys control)
+        {
+            _menuList.ForEach(m => m.SetKey(menuControl, control));
+        }
+
+        public void ResetKey(UIMenu.MenuControls menuControl)
+        {
+            _menuList.ForEach(m => m.ResetKey(menuControl));
+        }
+
+        
     }
 }

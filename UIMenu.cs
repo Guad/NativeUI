@@ -1084,7 +1084,6 @@ namespace NativeUI
             if (MenuItems.Count == 0) return;
             if (IsControlBeingPressed(MenuControls.Up, key))
             {
-                MenuPool.ControllerUsed = Game.IsControlJustPressed(2, Control.PhoneUp);
                 if (Size > MaxItemsOnScreen + 1)
                     GoUpOverflow();
                 else
