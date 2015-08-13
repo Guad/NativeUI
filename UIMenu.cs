@@ -76,6 +76,7 @@ namespace NativeUI
         public bool MouseEdgeEnabled = true;
         public bool ControlDisablingEnabled = true;
         public bool ResetCursorOnOpen = true;
+        public bool FormatDescriptions = true;
 
         //Events
 
@@ -195,7 +196,11 @@ namespace NativeUI
 
             
             SetKey(MenuControls.Up, Control.PhoneUp);
+            SetKey(MenuControls.Up, Control.CursorScrollUp);
+
             SetKey(MenuControls.Down, Control.PhoneDown);
+            SetKey(MenuControls.Down, Control.CursorScrollDown);
+
             SetKey(MenuControls.Left, Control.PhoneLeft);
             SetKey(MenuControls.Right, Control.PhoneRight);
             SetKey(MenuControls.Select, Control.FrontendAccept);
@@ -206,7 +211,7 @@ namespace NativeUI
 
         private void RecaulculateDescriptionPosition()
         {
-            _descriptionText.WordWrap = new Size(425 + WidthOffset, 0);
+            //_descriptionText.WordWrap = new Size(425 + WidthOffset, 0);
 
             _descriptionBar.Position = new Point(_offset.X, 149 - 37 + _extraYOffset + _offset.Y);
             _descriptionRectangle.Position = new Point(_offset.X, 149 - 37 + _extraYOffset + _offset.Y);
@@ -460,9 +465,13 @@ namespace NativeUI
             MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
             if (!String.IsNullOrWhiteSpace(MenuItems[_activeItem%(MenuItems.Count)].Description))
             {
-                _descriptionText.Caption = MenuItems[_activeItem%(MenuItems.Count)].Description;
                 RecaulculateDescriptionPosition();
-                int numLines = FormatDescription(_descriptionText.Caption).Split('\n').Length;
+                string descCaption = MenuItems[_activeItem % (MenuItems.Count)].Description;
+                if (FormatDescriptions)
+                    _descriptionText.Caption = FormatDescription(descCaption);
+                else
+                    _descriptionText.Caption = descCaption;
+                int numLines = _descriptionText.Caption.Split('\n').Length;
                 _descriptionRectangle.Size = new Size(431 + WidthOffset, (numLines * 25) + 15);
 
                 _descriptionBar.Draw();
@@ -1070,13 +1079,11 @@ namespace NativeUI
 
             if (HasControlJustBeenReleaseed(MenuControls.Back, key))
             {
-                //MenuPool.ControllerUsed = Game.IsControlJustPressed(2, (GTA.Control)45);
                 GoBack();
             }
             if (MenuItems.Count == 0) return;
-            if (IsControlBeingPressed(MenuControls.Up, key) || Game.IsControlJustPressed(0, Control.CursorScrollUp))
+            if (IsControlBeingPressed(MenuControls.Up, key))
             {
-                //MenuPool.ControllerUsed = Game.IsControlJustPressed(2, (GTA.Control)27);
                 MenuPool.ControllerUsed = Game.IsControlJustPressed(2, Control.PhoneUp);
                 if (Size > MaxItemsOnScreen + 1)
                     GoUpOverflow();
@@ -1085,12 +1092,8 @@ namespace NativeUI
                 UpdateScaleform();
             }
 
-            else if (IsControlBeingPressed(MenuControls.Down, key) ||
-                     Game.IsControlJustPressed(0, Control.CursorScrollDown))
+            else if (IsControlBeingPressed(MenuControls.Down, key))
             {
-                //MenuPool.ControllerUsed = Game.IsControlJustPressed(2, (GTA.Control)8);
-                MenuPool.ControllerUsed = Game.IsControlJustPressed(2, Control.PhoneDown);
-
                 if (Size > MaxItemsOnScreen + 1)
                     GoDownOverflow();
                 else
@@ -1100,21 +1103,16 @@ namespace NativeUI
 
             else if (IsControlBeingPressed(MenuControls.Left, key))
             {
-                //MenuPool.ControllerUsed = Game.IsControlJustPressed(2, (GTA.Control)34);
-                MenuPool.ControllerUsed = Game.IsControlJustPressed(2, Control.PhoneLeft);
                 GoLeft();
             }
 
             else if (IsControlBeingPressed(MenuControls.Right, key))
             {
-                //MenuPool.ControllerUsed = Game.IsControlJustPressed(2, (GTA.Control)9);
-                MenuPool.ControllerUsed = Game.IsControlJustPressed(2, Control.PhoneRight);
                 GoRight();
             }
 
             else if (HasControlJustBeenPressed(MenuControls.Select, key))
             {
-                //MenuPool.ControllerUsed = Game.IsControlJustPressed(2, (GTA.Control)18);
                 SelectItem();
             }
 
