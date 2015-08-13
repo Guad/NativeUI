@@ -1144,24 +1144,17 @@ namespace NativeUI
             string[] words = input.Split(' ');
             foreach (string word in words)
             {
-                Function.Call((Hash)0x54CE8AC98E120CAB, "jamyfafi");
-                UIResText.AddLongString(word);
-                int screenw = Game.ScreenResolution.Width;
-                int screenh = Game.ScreenResolution.Height;
-                const float height = 1080f;
-                float ratio = (float)screenw / screenh;
-                var width = height * ratio;
-                int offset = Convert.ToInt32(Function.Call<float>((Hash)0x85F061DA64ED2F67, 0) * width * 0.35f);
-
-                aggregatePixels += Convert.ToInt32(offset);
+                int offset = StringMeasurer.MeasureString(word);
+                aggregatePixels += offset;
                 if (aggregatePixels > maxPixelsPerLine)
                 {
                     output += "\n" + word + " ";
-                    aggregatePixels = Convert.ToInt32(offset);
+                    aggregatePixels = offset + StringMeasurer.MeasureString(" ");
                 }
                 else
                 {
                     output += word + " ";
+                    aggregatePixels += StringMeasurer.MeasureString(" ");
                 }
             }
             return output;

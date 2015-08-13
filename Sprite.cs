@@ -107,7 +107,7 @@ namespace NativeUI
 
             int sizeH = Convert.ToInt32((size.Height / ratio)*reduceY);
             Point extra = new Point(0,0);
-            if (screenw == 1914 && screenh == 1052)
+            if (screenw == 1914 && screenh == 1052) //TODO: Fix this when ScriptHookVDotNet 1.2 comes out.
                 extra = new Point(15, 0);
 
             UI.DrawTexture(path, 1, 1, 80, new Point(Convert.ToInt32(position.X*reduceX) + extra.X, Convert.ToInt32(position.Y*reduceY) + extra.Y), new Size(Convert.ToInt32(size.Width * reduceX), sizeH));
