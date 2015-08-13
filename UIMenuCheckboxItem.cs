@@ -50,7 +50,7 @@ namespace NativeUI
         public override void Position(int y)
         {
             base.Position(y);
-            _checkedSprite.Position = new Point(380 + Offset.X + Parent.WidthOffset, y + 139 + Offset.Y);
+            _checkedSprite.Position = new Point(380 + Offset.X + Parent.WidthOffset, y + 138 + Offset.Y);
         }
         
 

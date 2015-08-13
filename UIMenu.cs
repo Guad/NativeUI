@@ -1031,6 +1031,7 @@ namespace NativeUI
         {
             List<Keys> tmpKeys = new List<Keys>(_keyDictionary[control].Item1);
             List<Tuple<Control, int>> tmpControls = new List<Tuple<Control, int>>(_keyDictionary[control].Item2);
+            if (HasControlJustBeenReleaseed(control, key)) _controlCounter = 0;
             if (_controlCounter > 0)
             {
                 _controlCounter++;

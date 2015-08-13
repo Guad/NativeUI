@@ -30,6 +30,8 @@ namespace NativeUI
 
 
         public Alignment TextAlignment { get; set; }
+        public bool DropShadow { get; set; } = false;
+        public bool Outline { get; set; } = false;
 
         /// <summary>
         /// Push a long string into the stack.
@@ -79,6 +81,10 @@ namespace NativeUI
             Function.Call(Hash.SET_TEXT_FONT, (int)Font);
             Function.Call(Hash.SET_TEXT_SCALE, 1.0f, Scale);
             Function.Call(Hash.SET_TEXT_COLOUR, Color.R, Color.G, Color.B, Color.A);
+            if (DropShadow)
+                Function.Call(Hash.SET_TEXT_DROP_SHADOW);
+            if (Outline)
+                Function.Call(Hash.SET_TEXT_OUTLINE);
             switch (TextAlignment)
             {
                 case Alignment.Centered:
