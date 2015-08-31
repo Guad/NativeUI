@@ -7,7 +7,7 @@ using Font = GTA.Font;
 namespace NativeUI
 {
     /// <summary>
-    /// A Text object in the 1080 pixels height base system.
+    /// Responsive UIText: A Text object in the 1080 pixels height base system.
     /// </summary>
     public class UIResText : UIText
     {
@@ -65,7 +65,7 @@ namespace NativeUI
             return Function.Call<float>((Hash)0x85F061DA64ED2F67, (int)font) * scale;
         }
 
-        public Size WordWrap { get; set; }
+        public int WordWrap { get; set; }
 
         public override void Draw(Size offset)
         {
@@ -96,9 +96,9 @@ namespace NativeUI
                     break;
             }
 
-            if (WordWrap != new Size(0, 0))
+            if (WordWrap != 0)
             {
-                float xsize = (Position.X + WordWrap.Width)/width;
+                float xsize = (Position.X + WordWrap)/width;
                 Function.Call(Hash.SET_TEXT_WRAP, x, xsize);
             }
 
