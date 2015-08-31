@@ -10,8 +10,7 @@ namespace NativeUI
     {
         private readonly UIResRectangle _rectangle;
         private readonly UIResText _text;
-        private bool _selected;
-        private readonly Sprite _selectedSprite;
+	    private readonly Sprite _selectedSprite;
 
         private readonly Sprite _badgeLeft;
         private readonly Sprite _badgeRight;
@@ -56,19 +55,10 @@ namespace NativeUI
         /// <summary>
         /// Whether this item is currently selected.
         /// </summary>
-        public virtual bool Selected
-        {
-            get { return _selected; }
-            set
-            {
-                _selected = value;
+        public virtual bool Selected { get; set; }
 
-                _text.Color = Enabled ? value ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
-            }
-        }
 
-        
-        /// <summary>
+	    /// <summary>
         /// Whether this item is currently being hovered on with a mouse.
         /// </summary>
         public virtual bool Hovered { get; set; }
@@ -123,9 +113,10 @@ namespace NativeUI
             }
             if (Selected)
                 _selectedSprite.Draw();
-            if (!Enabled)
-                _text.Color = Color.FromArgb(163, 159, 148);
-            if (LeftBadge != BadgeStyle.None)
+
+			_text.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
+
+			if (LeftBadge != BadgeStyle.None)
             {
                 _text.Position = new Point(35 + Offset.X, _text.Position.Y);
                 _badgeLeft.TextureDict = BadgeToSpriteLib(LeftBadge);
@@ -146,7 +137,6 @@ namespace NativeUI
                 _badgeRight.Color = BadgeToColor(RightBadge, Selected);
                 _badgeRight.Draw();
             }
-            _text.Draw();
 
             if (!String.IsNullOrWhiteSpace(RightLabel))
             {
@@ -155,6 +145,7 @@ namespace NativeUI
                 _labelText.Color = _text.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
                 _labelText.Draw();
             }
+            _text.Draw();
         }
 
 
