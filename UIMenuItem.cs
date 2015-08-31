@@ -10,7 +10,7 @@ namespace NativeUI
     {
         private readonly UIResRectangle _rectangle;
         private readonly UIResText _text;
-	    private readonly Sprite _selectedSprite;
+        private readonly Sprite _selectedSprite;
 
         private readonly Sprite _badgeLeft;
         private readonly Sprite _badgeRight;
@@ -58,7 +58,7 @@ namespace NativeUI
         public virtual bool Selected { get; set; }
 
 
-	    /// <summary>
+        /// <summary>
         /// Whether this item is currently being hovered on with a mouse.
         /// </summary>
         public virtual bool Hovered { get; set; }
@@ -114,9 +114,9 @@ namespace NativeUI
             if (Selected)
                 _selectedSprite.Draw();
 
-			_text.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
+            _text.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
 
-			if (LeftBadge != BadgeStyle.None)
+            if (LeftBadge != BadgeStyle.None)
             {
                 _text.Position = new Point(35 + Offset.X, _text.Position.Y);
                 _badgeLeft.TextureDict = BadgeToSpriteLib(LeftBadge);
