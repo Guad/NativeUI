@@ -23,6 +23,7 @@ public class MenuExample : Script
         _menuPool = new MenuPool();
 
         mainMenu = new UIMenu("Native UI", "~b~NATIVEUI SHOWCASE");
+        mainMenu.SetBannerType("tmp.png");
         _menuPool.Add(mainMenu);
 
         mainMenu.AddItem(ketchupCheckbox = new UIMenuCheckboxItem("Add ketchup?", false, "Do you wish to add ketchup?"));

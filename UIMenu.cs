@@ -77,6 +77,7 @@ namespace NativeUI
         public bool ControlDisablingEnabled = true;
         public bool ResetCursorOnOpen = true;
         public bool FormatDescriptions = true;
+        public bool MouseControlsEnabled = true;
 
         //Events
 
@@ -262,7 +263,7 @@ namespace NativeUI
         /// Enable or disable all controls but the necessary to operate a menu.
         /// </summary>
         /// <param name="enable"></param>
-        public void DisEnableControls(bool enable)
+        public static void DisEnableControls(bool enable)
         {
             Hash thehash = enable ? Hash.ENABLE_CONTROL_ACTION : Hash.DISABLE_CONTROL_ACTION;
             foreach (var con in Enum.GetValues(typeof(Control)))
@@ -276,43 +277,53 @@ namespace NativeUI
             // -Mouse
             // -Walk/Move
             // -
-            
-            if (!enable)
+
+            if (enable) return;
+            var list = new List<Control>
             {
-                var list = new List<Control>
+                Control.FrontendAccept,
+                Control.FrontendAxisX,
+                Control.FrontendAxisY,
+                Control.FrontendDown,
+                Control.FrontendUp,
+                Control.FrontendLeft,
+                Control.FrontendRight,
+                Control.FrontendCancel,
+                Control.FrontendSelect,
+                Control.CursorScrollDown,
+                Control.CursorScrollUp,
+                Control.CursorX,
+                Control.CursorY,
+                Control.MoveUpDown,
+                Control.MoveLeftRight,
+                Control.Sprint,
+                Control.Jump,
+                Control.Enter,
+                Control.VehicleExit,
+                Control.VehicleAccelerate,
+                Control.VehicleBrake,
+                Control.VehicleMoveLeftRight,
+                Control.VehicleFlyYawLeft,
+                Control.FlyLeftRight,
+                Control.FlyUpDown,
+                Control.VehicleFlyYawRight,
+                Control.VehicleHandbrake,
+            };
+
+            if (IsUsingController)
+            {
+                list.AddRange(new Control[]
                 {
-                    Control.FrontendAccept,
-                    Control.FrontendAxisX,
-                    Control.FrontendAxisY,
-                    Control.FrontendDown,
-                    Control.FrontendUp,
-                    Control.FrontendLeft,
-                    Control.FrontendRight,
-                    Control.FrontendCancel,
-                    Control.FrontendSelect,
-                    Control.CursorScrollDown,
-                    Control.CursorScrollUp,
-                    Control.CursorX,
-                    Control.CursorY,
-                    Control.MoveUpDown,
-                    Control.MoveLeftRight,
-                    Control.Sprint,
-                    Control.Jump,
-                    Control.Enter,
-                    Control.VehicleExit,
-                    Control.VehicleAccelerate,
-                    Control.VehicleBrake,
-                    Control.VehicleMoveLeftRight,
-                    Control.VehicleFlyYawLeft,
-                    Control.FlyLeftRight,
-                    Control.FlyUpDown,
-                    Control.VehicleFlyYawRight,
-                    Control.VehicleHandbrake,
-                };
-                foreach (var control in list)
-                {
-                    Function.Call(Hash.ENABLE_CONTROL_ACTION, 0, (int)control);
-                } 
+                    Control.LookUpDown,
+                    Control.LookLeftRight,
+                    Control.Aim,
+                    Control.Attack,
+                });   
+            }
+
+            foreach (var control in list)
+            {
+                Function.Call(Hash.ENABLE_CONTROL_ACTION, 0, (int)control);
             }
         }
                
@@ -558,7 +569,7 @@ namespace NativeUI
         /// <param name="topLeft">top left point of the item.</param>
         /// <param name="safezone">safezone size.</param>
         /// <returns>0 - Not in item at all, 1 - In label, 2 - In arrow space.</returns>
-        public int IsMouseInListItemArrows(UIMenuListItem item, Point topLeft, Point safezone)
+        public int IsMouseInListItemArrows(UIMenuListItem item, Point topLeft, Point safezone) // TODO: Ability to scroll left and right
         {
             Function.Call((Hash)0x54CE8AC98E120CAB, "jamyfafi");
             UIResText.AddLongString(item.Text);
@@ -585,7 +596,7 @@ namespace NativeUI
         /// <returns></returns>
         public static Point GetSafezoneBounds()
         {
-            float t = Function.Call<float>(Hash._0xBAF107B6BB2C97F0); // Safezone size.
+            float t = Function.Call<float>(Hash.GET_SAFE_ZONE_SIZE); // Safezone size.
             double g = Math.Round(Convert.ToDouble(t), 2);
             g = (g * 100) - 90;
             g = 10 - g;
@@ -813,7 +824,15 @@ namespace NativeUI
         /// </summary>
         public void ProcessMouse()
         {
-            if (!Visible || _justOpened || MenuItems.Count == 0) return;
+            if (!Visible || _justOpened || MenuItems.Count == 0 || IsUsingController || MouseControlsEnabled)
+            {
+                Function.Call(Hash.ENABLE_CONTROL_ACTION, (int)Control.LookUpDown);
+                Function.Call(Hash.ENABLE_CONTROL_ACTION, (int)Control.LookLeftRight);
+                Function.Call(Hash.ENABLE_CONTROL_ACTION, (int)Control.Aim);
+                Function.Call(Hash.ENABLE_CONTROL_ACTION, (int)Control.Attack);
+                MenuItems.Where(i => i.Hovered).ToList().ForEach(i => i.Hovered = false);
+                return;
+            }
 
             Point safezoneOffset = GetSafezoneBounds();
             Function.Call(Hash._SHOW_CURSOR_THIS_FRAME);
@@ -1238,6 +1257,11 @@ namespace NativeUI
                 }
             }
         }
+
+        /// <summary>
+        /// Returns false if last input was made with mouse and keyboard, true if it was made with a controller.
+        /// </summary>
+        public static bool IsUsingController => !Function.Call<bool>(Hash._GET_LAST_INPUT_METHOD, 2);
 
 
         /// <summary>
