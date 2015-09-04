@@ -824,7 +824,7 @@ namespace NativeUI
         /// </summary>
         public void ProcessMouse()
         {
-            if (!Visible || _justOpened || MenuItems.Count == 0 || IsUsingController || MouseControlsEnabled)
+            if (!Visible || _justOpened || MenuItems.Count == 0 || IsUsingController || !MouseControlsEnabled)
             {
                 Function.Call(Hash.ENABLE_CONTROL_ACTION, (int)Control.LookUpDown);
                 Function.Call(Hash.ENABLE_CONTROL_ACTION, (int)Control.LookLeftRight);
