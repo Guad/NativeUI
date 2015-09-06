@@ -1,4 +1,6 @@
 # NativeUI
+![NativeUI Example](http://i.imgur.com/nqD2Ty1.png)
+
 NativeUI is a ScriptHookDotNet based library that helps you quickly and easily build Rockstar-like menus.
 
 ### Documentation
