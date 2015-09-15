@@ -1197,7 +1197,7 @@ namespace NativeUI
         /// </summary>
         public void UpdateScaleform()
         {   
-            if (!Visible) return;
+            if (!Visible || !_buttonsEnabled) return;
             _instructionalButtonsScaleform.CallFunction("CLEAR_ALL");
             _instructionalButtonsScaleform.CallFunction("TOGGLE_MOUSE_BUTTONS", 0);
             _instructionalButtonsScaleform.CallFunction("CREATE_CONTAINER");
