@@ -47,6 +47,33 @@ namespace NativeUI
         }
 
         /// <summary>
+        /// Create and add a submenu to the menu pool.
+        /// Adds an item with the given text to the menu, creates a corresponding submenu, and binds the submenu to the item.
+        /// The submenu inherits its title from the menu, and its subtitle from the item text.
+        /// </summary>
+        /// <param name="menu">The parent menu to which the submenu must be added.</param>
+        /// <param name="text">The name of the submenu.</param>
+        /// <returns>The newly created submenu.</returns>
+        public UIMenu AddSubMenu(UIMenu menu, string text)
+        {
+            var item = new UIMenuItem(text);
+            menu.AddItem(item);
+            var submenu = new UIMenu(menu.Title.ToString(), text);
+            this.Add(submenu);
+            menu.BindMenuToItem(submenu, item);
+            return submenu;
+        }
+
+        /// <summary>
+        /// Refresh index of every menu in the pool.
+        /// Use this after you have finished constructing the entire menu pool.
+        /// </summary>
+        public void RefreshIndex()
+        {
+            foreach (UIMenu menu in _menuList) menu.RefreshIndex();
+        }
+
+        /// <summary>
         /// Returns all of your menus.
         /// </summary>
         /// <returns></returns>
