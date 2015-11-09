@@ -24,3 +24,16 @@ Please, do not distribute the .dll with your mod. This causes many old versions 
 
 ### Special Thanks
 Thanks to jedijosh920 for helping out on natives and making it look a lot more like Rockstar, thanks man.
+
+### License
+Copyright (C) 2015  Philipp
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
