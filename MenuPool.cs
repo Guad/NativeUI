@@ -58,7 +58,7 @@ namespace NativeUI
         {
             var item = new UIMenuItem(text);
             menu.AddItem(item);
-            var submenu = new UIMenu(menu.Title.ToString(), text);
+            var submenu = new UIMenu(menu.Title.Caption, text);
             this.Add(submenu);
             menu.BindMenuToItem(submenu, item);
             return submenu;
