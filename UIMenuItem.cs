@@ -8,14 +8,14 @@ namespace NativeUI
     /// </summary>
     public class UIMenuItem
     {
-        private readonly UIResRectangle _rectangle;
-        private readonly UIResText _text;
-        private readonly Sprite _selectedSprite;
+        protected UIResRectangle _rectangle;
+        protected UIResText _text;
+        protected Sprite _selectedSprite;
 
-        private readonly Sprite _badgeLeft;
-        private readonly Sprite _badgeRight;
+        protected Sprite _badgeLeft;
+        protected Sprite _badgeRight;
 
-        private readonly UIResText _labelText;
+        protected UIResText _labelText;
 
         /// <summary>
         /// Called when user selects the current item.
@@ -67,13 +67,13 @@ namespace NativeUI
         /// <summary>
         /// This item's description.
         /// </summary>
-        public string Description { get; set; }
+        public virtual string Description { get; set; }
 
 
         /// <summary>
         /// Whether this item is enabled or disabled (text is greyed out and you cannot select it).
         /// </summary>
-        public bool Enabled { get; set; }
+        public virtual bool Enabled { get; set; }
 
         internal virtual void ItemActivate(UIMenu sender)
         {
@@ -197,19 +197,19 @@ namespace NativeUI
         /// <summary>
         /// Returns the current right label.
         /// </summary>
-        public string RightLabel { get; private set; }
+        public virtual string RightLabel { get; private set; }
 
 
         /// <summary>
         /// Returns the current left badge.
         /// </summary>
-        public BadgeStyle LeftBadge { get; private set; }
+        public virtual BadgeStyle LeftBadge { get; private set; }
 
 
         /// <summary>
         /// Returns the current right badge.
         /// </summary>
-        public BadgeStyle RightBadge { get; private set; }
+        public virtual BadgeStyle RightBadge { get; private set; }
 
         public enum BadgeStyle
         {
@@ -238,7 +238,7 @@ namespace NativeUI
             Tick,
         }
 
-        private string BadgeToSpriteLib(BadgeStyle badge)
+        protected virtual string BadgeToSpriteLib(BadgeStyle badge)
         {
             switch (badge)
             {
@@ -247,7 +247,7 @@ namespace NativeUI
             }   
         }
 
-        private string BadgeToSpriteName(BadgeStyle badge, bool selected)
+        protected virtual string BadgeToSpriteName(BadgeStyle badge, bool selected)
         {
             switch (badge)
             {
@@ -302,7 +302,7 @@ namespace NativeUI
             }
         }
 
-        private Color BadgeToColor(BadgeStyle badge, bool selected)
+        protected virtual Color BadgeToColor(BadgeStyle badge, bool selected)
         {
             switch (badge)
             {

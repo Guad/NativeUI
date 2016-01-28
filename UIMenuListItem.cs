@@ -8,12 +8,12 @@ namespace NativeUI
 {
     public class UIMenuListItem : UIMenuItem
     {
-        private readonly UIResText _itemText;
+        protected UIResText _itemText;
 
-        private readonly Sprite _arrowLeft;
-        private readonly Sprite _arrowRight;
+        protected Sprite _arrowLeft;
+        protected Sprite _arrowRight;
 
-        private readonly List<dynamic> _items;
+        protected List<dynamic> _items;
 
 
         /// <summary>
@@ -21,7 +21,7 @@ namespace NativeUI
         /// </summary>
         public event ItemListEvent OnListChanged;
 
-        private int _index;
+        protected int _index;
         
         /// <summary>
         /// Returns the current selected index.
@@ -82,7 +82,7 @@ namespace NativeUI
         /// </summary>
         /// <param name="item">Item to search for.</param>
         /// <returns>Item index.</returns>
-        public int ItemToIndex(dynamic item)
+        public virtual int ItemToIndex(dynamic item)
         {
             return _items.FindIndex(item);
         }
@@ -93,7 +93,7 @@ namespace NativeUI
         /// </summary>
         /// <param name="index">Item's index.</param>
         /// <returns>Item</returns>
-        public dynamic IndexToItem(int index)
+        public virtual dynamic IndexToItem(int index)
         {
             return _items[index];
         }
