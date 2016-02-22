@@ -216,20 +216,26 @@ namespace NativeUI.PauseMenu
                 DropShadow = true,
             }.Draw();
 
-            string subt = Money;
+            string t = Money;
             if (string.IsNullOrEmpty(Money))
             {
-                subt = DateTime.Now.ToString();
+                t = DateTime.Now.ToString();
             }
 
 
-            new UIResText(subt, new Point((int)res.Width - safe.X - 70, safe.Y - 60), 0.4f, Color.White,
+            new UIResText(t, new Point((int)res.Width - safe.X - 70, safe.Y - 60), 0.4f, Color.White,
                 Font.ChaletComprimeCologne, UIResText.Alignment.Right)
             {
                 DropShadow = true,
             }.Draw();
 
-            new UIResText(MoneySubtitle, new Point((int)res.Width - safe.X - 70, safe.Y - 40), 0.4f, Color.White,
+			string subt = MoneySubtitle;
+			if (string.IsNullOrEmpty(MoneySubtitle))
+			{
+				subt = "";
+			}
+			
+            new UIResText(subt, new Point((int)res.Width - safe.X - 70, safe.Y - 40), 0.4f, Color.White,
                 Font.ChaletComprimeCologne, UIResText.Alignment.Right)
             {
                 DropShadow = true,
