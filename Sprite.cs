@@ -21,14 +21,13 @@ namespace NativeUI
             set
             {
                 _textureDict = value;
-                if(!Function.Call<bool>(Hash.HAS_STREAMED_TEXTURE_DICT_LOADED, value))
-                    Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, value, true);
+                //if(_autoload && !Function.Call<bool>(Hash.HAS_STREAMED_TEXTURE_DICT_LOADED, value))
+                    //Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, value, true);
             }
         }
 
         public string TextureName;
         private string _textureDict;
-
 
         /// <summary>
         /// Creates a game sprite object from a texture dictionary and texture name.
@@ -41,8 +40,8 @@ namespace NativeUI
         /// <param name="color"></param>
         public Sprite(string textureDict, string textureName, Point position, Size size, float heading, Color color) //BASE
         {
-            if (!Function.Call<bool>(Hash.HAS_STREAMED_TEXTURE_DICT_LOADED, textureDict))
-                Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, textureDict, true);
+            //if (!Function.Call<bool>(Hash.HAS_STREAMED_TEXTURE_DICT_LOADED, textureDict))
+                //Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, textureDict, true);
             TextureDict = textureDict;
             TextureName = textureName;
 
@@ -71,7 +70,10 @@ namespace NativeUI
         public void Draw()
         {
             if (!Visible) return;
-            int screenw = Game.ScreenResolution.Width;
+            if (!Function.Call<bool>(Hash.HAS_STREAMED_TEXTURE_DICT_LOADED, TextureDict))
+                Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, TextureDict, true);
+
+                int screenw = Game.ScreenResolution.Width;
             int screenh = Game.ScreenResolution.Height;
             const float height = 1080f;
             float ratio = (float)screenw/screenh;

@@ -55,6 +55,7 @@
     <Compile Include="PauseMenu\TabItem.cs" />
     <Compile Include="PauseMenu\TabItemSimpleList.cs" />
     <Compile Include="PauseMenu\TabMissionSelectItem.cs" />
+    <Compile Include="PauseMenu\TabInteractiveListItem.cs" />
     <Compile Include="PauseMenu\TabSubmenuItem.cs" />
     <Compile Include="PauseMenu\TabTextItem.cs" />
     <Compile Include="PauseMenu\TabView.cs" />
