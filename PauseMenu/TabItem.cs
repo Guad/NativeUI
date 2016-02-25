@@ -13,8 +13,8 @@ namespace NativeUI.PauseMenu
             UseDynamicPositionment = true;
         }
 
-        public bool Visible { get; set; }
-        public bool Focused { get; set; }
+        public virtual bool Visible { get; set; }
+        public virtual bool Focused { get; set; }
         public string Title { get; set; }
         public bool Active { get; set; }
         public bool JustOpened { get; set; }

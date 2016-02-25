@@ -204,7 +204,6 @@ namespace NativeUI.PauseMenu
         public void Update()
         {
             if (!Visible || TemporarilyHidden) return;
-            UI.ShowSubtitle(FocusLevel.ToString());
             ShowInstructionalButtons();
             Function.Call(Hash.HIDE_HUD_AND_RADAR_THIS_FRAME);
             Function.Call(Hash._SHOW_CURSOR_THIS_FRAME);

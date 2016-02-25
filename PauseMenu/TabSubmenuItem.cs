@@ -7,6 +7,8 @@ namespace NativeUI.PauseMenu
 {
     public class TabSubmenuItem : TabItem
     {
+        private bool _focused;
+
         public TabSubmenuItem(string name, IEnumerable<TabItem> items) : base(name)
         {
             DrawBg = false;
@@ -29,6 +31,16 @@ namespace NativeUI.PauseMenu
         public List<TabItem> Items { get; set; }
         public int Index { get; set; }
         public bool IsInList { get; set; }
+
+        public override bool Focused
+        {
+            get { return _focused; }
+            set
+            {
+                _focused = value;
+                if (!value) Items[Index].Focused = false;
+            }
+        }
 
         public void ProcessControls()
         {
@@ -132,7 +144,7 @@ namespace NativeUI.PauseMenu
             Items[Index].FadeInWhenFocused = true;
             //Items[Index].CanBeFocused = true;
             if (!Items[Index].CanBeFocused)
-                Items[Index].Focused = true;
+                Items[Index].Focused = Focused;
             Items[Index].UseDynamicPositionment = false;
             Items[Index].SafeSize = SafeSize.AddPoints(new Point((int)activeWidth - submenuWidth, 0));
             Items[Index].TopLeft = SafeSize.AddPoints(new Point((int)activeWidth - submenuWidth, 0));

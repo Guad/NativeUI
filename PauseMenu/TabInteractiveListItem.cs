@@ -25,7 +25,8 @@ namespace NativeUI.PauseMenu
         protected const int MaxItemsPerView = 15;
         protected int _minItem;
         protected int _maxItem;
-
+        private bool _focused;
+        
         public void MoveDown()
         {
             Index = (1000 - (1000 % Items.Count) + Index + 1) % Items.Count;
@@ -137,26 +138,26 @@ namespace NativeUI.PauseMenu
                 if (hasLeftBadge && !hasRightBadge)
                 {
                     new Sprite(UIMenuItem.BadgeToSpriteLib(Items[c].LeftBadge),
-                        UIMenuItem.BadgeToSpriteName(Items[c].LeftBadge, Index == c), SafeSize.AddPoints(new Point(-2, 1 + (itemSize.Height + 3) * i)), new Size(40, 40), 0f,
-                        UIMenuItem.BadgeToColor(Items[c].LeftBadge, Index == c)).Draw();
+                        UIMenuItem.BadgeToSpriteName(Items[c].LeftBadge, (Index == c && Focused)), SafeSize.AddPoints(new Point(-2, 1 + (itemSize.Height + 3) * i)), new Size(40, 40), 0f,
+                        UIMenuItem.BadgeToColor(Items[c].LeftBadge, (Index == c && Focused))).Draw();
                 }
 
                 if (!hasLeftBadge && hasRightBadge)
                 {
                     new Sprite(UIMenuItem.BadgeToSpriteLib(Items[c].RightBadge),
-                        UIMenuItem.BadgeToSpriteName(Items[c].RightBadge, Index == c), SafeSize.AddPoints(new Point(-2, 1 + (itemSize.Height + 3) * i)), new Size(40, 40), 0f,
-                        UIMenuItem.BadgeToColor(Items[c].RightBadge, Index == c)).Draw();
+                        UIMenuItem.BadgeToSpriteName(Items[c].RightBadge, (Index == c && Focused)), SafeSize.AddPoints(new Point(-2, 1 + (itemSize.Height + 3) * i)), new Size(40, 40), 0f,
+                        UIMenuItem.BadgeToColor(Items[c].RightBadge, (Index == c && Focused))).Draw();
                 }
 
                 if (hasLeftBadge && hasRightBadge)
                 {
                     new Sprite(UIMenuItem.BadgeToSpriteLib(Items[c].LeftBadge),
-                        UIMenuItem.BadgeToSpriteName(Items[c].LeftBadge, Index == c), SafeSize.AddPoints(new Point(-2, 1 + (itemSize.Height + 3) * i)), new Size(40, 40), 0f,
-                        UIMenuItem.BadgeToColor(Items[c].LeftBadge, Index == c)).Draw();
+                        UIMenuItem.BadgeToSpriteName(Items[c].LeftBadge, (Index == c && Focused)), SafeSize.AddPoints(new Point(-2, 1 + (itemSize.Height + 3) * i)), new Size(40, 40), 0f,
+                        UIMenuItem.BadgeToColor(Items[c].LeftBadge, (Index == c && Focused))).Draw();
 
                     new Sprite(UIMenuItem.BadgeToSpriteLib(Items[c].RightBadge),
-                        UIMenuItem.BadgeToSpriteName(Items[c].RightBadge, Index == c), SafeSize.AddPoints(new Point(25, 1 + (itemSize.Height + 3) * i)), new Size(40, 40), 0f,
-                        UIMenuItem.BadgeToColor(Items[c].RightBadge, Index == c)).Draw();
+                        UIMenuItem.BadgeToSpriteName(Items[c].RightBadge, (Index == c && Focused)), SafeSize.AddPoints(new Point(25, 1 + (itemSize.Height + 3) * i)), new Size(40, 40), 0f,
+                        UIMenuItem.BadgeToColor(Items[c].RightBadge, (Index == c && Focused))).Draw();
                 }
 
                 if (!string.IsNullOrEmpty(Items[c].RightLabel))
