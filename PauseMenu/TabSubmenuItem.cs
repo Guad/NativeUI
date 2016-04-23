@@ -42,7 +42,7 @@ namespace NativeUI.PauseMenu
             }
         }
 
-        public void ProcessControls()
+        public override void ProcessControls()
         {
             if (JustOpened)
             {
@@ -87,14 +87,14 @@ namespace NativeUI.PauseMenu
                 Index = (1000 - (1000 % Items.Count) + Index + 1) % Items.Count;
                 Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
             }
+
+            if (Items.Count > 0) Items[Index].ProcessControls();
         }
 
         public override void Draw()
         {
             if (!Visible) return;
             base.Draw();
-
-            ProcessControls();
 
             var res = UIMenu.GetScreenResolutionMantainRatio();
 

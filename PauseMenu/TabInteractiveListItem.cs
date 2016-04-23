@@ -73,8 +73,9 @@ namespace NativeUI.PauseMenu
         }
 
 
-        public void ProcessControls()
+        public override void ProcessControls()
         {
+            if (!Visible) return;
             if (JustOpened)
             {
                 JustOpened = false;
@@ -85,10 +86,29 @@ namespace NativeUI.PauseMenu
 
             if (Items.Count == 0) return;
 
-            if (Game.IsControlJustPressed(0, Control.FrontendAccept) && Focused)
+
+            if (Game.IsControlJustPressed(0, Control.FrontendAccept) && Focused && Items[Index] is UIMenuCheckboxItem)
+            {
+                Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
+                ((UIMenuCheckboxItem) Items[Index]).Checked = !((UIMenuCheckboxItem) Items[Index]).Checked;
+                ((UIMenuCheckboxItem)Items[Index]).CheckboxEventTrigger();
+            }
+            else if (Game.IsControlJustPressed(0, Control.FrontendAccept) && Focused)
             {
                 Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
                 Items[Index].ItemActivate(null);
+            }
+
+            if (Game.IsControlJustPressed(0, Control.FrontendLeft) && Focused && Items[Index] is UIMenuListItem)
+            {
+                Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
+                ((UIMenuListItem)Items[Index]).ListChangedTrigger(--((UIMenuListItem)Items[Index]).Index);
+            }
+
+            if (Game.IsControlJustPressed(0, Control.FrontendRight) && Focused && Items[Index] is UIMenuListItem)
+            {
+                Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
+                ((UIMenuListItem)Items[Index]).ListChangedTrigger(++((UIMenuListItem)Items[Index]).Index);
             }
 
             if (Game.IsControlJustPressed(0, Control.FrontendUp) || Game.IsControlJustPressed(0, Control.MoveUpOnly) || Game.IsControlJustPressed(0, Control.CursorScrollUp))
@@ -108,8 +128,6 @@ namespace NativeUI.PauseMenu
         {
             if (!Visible) return;
             base.Draw();
-
-            ProcessControls();
 
             var res = UIMenu.GetScreenResolutionMantainRatio();
 
@@ -168,6 +186,20 @@ namespace NativeUI.PauseMenu
                         Font.ChaletLondon, UIResText.Alignment.Right).Draw();
                 }
 
+                if (Items[c] is UIMenuCheckboxItem)
+                {
+                    string textureName = "";
+                    if (c == Index && Focused)
+                    {
+                        textureName = ((UIMenuCheckboxItem)Items[c]).Checked ? "shop_box_tickb" : "shop_box_blankb";
+                    }
+                    else
+                    {
+                        textureName = ((UIMenuCheckboxItem)Items[c]).Checked ? "shop_box_tick" : "shop_box_blank";
+                    }
+                    new Sprite("commonmenu", textureName, SafeSize.AddPoints(new Point(BottomRight.X - SafeSize.X - 60, -5 + (itemSize.Height + 3) * i)), new Size(50, 50)).Draw();
+                }
+
                 if (Focused && hovering && Game.IsControlJustPressed(0, Control.CursorAccept))
                 {
                     bool open = Index == c;
@@ -176,8 +208,17 @@ namespace NativeUI.PauseMenu
                         Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
                     else
                     {
-                        Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
-                        Items[Index].ItemActivate(null);
+                        if (Items[Index] is UIMenuCheckboxItem)
+                        {
+                            Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
+                            ((UIMenuCheckboxItem) Items[Index]).Checked = !((UIMenuCheckboxItem) Items[Index]).Checked;
+                            ((UIMenuCheckboxItem) Items[Index]).CheckboxEventTrigger();
+                        }
+                        else
+                        {
+                            Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
+                            Items[Index].ItemActivate(null);
+                        }
                     }
                 }
 

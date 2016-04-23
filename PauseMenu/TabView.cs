@@ -28,6 +28,7 @@ namespace NativeUI.PauseMenu
         public int FocusLevel { get; set; }
         public bool TemporarilyHidden { get; set; }
         public bool CanLeave { get; set; }
+        public bool HideTabs { get; set; }
 
         public event EventHandler OnMenuClose;
 
@@ -58,11 +59,7 @@ namespace NativeUI.PauseMenu
 
         public int Index;
         private bool _visible;
-
-        public void ProcessMouse()
-        {
-        }
-
+        
         private Scaleform _sc;
         public void ShowInstructionalButtons()
         {
@@ -91,6 +88,7 @@ namespace NativeUI.PauseMenu
 
         public void ProcessControls()
         {
+            if (!Visible || TemporarilyHidden) return;
             Function.Call(Hash.DISABLE_ALL_CONTROL_ACTIONS, 0);
 
             if (Game.IsControlJustPressed(0, Control.PhoneLeft) && FocusLevel == 0)
@@ -153,36 +151,41 @@ namespace NativeUI.PauseMenu
                 OnMenuClose?.Invoke(this, EventArgs.Empty);
             }
 
-            else if (Game.IsControlJustPressed(0, Control.FrontendLb))
+            if (!HideTabs)
             {
-                Tabs[Index].Active = false;
-                Tabs[Index].Focused = false;
-                Tabs[Index].Visible = false;
-                Index = (1000 - (1000 % Tabs.Count) + Index - 1) % Tabs.Count;
-                Tabs[Index].Active = true;
-                Tabs[Index].Focused = false;
-                Tabs[Index].Visible = true;
 
-                FocusLevel = 0;
+                if (Game.IsControlJustPressed(0, Control.FrontendLb))
+                {
+                    Tabs[Index].Active = false;
+                    Tabs[Index].Focused = false;
+                    Tabs[Index].Visible = false;
+                    Index = (1000 - (1000%Tabs.Count) + Index - 1)%Tabs.Count;
+                    Tabs[Index].Active = true;
+                    Tabs[Index].Focused = false;
+                    Tabs[Index].Visible = true;
 
-                Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
+                    FocusLevel = 0;
+
+                    Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
+                }
+
+                else if (Game.IsControlJustPressed(0, Control.FrontendRb))
+                {
+                    Tabs[Index].Active = false;
+                    Tabs[Index].Focused = false;
+                    Tabs[Index].Visible = false;
+                    Index = (1000 - (1000%Tabs.Count) + Index + 1)%Tabs.Count;
+                    Tabs[Index].Active = true;
+                    Tabs[Index].Focused = false;
+                    Tabs[Index].Visible = true;
+
+                    FocusLevel = 0;
+
+                    Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
+                }
             }
 
-            else if (Game.IsControlJustPressed(0, Control.FrontendRb))
-            {
-                Tabs[Index].Active = false;
-                Tabs[Index].Focused = false;
-                Tabs[Index].Visible = false;
-                Index = (1000 - (1000 % Tabs.Count) + Index + 1) % Tabs.Count;
-                Tabs[Index].Active = true;
-                Tabs[Index].Focused = false;
-                Tabs[Index].Visible = true;
-
-                FocusLevel = 0;
-
-                Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
-            }
-
+            if (Tabs.Count > 0) Tabs[Index].ProcessControls();
         }
 
         public void RefreshIndex()
@@ -208,101 +211,109 @@ namespace NativeUI.PauseMenu
             Function.Call(Hash.HIDE_HUD_AND_RADAR_THIS_FRAME);
             Function.Call(Hash._SHOW_CURSOR_THIS_FRAME);
 
-            ProcessControls();
-            ProcessMouse();
-
+            
             var res = UIMenu.GetScreenResolutionMantainRatio();
             var safe = new Point(300, 180);
-
-            new UIResText(Title, new Point(safe.X, safe.Y - 80), 1f, Color.White, Font.ChaletComprimeCologne, UIResText.Alignment.Left)
+            if (!HideTabs)
             {
-                DropShadow = true,
-            }.Draw();
-
-            if (Photo == null)
-            {
-                new Sprite("char_multiplayer", "char_multiplayer", new Point((int)res.Width - safe.X - 64, safe.Y - 80), new Size(64, 64)).Draw();
-            }
-            else
-            {
-                Photo.Position = new Point((int)res.Width - safe.X - 100, safe.Y - 80);
-                Photo.Size = new Size(64, 64);
-                Photo.Draw();
-            }
-
-            new UIResText(Name, new Point((int)res.Width - safe.X - 70, safe.Y - 95), 0.7f, Color.White,
-                Font.ChaletComprimeCologne, UIResText.Alignment.Right)
-            {
-                DropShadow = true,
-            }.Draw();
-
-            string t = Money;
-            if (string.IsNullOrEmpty(Money))
-            {
-                t = DateTime.Now.ToString();
-            }
-
-
-            new UIResText(t, new Point((int)res.Width - safe.X - 70, safe.Y - 60), 0.4f, Color.White,
-                Font.ChaletComprimeCologne, UIResText.Alignment.Right)
-            {
-                DropShadow = true,
-            }.Draw();
-
-			string subt = MoneySubtitle;
-			if (string.IsNullOrEmpty(MoneySubtitle))
-			{
-				subt = "";
-			}
-			
-            new UIResText(subt, new Point((int)res.Width - safe.X - 70, safe.Y - 40), 0.4f, Color.White,
-                Font.ChaletComprimeCologne, UIResText.Alignment.Right)
-            {
-                DropShadow = true,
-            }.Draw();
-
-            for (int i = 0; i < Tabs.Count; i++)
-            {
-                var activeSize = res.Width - 2 * safe.X;
-                activeSize -= 4 * 5;
-                int tabWidth = (int)activeSize / Tabs.Count;
-
-                Game.EnableControl(0, Control.CursorX);
-                Game.EnableControl(0, Control.CursorY);
-
-                var hovering = UIMenu.IsMouseInBounds(safe.AddPoints(new Point((tabWidth + 5)*i, 0)), new Size(tabWidth, 40));
-                
-                var tabColor = Tabs[i].Active ? Color.White : hovering ? Color.FromArgb(100, 50, 50, 50) : Color.Black;
-                new UIResRectangle(safe.AddPoints(new Point((tabWidth + 5) * i, 0)), new Size(tabWidth, 40), Color.FromArgb(Tabs[i].Active ? 255 : 200, tabColor)).Draw();
-
-                new UIResText(Tabs[i].Title.ToUpper(), safe.AddPoints(new Point((tabWidth / 2) + (tabWidth + 5) * i, 5)), 0.35f,
-                    Tabs[i].Active ? Color.Black : Color.White, Font.ChaletLondon, UIResText.Alignment.Centered).Draw();
-
-                if (Tabs[i].Active)
+                new UIResText(Title, new Point(safe.X, safe.Y - 80), 1f, Color.White, Font.ChaletComprimeCologne,
+                    UIResText.Alignment.Left)
                 {
-                    new UIResRectangle(safe.SubtractPoints(new Point(-((tabWidth + 5) * i), 10)), new Size(tabWidth, 10), Color.DodgerBlue).Draw();
+                    DropShadow = true,
+                }.Draw();
+
+                if (Photo == null)
+                {
+                    new Sprite("char_multiplayer", "char_multiplayer",
+                        new Point((int) res.Width - safe.X - 64, safe.Y - 80), new Size(64, 64)).Draw();
+                }
+                else
+                {
+                    Photo.Position = new Point((int) res.Width - safe.X - 100, safe.Y - 80);
+                    Photo.Size = new Size(64, 64);
+                    Photo.Draw();
                 }
 
-                if (hovering && Game.IsControlJustPressed(0, Control.CursorAccept) && !Tabs[i].Active)
+                new UIResText(Name, new Point((int) res.Width - safe.X - 70, safe.Y - 95), 0.7f, Color.White,
+                    Font.ChaletComprimeCologne, UIResText.Alignment.Right)
                 {
-                    Tabs[Index].Active = false;
-                    Tabs[Index].Focused = false;
-                    Tabs[Index].Visible = false;
-                    Index = (1000 - (1000 % Tabs.Count) + i) % Tabs.Count;
-                    Tabs[Index].Active = true;
-                    Tabs[Index].Focused = true;
-                    Tabs[Index].Visible = true;
-                    Tabs[Index].JustOpened = true;
+                    DropShadow = true,
+                }.Draw();
 
-                    if (Tabs[Index].CanBeFocused)
-                        FocusLevel = 1;
-                    else
-                        FocusLevel = 0;
+                string t = Money;
+                if (string.IsNullOrEmpty(Money))
+                {
+                    t = DateTime.Now.ToString();
+                }
 
-                    Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
+
+                new UIResText(t, new Point((int) res.Width - safe.X - 70, safe.Y - 60), 0.4f, Color.White,
+                    Font.ChaletComprimeCologne, UIResText.Alignment.Right)
+                {
+                    DropShadow = true,
+                }.Draw();
+
+                string subt = MoneySubtitle;
+                if (string.IsNullOrEmpty(MoneySubtitle))
+                {
+                    subt = "";
+                }
+
+                new UIResText(subt, new Point((int) res.Width - safe.X - 70, safe.Y - 40), 0.4f, Color.White,
+                    Font.ChaletComprimeCologne, UIResText.Alignment.Right)
+                {
+                    DropShadow = true,
+                }.Draw();
+
+                for (int i = 0; i < Tabs.Count; i++)
+                {
+                    var activeSize = res.Width - 2*safe.X;
+                    activeSize -= 4*5;
+                    int tabWidth = (int) activeSize/Tabs.Count;
+
+                    Game.EnableControl(0, Control.CursorX);
+                    Game.EnableControl(0, Control.CursorY);
+
+                    var hovering = UIMenu.IsMouseInBounds(safe.AddPoints(new Point((tabWidth + 5)*i, 0)),
+                        new Size(tabWidth, 40));
+
+                    var tabColor = Tabs[i].Active
+                        ? Color.White
+                        : hovering ? Color.FromArgb(100, 50, 50, 50) : Color.Black;
+                    new UIResRectangle(safe.AddPoints(new Point((tabWidth + 5)*i, 0)), new Size(tabWidth, 40),
+                        Color.FromArgb(Tabs[i].Active ? 255 : 200, tabColor)).Draw();
+
+                    new UIResText(Tabs[i].Title.ToUpper(), safe.AddPoints(new Point((tabWidth/2) + (tabWidth + 5)*i, 5)),
+                        0.35f,
+                        Tabs[i].Active ? Color.Black : Color.White, Font.ChaletLondon, UIResText.Alignment.Centered)
+                        .Draw();
+
+                    if (Tabs[i].Active)
+                    {
+                        new UIResRectangle(safe.SubtractPoints(new Point(-((tabWidth + 5)*i), 10)),
+                            new Size(tabWidth, 10), Color.DodgerBlue).Draw();
+                    }
+
+                    if (hovering && Game.IsControlJustPressed(0, Control.CursorAccept) && !Tabs[i].Active)
+                    {
+                        Tabs[Index].Active = false;
+                        Tabs[Index].Focused = false;
+                        Tabs[Index].Visible = false;
+                        Index = (1000 - (1000%Tabs.Count) + i)%Tabs.Count;
+                        Tabs[Index].Active = true;
+                        Tabs[Index].Focused = true;
+                        Tabs[Index].Visible = true;
+                        Tabs[Index].JustOpened = true;
+
+                        if (Tabs[Index].CanBeFocused)
+                            FocusLevel = 1;
+                        else
+                            FocusLevel = 0;
+
+                        Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
+                    }
                 }
             }
-
             Tabs[Index].Draw();
 
             _sc.CallFunction("DRAW_INSTRUCTIONAL_BUTTONS", -1);

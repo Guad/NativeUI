@@ -37,7 +37,12 @@ namespace NativeUI.PauseMenu
         {
             Activated?.Invoke(this, EventArgs.Empty);
         }
-        
+
+
+        public virtual void ProcessControls()
+        {
+            
+        }
 
         public virtual void Draw()
         {

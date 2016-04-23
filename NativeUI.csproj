@@ -35,7 +35,7 @@
   <ItemGroup>
     <Reference Include="ScriptHookVDotNet, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files\Rockstar Games\Grand Theft Auto V\ScriptHookVDotNet.dll</HintPath>
+      <HintPath>..\GTANetwork\libs\ScriptHookVDotNet.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -71,6 +71,9 @@
     <Compile Include="UIMenuListItem.cs" />
     <Compile Include="UIResRectangle.cs" />
     <Compile Include="UIResText.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
