@@ -2,14 +2,14 @@
 using System.Drawing;
 using GTA;
 using GTA.Native;
-using Font = GTA.Font;
+using Font = GTA.UI.Font;
 
 namespace NativeUI
 {
     /// <summary>
     /// A Text object in the 1080 pixels height base system.
     /// </summary>
-    public class UIResText : UIText
+    public class UIResText : GTA.UI.Text
     {
         public UIResText(string caption, Point position, float scale) : base(caption, position, scale)
         {
@@ -67,7 +67,7 @@ namespace NativeUI
 
         public Size WordWrap { get; set; }
 
-        public override void Draw(Size offset)
+        public override void Draw(SizeF offset)
         {
             int screenw = Game.ScreenResolution.Width;
             int screenh = Game.ScreenResolution.Height;

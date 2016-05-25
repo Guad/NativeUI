@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using GTA;
 using GTA.Native;
-using Font = GTA.Font;
+using Font = GTA.UI.Font;
 
 namespace NativeUI.PauseMenu
 {

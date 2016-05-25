@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using GTA;
 using GTA.Native;
-using Font = GTA.Font;
+using Font = GTA.UI.Font;
 
 namespace NativeUI.PauseMenu
 {
@@ -271,8 +271,8 @@ namespace NativeUI.PauseMenu
                     activeSize -= 4*5;
                     int tabWidth = (int) activeSize/Tabs.Count;
 
-                    Game.EnableControl(0, Control.CursorX);
-                    Game.EnableControl(0, Control.CursorY);
+                    Game.EnableControlThisFrame(0, Control.CursorX);
+                    Game.EnableControlThisFrame(0, Control.CursorY);
 
                     var hovering = UIMenu.IsMouseInBounds(safe.AddPoints(new Point((tabWidth + 5)*i, 0)),
                         new Size(tabWidth, 40));

@@ -41,7 +41,7 @@ namespace NativeUI
             Enabled = true;
 
             _rectangle = new UIResRectangle(new Point(0, 0), new Size(431, 38), Color.FromArgb(150, 0, 0, 0));
-            _text = new UIResText(text, new Point(8, 0), 0.33f, Color.WhiteSmoke, GTA.Font.ChaletLondon, UIResText.Alignment.Left);
+            _text = new UIResText(text, new Point(8, 0), 0.33f, Color.WhiteSmoke, GTA.UI.Font.ChaletLondon, UIResText.Alignment.Left);
             Description = description;
             _selectedSprite = new Sprite("commonmenu", "gradient_nav", new Point(0, 0), new Size(431, 38));
 
@@ -118,7 +118,7 @@ namespace NativeUI
 
             if (LeftBadge != BadgeStyle.None)
             {
-                _text.Position = new Point(35 + Offset.X, _text.Position.Y);
+                _text.Position = new Point(35 + Offset.X, (int)_text.Position.Y);
                 _badgeLeft.TextureDict = BadgeToSpriteLib(LeftBadge);
                 _badgeLeft.TextureName = BadgeToSpriteName(LeftBadge, Selected);
                 _badgeLeft.Color = BadgeToColor(LeftBadge, Selected);
@@ -126,7 +126,7 @@ namespace NativeUI
             }
             else
             {
-                _text.Position = new Point(8 + Offset.X, _text.Position.Y);
+                _text.Position = new Point(8 + Offset.X, (int)_text.Position.Y);
             }
 
             if (RightBadge != BadgeStyle.None)
@@ -140,7 +140,7 @@ namespace NativeUI
 
             if (!String.IsNullOrWhiteSpace(RightLabel))
             {
-                _labelText.Position = new Point(420 + Offset.X + Parent.WidthOffset, _labelText.Position.Y);
+                _labelText.Position = new Point(420 + Offset.X + Parent.WidthOffset, (int)_labelText.Position.Y);
                 _labelText.Caption = RightLabel;
                 _labelText.Color = _text.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
                 _labelText.Draw();

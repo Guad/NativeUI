@@ -7,7 +7,7 @@ namespace NativeUI
     /// <summary>
     /// A rectangle in 1080 pixels height system.
     /// </summary>
-    public class UIResRectangle : UIRectangle
+    public class UIResRectangle : GTA.UI.Rectangle
     {
         public UIResRectangle()
         { }
@@ -18,7 +18,7 @@ namespace NativeUI
         public UIResRectangle(Point pos, Size size, Color color) : base(pos, size, color)
         { }
         
-        public override void Draw(Size offset)
+        public override void Draw(SizeF offset)
         {
             if (!Enabled) return;
             int screenw = Game.ScreenResolution.Width;

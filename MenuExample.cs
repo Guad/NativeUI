@@ -4,7 +4,9 @@ using System.Drawing;
 using System.Windows.Forms;
 using GTA;
 using GTA.Native;
+using GTA.UI;
 using NativeUI;
+using Screen = GTA.UI.Screen;
 
 public class MenuExample : Script
 {
@@ -21,7 +23,7 @@ public class MenuExample : Script
             if (item == newitem)
             {
                 ketchup = checked_;
-                UI.Notify("~r~Ketchup status: ~b~" + ketchup);
+				Screen.Notify("~r~Ketchup status: ~b~" + ketchup);
             }
         };
     }
@@ -43,7 +45,7 @@ public class MenuExample : Script
             if (item == newitem)
             {
                 dish = item.IndexToItem(index).ToString();
-                UI.Notify("Preparing ~b~" + dish + "~w~...");
+				Screen.Notify("Preparing ~b~" + dish + "~w~...");
             }
 
         };
@@ -60,7 +62,7 @@ public class MenuExample : Script
             if (item == newitem)
             {
                 string output = ketchup ? "You have ordered ~b~{0}~w~ ~r~with~w~ ketchup." : "You have ordered ~b~{0}~w~ ~r~without~w~ ketchup.";
-                UI.ShowSubtitle(String.Format(output, dish));
+				Screen.ShowSubtitle(String.Format(output, dish));
             }
         };
         menu.OnIndexChange += (sender, index) =>
