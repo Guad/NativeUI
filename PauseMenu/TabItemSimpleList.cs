@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Font = GTA.Font;
+using Font = GTA.UI.Font;
 
 namespace NativeUI.PauseMenu
 {

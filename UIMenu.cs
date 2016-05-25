@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using GTA;
 using GTA.Native;
 using Control = GTA.Control;
-using Font = GTA.Font;
+using Font = GTA.UI.Font;	  
 
 namespace NativeUI
 {
@@ -33,7 +33,7 @@ namespace NativeUI
     /// </summary>
     public class UIMenu
     {
-        private readonly UIContainer _mainMenu;
+        private readonly GTA.UI.Container _mainMenu;
         private Sprite _logo;
         private readonly Sprite _background;
 
@@ -170,7 +170,7 @@ namespace NativeUI
             _instructionalButtonsScaleform.Load("instructional_buttons");
             UpdateScaleform();
 
-            _mainMenu = new UIContainer(new Point(0, 0), new Size(700, 500), Color.FromArgb(0, 0, 0, 0));
+            _mainMenu = new GTA.UI.Container(new Point(0, 0), new Size(700, 500), Color.FromArgb(0, 0, 0, 0));
             _logo = new Sprite(spriteLibrary, spriteName, new Point(0 + _offset.X, 0 + _offset.Y), new Size(431, 107));
             _mainMenu.Items.Add(Title = new UIResText(title, new Point(215 + _offset.X, 20 + _offset.Y), 1.15f, Color.White, Font.HouseScript, UIResText.Alignment.Centered));
             if (!String.IsNullOrWhiteSpace(subtitle))
@@ -226,9 +226,9 @@ namespace NativeUI
             if (count > MaxItemsOnScreen + 1)
                 count = MaxItemsOnScreen + 2;
 
-            _descriptionBar.Position = new Point(_offset.X, 38*count + _descriptionBar.Position.Y);
+            _descriptionBar.Position = new Point(_offset.X, (int)(38*count + _descriptionBar.Position.Y));
             _descriptionRectangle.Position = new Point(_offset.X, 38*count + _descriptionRectangle.Position.Y);
-            _descriptionText.Position = new Point(_offset.X + 8, 38*count + _descriptionText.Position.Y);
+            _descriptionText.Position = new Point(_offset.X + 8, (int)(38*count + _descriptionText.Position.Y));
         }
 
 

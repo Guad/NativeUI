@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using GTA;
 using GTA.Native;
+using GTA.UI;
 
 namespace NativeUI
 {
@@ -104,20 +105,18 @@ namespace NativeUI
             float ratio = (float)screenw / screenh;
             float width = height * ratio;
             
-            float reduceX = UI.WIDTH / width;
-            float reduceY = UI.HEIGHT / height;
+            float reduceX = Screen.WIDTH / width;
+            float reduceY = Screen.HEIGHT / height;
 
             
             Point extra = new Point(0,0);
             if (screenw == 1914 && screenh == 1052) //TODO: Fix this when ScriptHookVDotNet 1.2 comes out.
                 extra = new Point(15, 0);
 
-            UI.DrawTexture(path, 1, 1, 60,
-                new Point(Convert.ToInt32(position.X*reduceX) + extra.X, Convert.ToInt32(position.Y*reduceY) + extra.Y),
-                new PointF(0f, 0f), 
-                new Size(Convert.ToInt32(size.Width * reduceX), Convert.ToInt32(size.Height * reduceY)),
-                rotation, color);
-        }
+			new GTA.UI.CustomSprite(path, 
+				new SizeF(size.Width * reduceX, size.Height * reduceY),
+				new PointF((position.X * reduceX) + extra.X, (position.Y * reduceY) + extra.Y), color).Draw();
+		}
 
         /// <summary>
         /// Draw a custom texture from a file on a 1080-pixels height base.
@@ -134,19 +133,17 @@ namespace NativeUI
             float ratio = (float)screenw / screenh;
             float width = height * ratio;
 
-            float reduceX = UI.WIDTH / width;
-            float reduceY = UI.HEIGHT / height;
+            float reduceX = Screen.WIDTH / width;
+            float reduceY = Screen.HEIGHT / height;
 
 
             Point extra = new Point(0, 0);
             if (screenw == 1914 && screenh == 1052) //TODO: Fix this when ScriptHookVDotNet 1.2 comes out.
                 extra = new Point(15, 0);
+			new GTA.UI.CustomSprite(path, 
+				new SizeF(size.Width * reduceX, size.Height * reduceY),
+				new PointF((position.X * reduceX) + extra.X, (position.Y * reduceY) + extra.Y)).Draw();
 
-            UI.DrawTexture(path, 1, 1, 60,
-                new Point(Convert.ToInt32(position.X * reduceX) + extra.X, Convert.ToInt32(position.Y * reduceY) + extra.Y),
-                new PointF(0f, 0f),
-                new Size(Convert.ToInt32(size.Width * reduceX), Convert.ToInt32(size.Height * reduceY)),
-                0f, Color.White);
         }
 
 

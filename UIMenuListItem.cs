@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using GTA;
-using Font = GTA.Font;
+using Font = GTA.UI.Font;
 
 namespace NativeUI
 {
@@ -120,11 +120,11 @@ namespace NativeUI
             {
                 _arrowLeft.Draw();
                 _arrowRight.Draw();
-                _itemText.Position = new Point(405 + Offset.X + Parent.WidthOffset, _itemText.Position.Y);
+                _itemText.Position = new Point(405 + Offset.X + Parent.WidthOffset, (int)_itemText.Position.Y);
             }
             else
             {
-                _itemText.Position = new Point(420 + Offset.X + Parent.WidthOffset, _itemText.Position.Y);
+                _itemText.Position = new Point(420 + Offset.X + Parent.WidthOffset, (int)_itemText.Position.Y);
             }
             _itemText.Draw();
         }
