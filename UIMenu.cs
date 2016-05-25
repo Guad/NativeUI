@@ -390,6 +390,22 @@ namespace NativeUI
 
 
         /// <summary>
+        /// Insert an item into a specific position.
+        /// </summary>
+        /// <param name="item">Item object to add.</param>
+        /// <param name="position">Position in the list to insert at. Ranging from 0 to menu size - 1.</param>
+        public void InsertItem(UIMenuItem item, int position)
+        {
+            item.Offset = _offset;
+            item.Parent = this;
+            item.Position((MenuItems.Count * 25) - 37 + _extraYOffset);
+            MenuItems.Insert(position, item);
+
+            RecaulculateDescriptionPosition();
+        }
+
+
+        /// <summary>
         /// Remove an item at index n.
         /// </summary>
         /// <param name="index">Index to remove the item at.</param>
@@ -762,24 +778,9 @@ namespace NativeUI
                 Game.PlaySound(AUDIO_ERROR, AUDIO_LIBRARY);
                 return;
             }
-            if (MenuItems[CurrentSelection] is UIMenuCheckboxItem)
-            {
-                var it = (UIMenuCheckboxItem)MenuItems[CurrentSelection];
-                it.Checked = !it.Checked;
-                Game.PlaySound(AUDIO_SELECT, AUDIO_LIBRARY);
-                CheckboxChange(it, it.Checked);
-                it.CheckboxEventTrigger();
-            }
-            else
-            {
-                Game.PlaySound(AUDIO_SELECT, AUDIO_LIBRARY);
-                ItemSelect(MenuItems[CurrentSelection], CurrentSelection);
-                MenuItems[CurrentSelection].ItemActivate(this);
-                if (!Children.ContainsKey(MenuItems[CurrentSelection])) return;
-                Visible = false;
-                Children[MenuItems[CurrentSelection]].Visible = true;
-                MenuChangeEv(Children[MenuItems[CurrentSelection]], true);
-            }
+
+            Game.PlaySound(AUDIO_SELECT, AUDIO_LIBRARY);
+            MenuItems[CurrentSelection].ProcessControl(MenuControls.Select);
         }
 
 
@@ -1045,7 +1046,7 @@ namespace NativeUI
         /// <param name="control">Control to check for.</param>
         /// <param name="key">Key if you're using keys.</param>
         /// <returns></returns>
-        public bool HasControlJustBeenReleaseed(MenuControls control, Keys key = Keys.None)
+        public bool HasControlJustBeenReleased(MenuControls control, Keys key = Keys.None)
         {
             List<Keys> tmpKeys = new List<Keys>(_keyDictionary[control].Item1);
             List<Tuple<Control, int>> tmpControls = new List<Tuple<Control, int>>(_keyDictionary[control].Item2);
@@ -1071,7 +1072,7 @@ namespace NativeUI
         {
             List<Keys> tmpKeys = new List<Keys>(_keyDictionary[control].Item1);
             List<Tuple<Control, int>> tmpControls = new List<Tuple<Control, int>>(_keyDictionary[control].Item2);
-            if (HasControlJustBeenReleaseed(control, key)) _controlCounter = 0;
+            if (HasControlJustBeenReleased(control, key)) _controlCounter = 0;
             if (_controlCounter > 0)
             {
                 _controlCounter++;
@@ -1108,12 +1109,15 @@ namespace NativeUI
                 return;
             }
 
-            if (HasControlJustBeenReleaseed(MenuControls.Back, key))
+            if (HasControlJustBeenReleased(MenuControls.Back, key))
             {
-                GoBack();
+                if (MenuItems.Count == 0 || MenuItems[CurrentSelection].ProcessControl(MenuControls.Back))
+                    GoBack();
             }
+
             if (MenuItems.Count == 0) return;
-            if (IsControlBeingPressed(MenuControls.Up, key))
+
+            if (IsControlBeingPressed(MenuControls.Up, key) && MenuItems[CurrentSelection].ProcessControl(MenuControls.Up))
             {
                 if (Size > MaxItemsOnScreen + 1)
                     GoUpOverflow();
@@ -1122,7 +1126,7 @@ namespace NativeUI
                 UpdateScaleform();
             }
 
-            else if (IsControlBeingPressed(MenuControls.Down, key))
+            else if (IsControlBeingPressed(MenuControls.Down, key) && MenuItems[CurrentSelection].ProcessControl(MenuControls.Down))
             {
                 if (Size > MaxItemsOnScreen + 1)
                     GoDownOverflow();
@@ -1133,12 +1137,12 @@ namespace NativeUI
 
             else if (IsControlBeingPressed(MenuControls.Left, key))
             {
-                GoLeft();
+                MenuItems[CurrentSelection].ProcessControl(MenuControls.Left);
             }
 
             else if (IsControlBeingPressed(MenuControls.Right, key))
             {
-                GoRight();
+                MenuItems[CurrentSelection].ProcessControl(MenuControls.Right);
             }
 
             else if (HasControlJustBeenPressed(MenuControls.Select, key))
@@ -1312,35 +1316,35 @@ namespace NativeUI
         public UIMenuItem ParentItem { get; set; }
 
 
-        protected virtual void IndexChange(int newindex)
+        internal virtual void IndexChange(int newindex)
         {
             OnIndexChange?.Invoke(this, newindex);
         }
 
 
-        protected virtual void ListChange(UIMenuListItem sender, int newindex)
+        internal virtual void ListChange(UIMenuListItem sender, int newindex)
         {
             OnListChange?.Invoke(this, sender, newindex);
         }
 
 
-        protected virtual void ItemSelect(UIMenuItem selecteditem, int index)
+        internal virtual void ItemSelect(UIMenuItem selecteditem, int index)
         {
             OnItemSelect?.Invoke(this, selecteditem, index);
         }
 
 
-        protected virtual void CheckboxChange(UIMenuCheckboxItem sender, bool Checked)
+        internal virtual void CheckboxChange(UIMenuCheckboxItem sender, bool Checked)
         {
             OnCheckboxChange?.Invoke(this, sender, Checked);
         }
         
-        protected virtual void MenuCloseEv()
+        internal virtual void MenuCloseEv()
         {
             OnMenuClose?.Invoke(this);
         }
 
-        protected virtual void MenuChangeEv(UIMenu newmenu, bool forward)
+        internal virtual void MenuChangeEv(UIMenu newmenu, bool forward)
         {
             OnMenuChange?.Invoke(this, newmenu, forward);
         }

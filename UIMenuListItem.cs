@@ -99,6 +99,33 @@ namespace NativeUI
         }
 
 
+        public override bool ProcessControl(UIMenu.MenuControls control)
+        {
+            if (!Enabled)
+            {
+                Game.PlaySound(Parent.AUDIO_ERROR, Parent.AUDIO_LIBRARY);
+                return true;
+            }
+
+            switch (control)
+            {
+                case UIMenu.MenuControls.Left:
+                    Index--;
+                    Parent.ListChange(this, Index);
+                    ListChangedTrigger(Index);
+                    Game.PlaySound(Parent.AUDIO_LEFTRIGHT, Parent.AUDIO_LIBRARY);
+                    break;
+                case UIMenu.MenuControls.Right:
+                    Index++;
+                    Parent.ListChange(this, Index);
+                    ListChangedTrigger(Index);
+                    Game.PlaySound(Parent.AUDIO_LEFTRIGHT, Parent.AUDIO_LIBRARY);
+                    break;
+            }
+
+            return base.ProcessControl(control);
+        }
+
         /// <summary>
         /// Draw item.
         /// </summary>

@@ -97,6 +97,27 @@ namespace NativeUI
             _labelText.Position = new Point(420 + Offset.X, y + 148 + Offset.Y);
         }
 
+        /// <summary>
+        /// Process a specific control. Override to customize your own item.
+        /// </summary>
+        /// <param name="control">Control that has been pressed.</param>
+        /// <returns>Return true if you want the control to be processed by the parent menu.</returns>
+        public virtual bool ProcessControl(UIMenu.MenuControls control)
+        {
+            switch (control)
+            {
+                case UIMenu.MenuControls.Select:
+                    Parent.ItemSelect(this, Parent.CurrentSelection);
+                    ItemActivate(Parent);
+                    if (!Parent.Children.ContainsKey(this)) return true;
+                    Parent.Visible = false;
+                    Parent.Children[this].Visible = true;
+                    Parent.MenuChangeEv(Parent.Children[this], true);
+                    break;
+            }
+            return true;
+        }
+
 
         /// <summary>
         /// Draw this item.

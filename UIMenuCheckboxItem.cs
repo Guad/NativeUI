@@ -52,7 +52,19 @@ namespace NativeUI
             base.Position(y);
             _checkedSprite.Position = new Point(380 + Offset.X + Parent.WidthOffset, y + 138 + Offset.Y);
         }
-        
+
+        public override bool ProcessControl(UIMenu.MenuControls control)
+        {
+            switch (control)
+            {
+                case UIMenu.MenuControls.Select:
+                    Checked = !Checked;
+                    Parent.CheckboxChange(this, Checked);
+                    CheckboxEventTrigger();
+                    break;
+            }
+            return true;
+        }
 
         /// <summary>
         /// Draw item.
