@@ -6,7 +6,8 @@ using System.Windows.Forms;
 using GTA;
 using GTA.Native;
 using Control = GTA.Control;
-using Font = GTA.UI.Font;	  
+using Font = GTA.UI.Font;	 
+using Screen = GTA.UI.Screen;
 
 namespace NativeUI
 {
@@ -166,8 +167,8 @@ namespace NativeUI
             Children = new Dictionary<UIMenuItem, UIMenu>();
             WidthOffset = 0;
 
-            _instructionalButtonsScaleform = new Scaleform(0);
-            _instructionalButtonsScaleform.Load("instructional_buttons");
+            _instructionalButtonsScaleform = new Scaleform("instructional_buttons");
+            
             UpdateScaleform();
 
             _mainMenu = new GTA.UI.Container(new Point(0, 0), new Size(700, 500), Color.FromArgb(0, 0, 0, 0));
@@ -461,7 +462,7 @@ namespace NativeUI
                 DisEnableControls(false);
 
             if(_buttonsEnabled)
-                Function.Call(Hash._0x0DF606929C105BE1, _instructionalButtonsScaleform.Handle, 255, 255, 255, 255, 0);
+                Function.Call(Hash.DRAW_SCALEFORM_MOVIE_FULLSCREEN, _instructionalButtonsScaleform.Handle, 255, 255, 255, 255, 0);
                 // _instructionalButtonsScaleform.Render2D(); // Bug #13
 
 
@@ -562,8 +563,8 @@ namespace NativeUI
         /// <returns></returns>
         public static SizeF GetScreenResolutionMantainRatio()
         {
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
+            int screenw = Screen.Resolution.Width;
+            int screenh = Screen.Resolution.Height;
             const float height = 1080f;
             float ratio = (float)screenw / screenh;
             var width = height * ratio;
@@ -630,8 +631,8 @@ namespace NativeUI
             g = 10 - g;
 
             const float hmp = 5.4f;
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
+            int screenw = Screen.Resolution.Width;
+            int screenh = Screen.Resolution.Height;
             float ratio = (float)screenw / screenh;
             float wmp = ratio*hmp;
             
@@ -1219,8 +1220,8 @@ namespace NativeUI
             _instructionalButtonsScaleform.CallFunction("CREATE_CONTAINER");
             
 
-            _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 0, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)Control.PhoneSelect, 0), "Select");
-            _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 1, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)Control.PhoneCancel, 0), "Back");
+            _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 0, Function.Call<string>(Hash._GET_CONTROL_ACTION_NAME, 2, (int)Control.PhoneSelect, 0), "Select");
+            _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 1, Function.Call<string>(Hash._GET_CONTROL_ACTION_NAME, 2, (int)Control.PhoneCancel, 0), "Back");
             int count = 2;
             foreach (var button in _instructionalButtons.Where(button => button.ItemBind == null || MenuItems[CurrentSelection] == button.ItemBind))
             {
@@ -1244,7 +1245,7 @@ namespace NativeUI
                 UpdateScaleform();
                 if (ParentMenu != null || !value) return;
                 if (!ResetCursorOnOpen) return;
-                Cursor.Position = new Point(Screen.PrimaryScreen.Bounds.Width/2, Screen.PrimaryScreen.Bounds.Height/2);
+                Cursor.Position = new Point(System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width/2, System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height/2);
                 Function.Call(Hash._0x8DB8CFFD58B62552, 1);
             }
         }
@@ -1277,7 +1278,7 @@ namespace NativeUI
         /// <summary>
         /// Returns false if last input was made with mouse and keyboard, true if it was made with a controller.
         /// </summary>
-        public static bool IsUsingController => !Function.Call<bool>(Hash._GET_LAST_INPUT_METHOD, 2);
+        public static bool IsUsingController => !Function.Call<bool>(Hash._IS_INPUT_DISABLED, 2);
 
 
         /// <summary>

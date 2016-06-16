@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using GTA;
 using GTA.Native;
+using GTA.UI;
 
 namespace NativeUI
 {
@@ -21,8 +22,8 @@ namespace NativeUI
         public override void Draw(SizeF offset)
         {
             if (!Enabled) return;
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
+            int screenw = Screen.Resolution.Width;
+            int screenh = Screen.Resolution.Height;
             const float height = 1080f;
             float ratio = (float)screenw / screenh;
             var width = height * ratio;

@@ -50,7 +50,7 @@ namespace NativeUI
 
         public string GetButtonId()
         {
-            return _usingControls ? Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int) _buttonControl, 0) : "t_" + _buttonString;
+            return _usingControls ? Function.Call<string>(Hash._GET_CONTROL_ACTION_NAME, 2, (int) _buttonControl, 0) : "t_" + _buttonString;
         }
     }
 }
