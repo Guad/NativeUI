@@ -2,6 +2,7 @@
 using System.Drawing;
 using GTA;
 using GTA.Native;
+using GTA.UI;
 using Font = GTA.UI.Font;
 
 namespace NativeUI
@@ -23,7 +24,7 @@ namespace NativeUI
         }
 
         public UIResText(string caption, Point position, float scale, Color color, Font font, Alignment justify)
-            : base(caption, position, scale, color, font, false)
+            : base(caption, position, scale, color, font, 0)
         {
             TextAlignment = justify;
         }
@@ -43,15 +44,15 @@ namespace NativeUI
             for (int i = 0; i < str.Length; i += strLen)
             {
                 string substr = str.Substring(i, Math.Min(strLen, str.Length - i));
-                Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, substr);
+                Function.Call(Hash.ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME, substr);
             }
         }
 
 
         public static float MeasureStringWidth(string str, Font font, float scale)
         {
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
+            int screenw = Screen.Resolution.Width;
+            int screenh = Screen.Resolution.Height;
             const float height = 1080f;
             float ratio = (float)screenw / screenh;
             float width = height * ratio;
@@ -69,8 +70,8 @@ namespace NativeUI
 
         public override void Draw(SizeF offset)
         {
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
+            int screenw = Screen.Resolution.Width;
+            int screenh = Screen.Resolution.Height;
             const float height = 1080f;
             float ratio = (float)screenw / screenh;
             var width = height * ratio;
