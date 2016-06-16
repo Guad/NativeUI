@@ -858,16 +858,16 @@ namespace NativeUI
             if (IsMouseInBounds(new Point(0, 0), new Size(30, 1080)) && MouseEdgeEnabled)
             {
                 GameplayCamera.RelativeHeading += 5f;
-                Function.Call(Hash._0x8DB8CFFD58B62552, 6);
+                Function.Call((Hash) 0x8DB8CFFD58B62552, 6);
             }
             else if (IsMouseInBounds(new Point(Convert.ToInt32(GetScreenResolutionMantainRatio().Width - 30f), 0), new Size(30, 1080)) &&  MouseEdgeEnabled)
             {
                 GameplayCamera.RelativeHeading -= 5f;
-                Function.Call(Hash._0x8DB8CFFD58B62552, 7);
+                Function.Call((Hash) 0x8DB8CFFD58B62552, 7);
             }
             else if(MouseEdgeEnabled)
             {
-                Function.Call(Hash._0x8DB8CFFD58B62552, 1);
+                Function.Call((Hash) 0x8DB8CFFD58B62552, 1);
             }
 
             for (int i = _minItem; i <= limit; i++)
@@ -1246,7 +1246,7 @@ namespace NativeUI
                 if (ParentMenu != null || !value) return;
                 if (!ResetCursorOnOpen) return;
                 Cursor.Position = new Point(System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width/2, System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height/2);
-                Function.Call(Hash._0x8DB8CFFD58B62552, 1);
+                Function.Call((Hash) 0x8DB8CFFD58B62552, 1);
             }
         }
 

@@ -23,7 +23,7 @@ public class MenuExample : Script
             if (item == newitem)
             {
                 ketchup = checked_;
-				Screen.Notify("~r~Ketchup status: ~b~" + ketchup);
+				Screen.ShowNotification("~r~Ketchup status: ~b~" + ketchup);
             }
         };
     }
@@ -45,7 +45,7 @@ public class MenuExample : Script
             if (item == newitem)
             {
                 dish = item.IndexToItem(index).ToString();
-				Screen.Notify("Preparing ~b~" + dish + "~w~...");
+				Screen.ShowNotification("Preparing ~b~" + dish + "~w~...");
             }
 
         };
