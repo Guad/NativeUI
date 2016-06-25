@@ -33,29 +33,29 @@ namespace NativeUI
         /// </summary>
         /// <param name="menu">The parent menu.</param>
         /// <param name="text">Text used for the item to be added to the parent menu.</param>
-        /// <param name="OnMenuOpen">What to do when submenu is openend.</param>
-        /// <param name="OnMenuClose">What to do when submenu is closed.</param>
-        /// <param name="OnMenuHover">What to do when submenu is hovered.</param>
+        /// <param name="OnSelect">What to do when submenu is openend.</param>
+        /// <param name="OnClose">What to do when submenu is closed.</param>
+        /// <param name="OnHover">What to do when submenu is hovered.</param>
         /// <returns></returns>
         public UIMenu AddSubMenu(
             UIMenu menu, string text,
-            Action OnMenuOpen = null, Action OnMenuClose = null, Action OnMenuHover = null)
+            Action OnSelect = null, Action OnClose = null, Action OnHover = null)
         {
             var submenu = pool.AddSubMenu(menu, text);
-            if (OnMenuOpen != null)
+            if (OnSelect != null)
                 submenu.ParentMenu.OnItemSelect += (sender, item, index) =>
                 {
-                    if (item == submenu.ParentItem) OnMenuOpen();
+                    if (item == submenu.ParentItem) OnSelect();
                 };
-            if (OnMenuClose != null)
+            if (OnClose != null)
                 submenu.OnMenuClose += (sender) =>
                 {
-                    OnMenuClose();
+                    OnClose();
                 };
-            if (OnMenuHover != null)
+            if (OnHover != null)
                 submenu.ParentMenu.OnIndexChange += (sender, index) =>
                 {
-                    if (sender.MenuItems[index] == submenu.ParentItem) OnMenuHover();
+                    if (sender.MenuItems[index] == submenu.ParentItem) OnHover();
                 };
             return submenu;
         }
@@ -65,22 +65,22 @@ namespace NativeUI
         /// </summary>
         /// <param name="menu">Parent menu.</param>
         /// <param name="item">The item.</param>
-        /// <param name="OnItemSelect">What to do when item is selected.</param>
-        /// <param name="OnItemHover">What to do if item is hovered.</param>
+        /// <param name="OnSelect">What to do when item is selected.</param>
+        /// <param name="OnHover">What to do if item is hovered.</param>
         public void AddItem(
             UIMenu menu, UIMenuItem item,
-            Action OnItemSelect = null, Action OnItemHover = null)
+            Action OnSelect = null, Action OnHover = null)
         {
             menu.AddItem(item);
-            if (OnItemSelect != null)
+            if (OnSelect != null)
                 menu.OnItemSelect += (sender, item2, index) =>
                 {
-                    if (item == item2) OnItemSelect();
+                    if (item == item2) OnSelect();
                 };
-            if (OnItemHover != null)
+            if (OnHover != null)
                 menu.OnIndexChange += (sender, index) =>
                 {
-                    if (sender.MenuItems[index] == item) OnItemHover();
+                    if (sender.MenuItems[index] == item) OnHover();
                 };
         }
 
@@ -89,18 +89,18 @@ namespace NativeUI
         /// </summary>
         /// <param name="menu">Parent menu.</param>
         /// <param name="listitem">The list.</param>
-        /// <param name="OnItemSelect">What to do when list is selected.</param>
-        /// <param name="OnItemHover">What to do when list is hovered.</param>
-        /// <param name="OnListChange">What to do when list selection is changed.</param>
+        /// <param name="OnSelect">What to do when list is selected.</param>
+        /// <param name="OnHover">What to do when list is hovered.</param>
+        /// <param name="OnChange">What to do when list selection is changed.</param>
         public void AddListItem(
             UIMenu menu, UIMenuListItem listitem,
-            Action OnItemSelect = null, Action OnItemHover = null, Action<int> OnListChange = null)
+            Action OnSelect = null, Action OnHover = null, Action<int> OnChange = null)
         {
-            AddItem(menu, listitem, OnItemSelect: OnItemSelect, OnItemHover: OnItemHover);
-            if (OnListChange != null)
+            AddItem(menu, listitem, OnSelect: OnSelect, OnHover: OnHover);
+            if (OnChange != null)
                 menu.OnListChange += (sender, item, index) =>
                 {
-                    if (item == listitem) OnListChange(index);
+                    if (item == listitem) OnChange(index);
                 };
         }
 
@@ -109,18 +109,18 @@ namespace NativeUI
         /// </summary>
         /// <param name="menu">Parent menu.</param>
         /// <param name="item">The checkbox item.</param>
-        /// <param name="OnItemSelect">What to do when item is selected.</param>
-        /// <param name="OnItemHover">What to do when item is hovered.</param>
-        /// <param name="OnCheckboxChange">What to do when checkbox selection is changed.</param>
+        /// <param name="OnSelect">What to do when item is selected.</param>
+        /// <param name="OnHover">What to do when item is hovered.</param>
+        /// <param name="OnChange">What to do when checkbox selection is changed.</param>
         public void AddCheckboxItem(
             UIMenu menu, UIMenuCheckboxItem item,
-            Action OnItemSelect = null, Action OnItemHover = null, Action<bool> OnCheckboxChange = null)
+            Action OnSelect = null, Action OnHover = null, Action<bool> OnChange = null)
         {
-            AddItem(menu, item, OnItemSelect: OnItemSelect, OnItemHover: OnItemHover);
-            if (OnCheckboxChange != null)
+            AddItem(menu, item, OnSelect: OnSelect, OnHover: OnHover);
+            if (OnChange != null)
                 menu.OnCheckboxChange += (sender, item2, checked_) =>
                 {
-                    if (item == item2) OnCheckboxChange(checked_);
+                    if (item == item2) OnChange(checked_);
                 };
         }
 

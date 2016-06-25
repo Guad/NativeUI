@@ -19,7 +19,7 @@ public class MenuExample : UIScript
             ketchup = checked_;
             UI.Notify("~r~Ketchup status: ~b~" + ketchup);
         };
-        AddCheckboxItem(menu, newitem, OnCheckboxChange: KetchupStatus);
+        AddCheckboxItem(menu, newitem, OnChange: KetchupStatus);
     }
 
     public void AddMenuFoods(UIMenu menu)
@@ -38,7 +38,7 @@ public class MenuExample : UIScript
             dish = newitem.IndexToItem(index).ToString();
             UI.Notify("Preparing ~b~" + dish + "~w~...");
         };
-        AddListItem(menu, newitem, OnListChange: PrepareDish);
+        AddListItem(menu, newitem, OnChange: PrepareDish);
     }
 
     public void AddMenuCook(UIMenu menu)
@@ -55,7 +55,7 @@ public class MenuExample : UIScript
         {
             newitem.SetLeftBadge(UIMenuItem.BadgeStyle.None);
         };
-        AddItem(menu, newitem, OnItemSelect: Cook, OnItemHover: RemoveStar);
+        AddItem(menu, newitem, OnSelect: Cook, OnHover: RemoveStar);
     }
 
     public void AddMenuAnotherMenu(UIMenu menu)
