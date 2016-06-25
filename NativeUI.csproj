@@ -71,6 +71,7 @@
     <Compile Include="UIMenuListItem.cs" />
     <Compile Include="UIResRectangle.cs" />
     <Compile Include="UIResText.cs" />
+    <Compile Include="UIScript.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
