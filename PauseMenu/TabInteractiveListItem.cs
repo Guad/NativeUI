@@ -101,14 +101,18 @@ namespace NativeUI.PauseMenu
 
             if (Game.IsControlJustPressed(0, Control.FrontendLeft) && Focused && Items[Index] is UIMenuListItem)
             {
+                var it = (UIMenuListItem)Items[Index];
+                it.Index--;
                 Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
-                ((UIMenuListItem)Items[Index]).ListChangedTrigger(--((UIMenuListItem)Items[Index]).Index);
+                it.ListChangedTrigger(it.Index);
             }
 
             if (Game.IsControlJustPressed(0, Control.FrontendRight) && Focused && Items[Index] is UIMenuListItem)
             {
+                var it = (UIMenuListItem)Items[Index];
+                it.Index++;
                 Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
-                ((UIMenuListItem)Items[Index]).ListChangedTrigger(++((UIMenuListItem)Items[Index]).Index);
+                it.ListChangedTrigger(it.Index);
             }
 
             if (Game.IsControlJustPressed(0, Control.FrontendUp) || Game.IsControlJustPressed(0, Control.MoveUpOnly) || Game.IsControlJustPressed(0, Control.CursorScrollUp))
@@ -198,6 +202,46 @@ namespace NativeUI.PauseMenu
                         textureName = ((UIMenuCheckboxItem)Items[c]).Checked ? "shop_box_tick" : "shop_box_blank";
                     }
                     new Sprite("commonmenu", textureName, SafeSize.AddPoints(new Point(BottomRight.X - SafeSize.X - 60, -5 + (itemSize.Height + 3) * i)), new Size(50, 50)).Draw();
+                }
+                else if (Items[c] is UIMenuListItem)
+                {
+                    var convItem = (UIMenuListItem) Items[c];
+
+                    var yoffset = 5;
+                    var basePos =
+                        SafeSize.AddPoints(new Point(BottomRight.X - SafeSize.X - 30, yoffset + (itemSize.Height + 3)*i));
+
+                    var arrowLeft = new Sprite("commonmenu", "arrowleft", basePos, new Size(30, 30));
+                    var arrowRight = new Sprite("commonmenu", "arrowright", basePos, new Size(30, 30));
+                    var itemText = new UIResText("", basePos, 0.35f, Color.White, Font.ChaletLondon,
+                        UIResText.Alignment.Left) { TextAlignment = UIResText.Alignment.Right };
+
+                    string caption = convItem.IndexToItem(convItem.Index).ToString();
+                    int offset = StringMeasurer.MeasureString(caption);
+
+                    var selected = c == Index && Focused;
+
+                    itemText.Color = convItem.Enabled ? selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
+
+                    itemText.Caption = caption;
+
+                    arrowLeft.Color = convItem.Enabled ? selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
+                    arrowRight.Color = convItem.Enabled ? selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
+
+                    arrowLeft.Position =
+                        SafeSize.AddPoints(new Point(BottomRight.X - SafeSize.X - 60 - offset, yoffset + (itemSize.Height + 3)*i));
+                    if (selected)
+                    {
+                        arrowLeft.Draw();
+                        arrowRight.Draw();
+                        itemText.Position = SafeSize.AddPoints(new Point(BottomRight.X - SafeSize.X - 30, yoffset + (itemSize.Height + 3) * i));
+                    }
+                    else
+                    {
+                        itemText.Position = SafeSize.AddPoints(new Point(BottomRight.X - SafeSize.X - 5, yoffset + (itemSize.Height + 3) * i));
+                    }
+
+                    itemText.Draw();
                 }
 
                 if (Focused && hovering && Game.IsControlJustPressed(0, Control.CursorAccept))

@@ -29,7 +29,7 @@ namespace NativeUI
         public int Index
         {
             get { return _index % _items.Count; }
-            set { _index = 100000 - (100000 % _items.Count) + value; }
+            set { _index = 100000000 - (100000000 % _items.Count) + value; }
         }
 
 
@@ -105,7 +105,8 @@ namespace NativeUI
         public override void Draw()
         {
             base.Draw();
-            string caption = _items[Index % _items.Count].ToString();
+
+            string caption = _items[Index].ToString();
             int offset = StringMeasurer.MeasureString(caption);
 
             _itemText.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);

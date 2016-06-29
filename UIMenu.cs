@@ -731,7 +731,7 @@ namespace NativeUI
         {
             if (!(MenuItems[CurrentSelection] is UIMenuListItem)) return;
             var it = (UIMenuListItem)MenuItems[CurrentSelection];
-            it.Index--;
+            it.Index = it.Index - 1;
             Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
             ListChange(it, it.Index);
             it.ListChangedTrigger(it.Index);
