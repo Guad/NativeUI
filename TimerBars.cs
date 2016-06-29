@@ -49,8 +49,6 @@ namespace NativeUI
 
     public class BarTimerBar : TimerBarBase
     {
-        public string Text { get; set; }
-
         /// <summary>
         /// Bar percentage. Goes from 0 to 1.
         /// </summary>
