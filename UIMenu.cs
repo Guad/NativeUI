@@ -1059,43 +1059,78 @@ namespace NativeUI
                 return true;
             return false;
         }
-
-        private int _controlCounter;
         /// <summary>
-        /// Check whether a menucontrol is being pressed.
+        /// Hold time in milliseconds before moving to next item can happen when holding the key. [Default = 200]
+        /// </summary>
+        public float HoldTimeBeforeScroll = 200;
+        
+        private float _holdTime;
+        /// <summary>
+        /// Check whether a menucontrol is being pressed and if selected item is UIListItem, uses UIListItem variables
         /// </summary>
         /// <param name="control"></param>
         /// <param name="key"></param>
         /// <returns></returns>
         public bool IsControlBeingPressed(MenuControls control, Keys key = Keys.None)
-        {
-            List<Keys> tmpKeys = new List<Keys>(_keyDictionary[control].Item1);
-            List<Tuple<Control, int>> tmpControls = new List<Tuple<Control, int>>(_keyDictionary[control].Item2);
-            if (HasControlJustBeenReleaseed(control, key)) _controlCounter = 0;
-            if (_controlCounter > 0)
+        {   
+            if (!(MenuItems[CurrentSelection] is UIMenuListItem))
             {
-                _controlCounter++;
-                if (_controlCounter > 30)
-                    _controlCounter = 0;
-                return false;
-            }
-            if (key != Keys.None)
-            {
-                if (tmpKeys.Any(Game.IsKeyPressed))
+                if (HasControlJustBeenReleaseed(control, key)) _holdTime = 0;
+                if(Game.GameTime <= _holdTime)
                 {
-                    _controlCounter = 1;
+                    return false;
+                }
+                List<Keys> tmpKeys = new List<Keys>(_keyDictionary[control].Item1);
+                List<Tuple<Control, int>> tmpControls = new List<Tuple<Control, int>>(_keyDictionary[control].Item2);
+                if (key != Keys.None)
+                {
+                    if (tmpKeys.Any(Game.IsKeyPressed))
+                    {
+                        holdTime = Game.GameTime + HoldTimeBeforeScroll;
+                        return true;
+                    }
+                }
+                if (tmpControls.Any(tuple => Game.IsControlPressed(tuple.Item2, tuple.Item1)))
+                {
+                    holdTime = Game.GameTime + HoldTimeBeforeScroll;
                     return true;
                 }
+                return false;
             }
-            if (tmpControls.Any(tuple => Game.IsControlPressed(tuple.Item2, tuple.Item1)))
+            else
             {
-                _controlCounter = 1;
-                return true;
+                UIMenuListItem it = (UIMenuListItem)MenuItems[CurrentSelection];
+                if(it.ScrollingEnabled)
+                {
+                    if (HasControlJustBeenReleaseed(control, key)) _holdTime = 0;
+                    if(Game.GameTime <= _holdTime)
+                    {
+                        return false;
+                    }
+                    List<Keys> tmpKeys = new List<Keys>(_keyDictionary[control].Item1);
+                    List<Tuple<Control, int>> tmpControls = new List<Tuple<Control, int>>(_keyDictionary[control].Item2);
+                    if (key != Keys.None)
+                    {
+                        if (tmpKeys.Any(Game.IsKeyPressed))
+                        {
+                            holdTime = Game.GameTime + it.HoldTimeBeforeScroll;
+                            return true;
+                        }
+                    }
+                    if (tmpControls.Any(tuple => Game.IsControlPressed(tuple.Item2, tuple.Item1)))
+                    {
+                        holdTime = Game.GameTime + it.HoldTimeBeforeScroll;
+                        return true;
+                    }
+                }
+                else if(HasControlJustBeenPressed(control, key))
+                {
+                    return true;
+                }
+                return false;
             }
-            return false;
         }
-        
-
+       
         /// <summary>
         /// Process control-stroke. Call this in the OnTick event.
         /// </summary>
