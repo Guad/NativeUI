@@ -32,7 +32,15 @@ namespace NativeUI
             set { _index = 100000 - (100000 % _items.Count) + value; }
         }
 
-
+        /// <summary>
+        /// Gets or Sets the current list values.
+        /// </summary>
+        public List<dynamic> List
+        {
+            get { return _items; }
+            set { _items = value; }
+        }
+        
         /// <summary>
         /// List item, with left/right arrows.
         /// </summary>
