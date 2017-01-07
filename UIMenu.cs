@@ -541,10 +541,10 @@ namespace NativeUI
         }
 
         /// <summary>
-        /// Returns the 1080pixels-based screen resolution while mantaining current aspect ratio.
+        /// Returns the 1080pixels-based screen resolution while maintaining current aspect ratio.
         /// </summary>
         /// <returns></returns>
-        public static SizeF GetScreenResolutionMantainRatio()
+        public static SizeF GetScreenResolutionMaintainRatio()
         {
             int screenw = Game.ScreenResolution.Width;
             int screenh = Game.ScreenResolution.Height;
@@ -564,7 +564,7 @@ namespace NativeUI
         /// <returns></returns>
         public static bool IsMouseInBounds(Point topLeft, Size boxSize)
         {
-            var res = GetScreenResolutionMantainRatio();
+            var res = GetScreenResolutionMaintainRatio();
 
             int mouseX = Convert.ToInt32(Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)Control.CursorX) * res.Width));
             int mouseY = Convert.ToInt32(Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)Control.CursorY) * res.Height));
@@ -585,7 +585,7 @@ namespace NativeUI
         {
             Function.Call((Hash)0x54CE8AC98E120CAB, "jamyfafi");
             UIResText.AddLongString(item.Text);
-            var res = GetScreenResolutionMantainRatio();
+            var res = GetScreenResolutionMaintainRatio();
             var screenw = res.Width;
             var screenh = res.Height;
             const float height = 1080f;
@@ -858,7 +858,7 @@ namespace NativeUI
                 GameplayCamera.RelativeHeading += 5f;
                 Function.Call(Hash._0x8DB8CFFD58B62552, 6);
             }
-            else if (IsMouseInBounds(new Point(Convert.ToInt32(GetScreenResolutionMantainRatio().Width - 30f), 0), new Size(30, 1080)) &&  MouseEdgeEnabled)
+            else if (IsMouseInBounds(new Point(Convert.ToInt32(GetScreenResolutionMaintainRatio().Width - 30f), 0), new Size(30, 1080)) &&  MouseEdgeEnabled)
             {
                 GameplayCamera.RelativeHeading -= 5f;
                 Function.Call(Hash._0x8DB8CFFD58B62552, 7);
