@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
-using Control = GTA.Control;
+using Control = CitizenFX.Core.Control;
 
 namespace NativeUI
 {

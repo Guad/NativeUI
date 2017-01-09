@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Runtime.Remoting.Messaging;
-using GTA;
-using GTA.Native;
+using CitizenFX.Core;
+using CitizenFX.Core.Native;
+using System.Threading.Tasks;
 
 namespace NativeUI
 {
@@ -16,14 +17,13 @@ namespace NativeUI
             
         }
 
-        public void Load()
+        public async Task Load()
         {
             if (_sc != null) return;
-            _sc = new Scaleform(0);
-            _sc.Load("MP_BIG_MESSAGE_FREEMODE");
+            _sc = new Scaleform("MP_BIG_MESSAGE_FREEMODE");
             var timeout = 1000;
             var start = DateTime.Now;
-            while (!Function.Call<bool>(Hash.HAS_SCALEFORM_MOVIE_LOADED, _sc.Handle) && DateTime.Now.Subtract(start).TotalMilliseconds < timeout) Script.Yield();
+            while (!Function.Call<bool>(Hash.HAS_SCALEFORM_MOVIE_LOADED, _sc.Handle) && DateTime.Now.Subtract(start).TotalMilliseconds < timeout) await BaseScript.Delay(0);
         }
 
         public void Dispose()
@@ -32,66 +32,66 @@ namespace NativeUI
             _sc = null;
         }
 
-        public void ShowMissionPassedMessage(string msg, int time = 5000)
+        public async void ShowMissionPassedMessage(string msg, int time = 5000)
         {
-            Load();
+            await Load();
             _start = Game.GameTime;
             _sc.CallFunction("SHOW_MISSION_PASSED_MESSAGE", msg, "", 100, true, 0, true);
             _timer = time;
         }
 
-        public void ShowColoredShard(string msg, string desc, HudColor textColor, HudColor bgColor, int time = 5000)
+        public async void ShowColoredShard(string msg, string desc, HudColor textColor, HudColor bgColor, int time = 5000)
         {
-            Load();
+            await Load();
             _start = Game.GameTime;
             _sc.CallFunction("SHOW_SHARD_CENTERED_MP_MESSAGE", msg, desc, (int)bgColor, (int)textColor);
             _timer = time;
         }
 
-        public void ShowOldMessage(string msg, int time = 5000)
+        public async void ShowOldMessage(string msg, int time = 5000)
         {
-            Load();
+            await Load();
             _start = Game.GameTime;
             _sc.CallFunction("SHOW_MISSION_PASSED_MESSAGE", msg);
             _timer = time;
         }
 
-        public void ShowSimpleShard(string title, string subtitle, int time = 5000)
+        public async void ShowSimpleShard(string title, string subtitle, int time = 5000)
         {
-            Load();
+            await Load();
             _start = Game.GameTime;
             _sc.CallFunction("SHOW_SHARD_CREW_RANKUP_MP_MESSAGE", title, subtitle);
             _timer = time;
         }
 
-        public void ShowRankupMessage(string msg, string subtitle, int rank, int time = 5000)
+        public async void ShowRankupMessage(string msg, string subtitle, int rank, int time = 5000)
         {
-            Load();
+            await Load();
             _start = Game.GameTime;
             _sc.CallFunction("SHOW_BIG_MP_MESSAGE", msg, subtitle, rank, "", "");
             _timer = time;
         }
 
-        public void ShowWeaponPurchasedMessage(string bigMessage, string weaponName, WeaponHash weapon, int time = 5000)
+        public async void ShowWeaponPurchasedMessage(string bigMessage, string weaponName, WeaponHash weapon, int time = 5000)
         {
-            Load();
+            await Load();
             _start = Game.GameTime;
             _sc.CallFunction("SHOW_WEAPON_PURCHASED", bigMessage, weaponName, unchecked((int)weapon), "", 100);
             _timer = time;
         }
 
-        public void ShowMpMessageLarge(string msg, int time = 5000)
+        public async void ShowMpMessageLarge(string msg, int time = 5000)
         {
-            Load();
+            await Load();
             _start = Game.GameTime;
             _sc.CallFunction("SHOW_CENTERED_MP_MESSAGE_LARGE", msg, "test", 100, true, 100);
             _sc.CallFunction("TRANSITION_IN");
             _timer = time;
         }
 
-        public void ShowCustomShard(string funcName, params object[] paremeters)
+        public async void ShowCustomShard(string funcName, params object[] paremeters)
         {
-            Load();
+            await Load();
             _sc.CallFunction(funcName, paremeters);
         }
 
@@ -109,18 +109,19 @@ namespace NativeUI
         }
     }
 
-    public class BigMessageThread : Script
+    public class BigMessageThread : BaseScript
     {
         public static BigMessageHandler MessageInstance { get; set; }
 
         public BigMessageThread()
         {
             MessageInstance = new BigMessageHandler();
+            Tick += BigMessageThread_Tick;
+        }
 
-            Tick += (sender, args) =>
-            {
-                MessageInstance.Update();
-            };
+        private async System.Threading.Tasks.Task BigMessageThread_Tick()
+        {
+            MessageInstance.Update();
         }
     }
 

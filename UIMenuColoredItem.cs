@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿
+
+using System.Drawing;
 
 namespace NativeUI
 {
@@ -15,8 +17,8 @@ namespace NativeUI
             MainColor = color;
             HighlightColor = highlightColor;
 
-            TextColor = Color.White;
-            HighlightedTextColor = Color.Black;
+            TextColor = UnknownColors.White;
+            HighlightedTextColor = UnknownColors.Black;
 
             Init();
         }
@@ -26,8 +28,8 @@ namespace NativeUI
             MainColor = color;
             HighlightColor = highlightColor;
 
-            TextColor = Color.White;
-            HighlightedTextColor = Color.Black;
+            TextColor = UnknownColors.White;
+            HighlightedTextColor = UnknownColors.Black;
 
             Init();
         }
@@ -36,7 +38,7 @@ namespace NativeUI
         {
             _selectedSprite = new Sprite("commonmenu", "gradient_nav", new Point(0, 0), new Size(431, 38), 0, HighlightColor);
             _rectangle = new UIResRectangle(new Point(0, 0), new Size(431, 38), Color.FromArgb(150, 0, 0, 0));
-            _text = new UIResText(Text, new Point(8, 0), 0.33f, Color.WhiteSmoke, GTA.Font.ChaletLondon, UIResText.Alignment.Left);
+            _text = new UIResText(Text, new Point(8, 0), 0.33f, UnknownColors.WhiteSmoke, CitizenFX.Core.UI.Font.ChaletLondon, UIResText.Alignment.Left);
             Description = Description;
 
             _badgeLeft = new Sprite("commonmenu", "", new Point(0, 0), new Size(40, 40));
@@ -71,7 +73,7 @@ namespace NativeUI
 
             if (LeftBadge != BadgeStyle.None)
             {
-                _text.Position = new Point(35 + Offset.X, _text.Position.Y);
+                _text.Position = new Point(35 + Offset.X, (int)_text.Position.Y);
                 _badgeLeft.TextureDict = BadgeToSpriteLib(LeftBadge);
                 _badgeLeft.TextureName = BadgeToSpriteName(LeftBadge, Selected);
                 _badgeLeft.Color = BadgeToColor(LeftBadge, Selected);
@@ -79,7 +81,7 @@ namespace NativeUI
             }
             else
             {
-                _text.Position = new Point(8 + Offset.X, _text.Position.Y);
+                _text.Position = new Point(8 + Offset.X, (int)_text.Position.Y);
             }
 
             if (RightBadge != BadgeStyle.None)
@@ -93,7 +95,7 @@ namespace NativeUI
 
             if (!string.IsNullOrWhiteSpace(RightLabel))
             {
-                _labelText.Position = new Point(420 + Offset.X + Parent.WidthOffset, _labelText.Position.Y);
+                _labelText.Position = new Point(420 + Offset.X + Parent.WidthOffset, (int)_labelText.Position.Y);
                 _labelText.Caption = RightLabel;
                 _labelText.Color = _text.Color = Enabled ? Selected ? HighlightedTextColor : TextColor : Color.FromArgb(163, 159, 148);
                 _labelText.Draw();

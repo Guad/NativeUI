@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Drawing;
+
 using System.IO;
 using System.Reflection;
-using GTA;
-using GTA.Native;
+using CitizenFX.Core.Native;
+using CitizenFX.Core;
+using System.Drawing;
 
 namespace NativeUI
 {
@@ -73,8 +74,8 @@ namespace NativeUI
             if (!Function.Call<bool>(Hash.HAS_STREAMED_TEXTURE_DICT_LOADED, TextureDict))
                 Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, TextureDict, true);
 
-                int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
+                int screenw = 1920; // Game.ScreenResolution.Width
+            int screenh = 1080; // Game.ScreenResolution.Height;
             const float height = 1080f;
             float ratio = (float)screenw/screenh;
             var width = height*ratio;
@@ -95,10 +96,10 @@ namespace NativeUI
         /// <param name="path">Path to texture file.</param>
         /// <param name="position"></param>
         /// <param name="size"></param>
-        public static void DrawTexture(string path, Point position, Size size, float rotation, Color color)
+        /*public static void DrawTexture(string path, Point position, Size size, float rotation, Color color)
         {
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
+            int screenw = 1920; // Game.ScreenResolution.Width
+            int screenh = 1080; // Game.ScreenResolution.Height;
             
             const float height = 1080f;
             float ratio = (float)screenw / screenh;
@@ -117,7 +118,7 @@ namespace NativeUI
                 new PointF(0f, 0f), 
                 new Size(Convert.ToInt32(size.Width * reduceX), Convert.ToInt32(size.Height * reduceY)),
                 rotation, color);
-        }
+        }*/
 
         /// <summary>
         /// Draw a custom texture from a file on a 1080-pixels height base.
@@ -125,10 +126,10 @@ namespace NativeUI
         /// <param name="path">Path to texture file.</param>
         /// <param name="position"></param>
         /// <param name="size"></param>
-        public static void DrawTexture(string path, Point position, Size size)
+        /*public static void DrawTexture(string path, Point position, Size size)
         {
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
+            int screenw = 1920;// Game.ScreenResolution.Width;
+            int screenh = 1080;// Game.ScreenResolution.Height;
 
             const float height = 1080f;
             float ratio = (float)screenw / screenh;
@@ -146,8 +147,8 @@ namespace NativeUI
                 new Point(Convert.ToInt32(position.X * reduceX) + extra.X, Convert.ToInt32(position.Y * reduceY) + extra.Y),
                 new PointF(0f, 0f),
                 new Size(Convert.ToInt32(size.Width * reduceX), Convert.ToInt32(size.Height * reduceY)),
-                0f, Color.White);
-        }
+                0f, UnknownColors.White);
+        }*/
 
 
         /// <summary>

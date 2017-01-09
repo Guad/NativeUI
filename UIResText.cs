@@ -1,15 +1,19 @@
 ﻿using System;
+
+
+
+using Font = CitizenFX.Core.UI.Font;
+using CitizenFX.Core.Native;
+using CitizenFX.Core.UI;
 using System.Drawing;
-using GTA;
-using GTA.Native;
-using Font = GTA.Font;
+using CitizenFX.Core;
 
 namespace NativeUI
 {
     /// <summary>
     /// A Text object in the 1080 pixels height base system.
     /// </summary>
-    public class UIResText : UIText
+    public class UIResText : Text
     {
         public UIResText(string caption, Point position, float scale) : base(caption, position, scale)
         {
@@ -23,7 +27,7 @@ namespace NativeUI
         }
 
         public UIResText(string caption, Point position, float scale, Color color, Font font, Alignment justify)
-            : base(caption, position, scale, color, font, false)
+            : base(caption, position, scale, color, font, CitizenFX.Core.UI.Alignment.Center)
         {
             TextAlignment = justify;
         }
@@ -43,15 +47,15 @@ namespace NativeUI
             for (int i = 0; i < str.Length; i += strLen)
             {
                 string substr = str.Substring(i, Math.Min(strLen, str.Length - i));
-                Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, substr);
+                Function.Call(Hash.ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME, substr);
             }
         }
 
 
         public static float MeasureStringWidth(string str, Font font, float scale)
         {
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
+            int screenw = 1920;// Game.ScreenResolution.Width;
+            int screenh = 1080;// Game.ScreenResolution.Height;
             const float height = 1080f;
             float ratio = (float)screenw / screenh;
             float width = height * ratio;
@@ -67,10 +71,10 @@ namespace NativeUI
 
         public Size WordWrap { get; set; }
 
-        public override void Draw(Size offset)
+        public void Draw(Size offset)
         {
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
+            int screenw = 1920;// Game.ScreenResolution.Width;
+            int screenh = 1080;// Game.ScreenResolution.Height;
             const float height = 1080f;
             float ratio = (float)screenw / screenh;
             var width = height * ratio;

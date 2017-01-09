@@ -1,6 +1,7 @@
 ﻿using System;
+
+using CitizenFX.Core;
 using System.Drawing;
-using GTA.Math;
 
 namespace NativeUI
 {

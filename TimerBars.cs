@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
+
+
+using Font = CitizenFX.Core.UI.Font;
+using CitizenFX.Core.UI;
 using System.Drawing;
-using GTA;
-using Font = GTA.Font;
+using CitizenFX.Core.Native;
 
 namespace NativeUI
 {
@@ -19,12 +22,12 @@ namespace NativeUI
             SizeF res = UIMenu.GetScreenResolutionMantainRatio();
             Point safe = UIMenu.GetSafezoneBounds();
 
-            new UIResText(Label, new Point((int)res.Width - safe.X - 180, (int)res.Height - safe.Y - (30 + (4 * interval))), 0.3f, Color.White, Font.ChaletLondon, UIResText.Alignment.Right).Draw();
+            new UIResText(Label, new Point((int)res.Width - safe.X - 180, (int)res.Height - safe.Y - (30 + (4 * interval))), 0.3f, UnknownColors.White, Font.ChaletLondon, UIResText.Alignment.Right).Draw();
             new Sprite("timerbars", "all_black_bg", new Point((int)res.Width - safe.X - 298, (int)res.Height - safe.Y - (40 + (4 * interval))), new Size(300, 37), 0f, Color.FromArgb(180, 255, 255, 255)).Draw();
 
-            UI.HideHudComponentThisFrame(HudComponent.AreaName);
-            UI.HideHudComponentThisFrame(HudComponent.StreetName);
-            UI.HideHudComponentThisFrame(HudComponent.VehicleName);
+            Function.Call(Hash.HIDE_HUD_COMPONENT_THIS_FRAME, (int)HudComponent.AreaName);
+            Function.Call(Hash.HIDE_HUD_COMPONENT_THIS_FRAME, (int)HudComponent.StreetName);
+            Function.Call(Hash.HIDE_HUD_COMPONENT_THIS_FRAME, (int)HudComponent.VehicleName);
         }
     }
 
@@ -43,7 +46,7 @@ namespace NativeUI
             Point safe = UIMenu.GetSafezoneBounds();
 
             base.Draw(interval);
-            new UIResText(Text, new Point((int)res.Width - safe.X - 10, (int)res.Height - safe.Y - (42 + (4 * interval))), 0.5f, Color.White, Font.ChaletLondon, UIResText.Alignment.Right).Draw();
+            new UIResText(Text, new Point((int)res.Width - safe.X - 10, (int)res.Height - safe.Y - (42 + (4 * interval))), 0.5f, UnknownColors.White, Font.ChaletLondon, UIResText.Alignment.Right).Draw();
         }
     }
 
@@ -59,8 +62,8 @@ namespace NativeUI
 
         public BarTimerBar(string label) : base(label)
         {
-            BackgroundColor = Color.DarkRed;
-            ForegroundColor = Color.Red;
+            BackgroundColor = UnknownColors.DarkRed;
+            ForegroundColor = UnknownColors.Red;
         }
 
         public override void Draw(int interval)

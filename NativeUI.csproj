@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,19 +33,11 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ScriptHookVDotNet, Version=2.9.2.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Release\ScriptHookVDotNet.dll</HintPath>
+    <Reference Include="CitizenFX.Core">
+      <HintPath>E:\FiveRebornClient\citizen\clr2\lib\mono\4.5\CitizenFX.Core.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -71,13 +63,14 @@
     <Compile Include="UIMenuListItem.cs" />
     <Compile Include="UIResRectangle.cs" />
     <Compile Include="UIResText.cs" />
+    <Compile Include="UnknownColors.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(TargetPath)" "A:\Program Files\Rockstar Games\Grand Theft Auto V\scripts\$(TargetFileName)"</PostBuildEvent>
+    <PostBuildEvent>copy $(TargetPath) %25userprofile%25\Dropbox\proyekt\cfx-server\resources\[gamemodes]\test\nativeui.net.dll /Y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
