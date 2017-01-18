@@ -15,18 +15,18 @@ namespace NativeUI
     /// </summary>
     public class UIResText : Text
     {
-        public UIResText(string caption, Point position, float scale) : base(caption, position, scale)
+        public UIResText(string caption, PointF position, float scale) : base(caption, position, scale)
         {
             TextAlignment = Alignment.Left;
         }
 
-        public UIResText(string caption, Point position, float scale, Color color)
+        public UIResText(string caption, PointF position, float scale, Color color)
             : base(caption, position, scale, color)
         {
             TextAlignment = Alignment.Left;
         }
 
-        public UIResText(string caption, Point position, float scale, Color color, Font font, Alignment justify)
+        public UIResText(string caption, PointF position, float scale, Color color, Font font, Alignment justify)
             : base(caption, position, scale, color, font, CitizenFX.Core.UI.Alignment.Center)
         {
             TextAlignment = justify;
@@ -54,8 +54,8 @@ namespace NativeUI
 
         public static float MeasureStringWidth(string str, Font font, float scale)
         {
-            int screenw = 1920;// Game.ScreenResolution.Width;
-            int screenh = 1080;// Game.ScreenResolution.Height;
+            int screenw = 2560;// Game.ScreenResolution.Width;
+            int screenh = 1440;// Game.ScreenResolution.Height;
             const float height = 1080f;
             float ratio = (float)screenw / screenh;
             float width = height * ratio;
@@ -69,18 +69,16 @@ namespace NativeUI
             return Function.Call<float>((Hash)0x85F061DA64ED2F67, (int)font) * scale;
         }
 
-        public Size WordWrap { get; set; }
+        public SizeF WordWrap { get; set; }
 
-        public void Draw(Size offset)
+        public override void Draw(SizeF offset)
         {
-            int screenw = 1920;// Game.ScreenResolution.Width;
-            int screenh = 1080;// Game.ScreenResolution.Height;
             const float height = 1080f;
-            float ratio = (float)screenw / screenh;
+            float ratio = Screen.AspectRatio;
             var width = height * ratio;
 
             float x = (Position.X) / width;
-            float y = (Position.Y) / height;
+            float y = (Position.Y) / height; 
             
             Function.Call(Hash.SET_TEXT_FONT, (int)Font);
             Function.Call(Hash.SET_TEXT_SCALE, 1.0f, Scale);
@@ -100,7 +98,7 @@ namespace NativeUI
                     break;
             }
 
-            if (WordWrap != new Size(0, 0))
+            if (WordWrap != new SizeF(0, 0))
             {
                 float xsize = (Position.X + WordWrap.Width)/width;
                 Function.Call(Hash.SET_TEXT_WRAP, x, xsize);

@@ -40,15 +40,15 @@ namespace NativeUI
         {
             Enabled = true;
 
-            _rectangle = new UIResRectangle(new Point(0, 0), new Size(431, 38), Color.FromArgb(150, 0, 0, 0));
-            _text = new UIResText(text, new Point(8, 0), 0.33f, UnknownColors.WhiteSmoke, CitizenFX.Core.UI.Font.ChaletLondon, UIResText.Alignment.Left);
+            _rectangle = new UIResRectangle(new PointF(0, 0), new SizeF(431, 38), Color.FromArgb(150, 0, 0, 0));
+            _text = new UIResText(text, new PointF(8, 0), 0.33f, UnknownColors.WhiteSmoke, CitizenFX.Core.UI.Font.ChaletLondon, UIResText.Alignment.Left);
             Description = description;
-            _selectedSprite = new Sprite("commonmenu", "gradient_nav", new Point(0, 0), new Size(431, 38));
+            _selectedSprite = new Sprite("commonmenu", "gradient_nav", new PointF(0, 0), new SizeF(431, 38));
 
-            _badgeLeft = new Sprite("commonmenu", "", new Point(0, 0), new Size(40, 40));
-            _badgeRight = new Sprite("commonmenu", "", new Point(0, 0), new Size(40, 40));
+            _badgeLeft = new Sprite("commonmenu", "", new PointF(0, 0), new SizeF(40, 40));
+            _badgeRight = new Sprite("commonmenu", "", new PointF(0, 0), new SizeF(40, 40));
 
-            _labelText = new UIResText("", new Point(0, 0), 0.35f) {TextAlignment = UIResText.Alignment.Right};
+            _labelText = new UIResText("", new PointF(0, 0), 0.35f) {TextAlignment = UIResText.Alignment.Right};
         }
 
 
@@ -87,14 +87,14 @@ namespace NativeUI
         /// <param name="y"></param>
         public virtual void Position(int y)
         {
-            _rectangle.Position = new Point(Offset.X, y + 144 + Offset.Y);
-            _selectedSprite.Position = new Point(0 + Offset.X, y + 144 + Offset.Y);
-            _text.Position = new Point(8 + Offset.X, y + 147 + Offset.Y);
+            _rectangle.Position = new PointF(Offset.X, y + 144 + Offset.Y);
+            _selectedSprite.Position = new PointF(0 + Offset.X, y + 144 + Offset.Y);
+            _text.Position = new PointF(8 + Offset.X, y + 147 + Offset.Y);
 
-            _badgeLeft.Position = new Point(0 + Offset.X, y + 142 + Offset.Y);
-            _badgeRight.Position = new Point(385 + Offset.X, y + 142 + Offset.Y);
+            _badgeLeft.Position = new PointF(0 + Offset.X, y + 142 + Offset.Y);
+            _badgeRight.Position = new PointF(385 + Offset.X, y + 142 + Offset.Y);
 
-            _labelText.Position = new Point(420 + Offset.X, y + 148 + Offset.Y);
+            _labelText.Position = new PointF(420 + Offset.X, y + 148 + Offset.Y);
         }
 
 
@@ -103,8 +103,8 @@ namespace NativeUI
         /// </summary>
         public virtual void Draw()
         {
-            _rectangle.Size = new Size(431 + Parent.WidthOffset, 38);
-            _selectedSprite.Size = new Size(431 + Parent.WidthOffset, 38);
+            _rectangle.Size = new SizeF(431 + Parent.WidthOffset, 38);
+            _selectedSprite.Size = new SizeF(431 + Parent.WidthOffset, 38);
 
             if (Hovered && !Selected)
             {
@@ -118,7 +118,7 @@ namespace NativeUI
 
             if (LeftBadge != BadgeStyle.None)
             {
-                _text.Position = new Point(35 + Offset.X, (int)_text.Position.Y);
+                _text.Position = new PointF(35 + Offset.X, (int)_text.Position.Y);
                 _badgeLeft.TextureDict = BadgeToSpriteLib(LeftBadge);
                 _badgeLeft.TextureName = BadgeToSpriteName(LeftBadge, Selected);
                 _badgeLeft.Color = BadgeToColor(LeftBadge, Selected);
@@ -126,12 +126,12 @@ namespace NativeUI
             }
             else
             {
-                _text.Position = new Point(8 + Offset.X, (int)_text.Position.Y);
+                _text.Position = new PointF(8 + Offset.X, (int)_text.Position.Y);
             }
 
             if (RightBadge != BadgeStyle.None)
             {
-                _badgeRight.Position = new Point(385 + Offset.X + Parent.WidthOffset, _badgeRight.Position.Y);
+                _badgeRight.Position = new PointF(385 + Offset.X + Parent.WidthOffset, _badgeRight.Position.Y);
                 _badgeRight.TextureDict = BadgeToSpriteLib(RightBadge);
                 _badgeRight.TextureName = BadgeToSpriteName(RightBadge, Selected);
                 _badgeRight.Color = BadgeToColor(RightBadge, Selected);
@@ -140,7 +140,7 @@ namespace NativeUI
 
             if (!String.IsNullOrWhiteSpace(RightLabel))
             {
-                _labelText.Position = new Point(420 + Offset.X + Parent.WidthOffset, (int)_labelText.Position.Y);
+                _labelText.Position = new PointF(420 + Offset.X + Parent.WidthOffset, (int)_labelText.Position.Y);
                 _labelText.Caption = RightLabel;
                 _labelText.Color = _text.Color = Enabled ? Selected ? UnknownColors.Black : UnknownColors.WhiteSmoke : Color.FromArgb(163, 159, 148);
                 _labelText.Draw();
@@ -152,7 +152,7 @@ namespace NativeUI
         /// <summary>
         /// This item's offset.
         /// </summary>
-        public Point Offset { get; set; }
+        public PointF Offset { get; set; }
 
 
         /// <summary>

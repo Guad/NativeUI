@@ -212,10 +212,10 @@ namespace NativeUI.PauseMenu
 
             
             var res = UIMenu.GetScreenResolutionMantainRatio();
-            var safe = new Point(300, 180);
+            var safe = new PointF(300, 180);
             if (!HideTabs)
             {
-                new UIResText(Title, new Point(safe.X, safe.Y - 80), 1f, UnknownColors.White, Font.ChaletComprimeCologne,
+                new UIResText(Title, new PointF(safe.X, safe.Y - 80), 1f, UnknownColors.White, Font.ChaletComprimeCologne,
                     UIResText.Alignment.Left)
                 {
                     DropShadow = true,
@@ -224,16 +224,16 @@ namespace NativeUI.PauseMenu
                 if (Photo == null)
                 {
                     new Sprite("char_multiplayer", "char_multiplayer",
-                        new Point((int) res.Width - safe.X - 64, safe.Y - 80), new Size(64, 64)).Draw();
+                        new PointF((int) res.Width - safe.X - 64, safe.Y - 80), new SizeF(64, 64)).Draw();
                 }
                 else
                 {
-                    Photo.Position = new Point((int) res.Width - safe.X - 100, safe.Y - 80);
-                    Photo.Size = new Size(64, 64);
+                    Photo.Position = new PointF((int) res.Width - safe.X - 100, safe.Y - 80);
+                    Photo.Size = new SizeF(64, 64);
                     Photo.Draw();
                 }
 
-                new UIResText(Name, new Point((int) res.Width - safe.X - 70, safe.Y - 95), 0.7f, UnknownColors.White,
+                new UIResText(Name, new PointF((int) res.Width - safe.X - 70, safe.Y - 95), 0.7f, UnknownColors.White,
                     Font.ChaletComprimeCologne, UIResText.Alignment.Right)
                 {
                     DropShadow = true,
@@ -246,7 +246,7 @@ namespace NativeUI.PauseMenu
                 }
 
 
-                new UIResText(t, new Point((int) res.Width - safe.X - 70, safe.Y - 60), 0.4f, UnknownColors.White,
+                new UIResText(t, new PointF((int) res.Width - safe.X - 70, safe.Y - 60), 0.4f, UnknownColors.White,
                     Font.ChaletComprimeCologne, UIResText.Alignment.Right)
                 {
                     DropShadow = true,
@@ -258,7 +258,7 @@ namespace NativeUI.PauseMenu
                     subt = "";
                 }
 
-                new UIResText(subt, new Point((int) res.Width - safe.X - 70, safe.Y - 40), 0.4f, UnknownColors.White,
+                new UIResText(subt, new PointF((int) res.Width - safe.X - 70, safe.Y - 40), 0.4f, UnknownColors.White,
                     Font.ChaletComprimeCologne, UIResText.Alignment.Right)
                 {
                     DropShadow = true,
@@ -273,24 +273,24 @@ namespace NativeUI.PauseMenu
                     Game.EnableControlThisFrame(0, Control.CursorX);
                     Game.EnableControlThisFrame(0, Control.CursorY);
 
-                    var hovering = UIMenu.IsMouseInBounds(safe.AddPoints(new Point((tabWidth + 5)*i, 0)),
-                        new Size(tabWidth, 40));
+                    var hovering = UIMenu.IsMouseInBounds(safe.AddPoints(new PointF((tabWidth + 5)*i, 0)),
+                        new SizeF(tabWidth, 40));
 
                     var tabColor = Tabs[i].Active
                         ? UnknownColors.White
                         : hovering ? Color.FromArgb(100, 50, 50, 50) : UnknownColors.Black;
-                    new UIResRectangle(safe.AddPoints(new Point((tabWidth + 5)*i, 0)), new Size(tabWidth, 40),
+                    new UIResRectangle(safe.AddPoints(new PointF((tabWidth + 5)*i, 0)), new SizeF(tabWidth, 40),
                         Color.FromArgb(Tabs[i].Active ? 255 : 200, tabColor)).Draw();
 
-                    new UIResText(Tabs[i].Title.ToUpper(), safe.AddPoints(new Point((tabWidth/2) + (tabWidth + 5)*i, 5)),
+                    new UIResText(Tabs[i].Title.ToUpper(), safe.AddPoints(new PointF((tabWidth/2) + (tabWidth + 5)*i, 5)),
                         0.35f,
                         Tabs[i].Active ? UnknownColors.Black : UnknownColors.White, Font.ChaletLondon, UIResText.Alignment.Centered)
                         .Draw();
 
                     if (Tabs[i].Active)
                     {
-                        new UIResRectangle(safe.SubtractPoints(new Point(-((tabWidth + 5)*i), 10)),
-                            new Size(tabWidth, 10), UnknownColors.DodgerBlue).Draw();
+                        new UIResRectangle(safe.SubtractPoints(new PointF(-((tabWidth + 5)*i), 10)),
+                            new SizeF(tabWidth, 10), UnknownColors.DodgerBlue).Draw();
                     }
 
                     if (hovering && Game.IsControlJustPressed(0, Control.CursorAccept) && !Tabs[i].Active)

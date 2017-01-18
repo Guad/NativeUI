@@ -141,12 +141,12 @@ namespace NativeUI.PauseMenu
             var fullAlpha = Focused ? 255 : 150;
 
             var submenuWidth = (BottomRight.X - TopLeft.X);
-            var itemSize = new Size(submenuWidth, 40);
+            var itemSize = new SizeF(submenuWidth, 40);
 
             int i = 0;
             for (int c = _minItem; c < Math.Min(Items.Count, _maxItem); c++)
             {
-                var hovering = UIMenu.IsMouseInBounds(SafeSize.AddPoints(new Point(0, (itemSize.Height + 3)*i)),
+                var hovering = UIMenu.IsMouseInBounds(SafeSize.AddPoints(new PointF(0, (itemSize.Height + 3)*i)),
                     itemSize);
 
                 var hasLeftBadge = Items[c].LeftBadge != UIMenuItem.BadgeStyle.None;
@@ -155,38 +155,38 @@ namespace NativeUI.PauseMenu
                 var hasBothBadges = hasRightBadge && hasLeftBadge;
                 var hasAnyBadge = hasRightBadge || hasLeftBadge;
 
-                new UIResRectangle(SafeSize.AddPoints(new Point(0, (itemSize.Height + 3) * i)), itemSize, (Index == c && Focused) ? Color.FromArgb(fullAlpha, UnknownColors.White) : Focused && hovering ? Color.FromArgb(100, 50, 50,50) : Color.FromArgb(blackAlpha, UnknownColors.Black)).Draw();
-                new UIResText(Items[c].Text, SafeSize.AddPoints(new Point((hasBothBadges ? 60 : hasAnyBadge ? 30 : 6), 5 + (itemSize.Height + 3) * i)), 0.35f, Color.FromArgb(fullAlpha, (Index == c && Focused) ? UnknownColors.Black : UnknownColors.White)).Draw();
+                new UIResRectangle(SafeSize.AddPoints(new PointF(0, (itemSize.Height + 3) * i)), itemSize, (Index == c && Focused) ? Color.FromArgb(fullAlpha, UnknownColors.White) : Focused && hovering ? Color.FromArgb(100, 50, 50,50) : Color.FromArgb(blackAlpha, UnknownColors.Black)).Draw();
+                new UIResText(Items[c].Text, SafeSize.AddPoints(new PointF((hasBothBadges ? 60 : hasAnyBadge ? 30 : 6), 5 + (itemSize.Height + 3) * i)), 0.35f, Color.FromArgb(fullAlpha, (Index == c && Focused) ? UnknownColors.Black : UnknownColors.White)).Draw();
 
                 if (hasLeftBadge && !hasRightBadge)
                 {
                     new Sprite(UIMenuItem.BadgeToSpriteLib(Items[c].LeftBadge),
-                        UIMenuItem.BadgeToSpriteName(Items[c].LeftBadge, (Index == c && Focused)), SafeSize.AddPoints(new Point(-2, 1 + (itemSize.Height + 3) * i)), new Size(40, 40), 0f,
+                        UIMenuItem.BadgeToSpriteName(Items[c].LeftBadge, (Index == c && Focused)), SafeSize.AddPoints(new PointF(-2, 1 + (itemSize.Height + 3) * i)), new SizeF(40, 40), 0f,
                         UIMenuItem.BadgeToColor(Items[c].LeftBadge, (Index == c && Focused))).Draw();
                 }
 
                 if (!hasLeftBadge && hasRightBadge)
                 {
                     new Sprite(UIMenuItem.BadgeToSpriteLib(Items[c].RightBadge),
-                        UIMenuItem.BadgeToSpriteName(Items[c].RightBadge, (Index == c && Focused)), SafeSize.AddPoints(new Point(-2, 1 + (itemSize.Height + 3) * i)), new Size(40, 40), 0f,
+                        UIMenuItem.BadgeToSpriteName(Items[c].RightBadge, (Index == c && Focused)), SafeSize.AddPoints(new PointF(-2, 1 + (itemSize.Height + 3) * i)), new SizeF(40, 40), 0f,
                         UIMenuItem.BadgeToColor(Items[c].RightBadge, (Index == c && Focused))).Draw();
                 }
 
                 if (hasLeftBadge && hasRightBadge)
                 {
                     new Sprite(UIMenuItem.BadgeToSpriteLib(Items[c].LeftBadge),
-                        UIMenuItem.BadgeToSpriteName(Items[c].LeftBadge, (Index == c && Focused)), SafeSize.AddPoints(new Point(-2, 1 + (itemSize.Height + 3) * i)), new Size(40, 40), 0f,
+                        UIMenuItem.BadgeToSpriteName(Items[c].LeftBadge, (Index == c && Focused)), SafeSize.AddPoints(new PointF(-2, 1 + (itemSize.Height + 3) * i)), new SizeF(40, 40), 0f,
                         UIMenuItem.BadgeToColor(Items[c].LeftBadge, (Index == c && Focused))).Draw();
 
                     new Sprite(UIMenuItem.BadgeToSpriteLib(Items[c].RightBadge),
-                        UIMenuItem.BadgeToSpriteName(Items[c].RightBadge, (Index == c && Focused)), SafeSize.AddPoints(new Point(25, 1 + (itemSize.Height + 3) * i)), new Size(40, 40), 0f,
+                        UIMenuItem.BadgeToSpriteName(Items[c].RightBadge, (Index == c && Focused)), SafeSize.AddPoints(new PointF(25, 1 + (itemSize.Height + 3) * i)), new SizeF(40, 40), 0f,
                         UIMenuItem.BadgeToColor(Items[c].RightBadge, (Index == c && Focused))).Draw();
                 }
 
                 if (!string.IsNullOrEmpty(Items[c].RightLabel))
                 {
                     new UIResText(Items[c].RightLabel,
-                        SafeSize.AddPoints(new Point(BottomRight.X - SafeSize.X - 5, 5 + (itemSize.Height + 3)*i)),
+                        SafeSize.AddPoints(new PointF(BottomRight.X - SafeSize.X - 5, 5 + (itemSize.Height + 3)*i)),
                         0.35f, Color.FromArgb(fullAlpha, (Index == c && Focused) ? UnknownColors.Black : UnknownColors.White),
                         Font.ChaletLondon, UIResText.Alignment.Right).Draw();
                 }
@@ -202,7 +202,7 @@ namespace NativeUI.PauseMenu
                     {
                         textureName = ((UIMenuCheckboxItem)Items[c]).Checked ? "shop_box_tick" : "shop_box_blank";
                     }
-                    new Sprite("commonmenu", textureName, SafeSize.AddPoints(new Point(BottomRight.X - SafeSize.X - 60, -5 + (itemSize.Height + 3) * i)), new Size(50, 50)).Draw();
+                    new Sprite("commonmenu", textureName, SafeSize.AddPoints(new PointF(BottomRight.X - SafeSize.X - 60, -5 + (itemSize.Height + 3) * i)), new SizeF(50, 50)).Draw();
                 }
                 else if (Items[c] is UIMenuListItem)
                 {
@@ -210,10 +210,10 @@ namespace NativeUI.PauseMenu
 
                     var yoffset = 5;
                     var basePos =
-                        SafeSize.AddPoints(new Point(BottomRight.X - SafeSize.X - 30, yoffset + (itemSize.Height + 3)*i));
+                        SafeSize.AddPoints(new PointF(BottomRight.X - SafeSize.X - 30, yoffset + (itemSize.Height + 3)*i));
 
-                    var arrowLeft = new Sprite("commonmenu", "arrowleft", basePos, new Size(30, 30));
-                    var arrowRight = new Sprite("commonmenu", "arrowright", basePos, new Size(30, 30));
+                    var arrowLeft = new Sprite("commonmenu", "arrowleft", basePos, new SizeF(30, 30));
+                    var arrowRight = new Sprite("commonmenu", "arrowright", basePos, new SizeF(30, 30));
                     var itemText = new UIResText("", basePos, 0.35f, UnknownColors.White, Font.ChaletLondon,
                         UIResText.Alignment.Left) { TextAlignment = UIResText.Alignment.Right };
 
@@ -230,16 +230,16 @@ namespace NativeUI.PauseMenu
                     arrowRight.Color = convItem.Enabled ? selected ? UnknownColors.Black : UnknownColors.WhiteSmoke : Color.FromArgb(163, 159, 148);
 
                     arrowLeft.Position =
-                        SafeSize.AddPoints(new Point(BottomRight.X - SafeSize.X - 60 - offset, yoffset + (itemSize.Height + 3)*i));
+                        SafeSize.AddPoints(new PointF(BottomRight.X - SafeSize.X - 60 - offset, yoffset + (itemSize.Height + 3)*i));
                     if (selected)
                     {
                         arrowLeft.Draw();
                         arrowRight.Draw();
-                        itemText.Position = SafeSize.AddPoints(new Point(BottomRight.X - SafeSize.X - 30, yoffset + (itemSize.Height + 3) * i));
+                        itemText.Position = SafeSize.AddPoints(new PointF(BottomRight.X - SafeSize.X - 30, yoffset + (itemSize.Height + 3) * i));
                     }
                     else
                     {
-                        itemText.Position = SafeSize.AddPoints(new Point(BottomRight.X - SafeSize.X - 5, yoffset + (itemSize.Height + 3) * i));
+                        itemText.Position = SafeSize.AddPoints(new PointF(BottomRight.X - SafeSize.X - 5, yoffset + (itemSize.Height + 3) * i));
                     }
 
                     itemText.Draw();

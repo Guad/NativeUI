@@ -104,15 +104,15 @@ namespace NativeUI.PauseMenu
 
             var activeWidth = res.Width - SafeSize.X * 2;
             var submenuWidth = (int)(activeWidth * 0.6818f);
-            var itemSize = new Size((int)activeWidth - (submenuWidth + 3), 40);
+            var itemSize = new SizeF((int)activeWidth - (submenuWidth + 3), 40);
 
             for (int i = 0; i < Items.Count; i++)
             {
-                var hovering = UIMenu.IsMouseInBounds(SafeSize.AddPoints(new Point(0, (itemSize.Height + 3)*i)),
+                var hovering = UIMenu.IsMouseInBounds(SafeSize.AddPoints(new PointF(0, (itemSize.Height + 3)*i)),
                     itemSize);
 
-                new UIResRectangle(SafeSize.AddPoints(new Point(0, (itemSize.Height + 3) * i)), itemSize, (Index == i && Focused) ? Color.FromArgb(fullAlpha, UnknownColors.White) : hovering && Focused ? Color.FromArgb(100, 50, 50, 50) : Color.FromArgb(blackAlpha, UnknownColors.Black)).Draw();
-                new UIResText(Items[i].Title, SafeSize.AddPoints(new Point(6, 5 + (itemSize.Height + 3) * i)), 0.35f, Color.FromArgb(fullAlpha, (Index == i && Focused) ? UnknownColors.Black : UnknownColors.White)).Draw();
+                new UIResRectangle(SafeSize.AddPoints(new PointF(0, (itemSize.Height + 3) * i)), itemSize, (Index == i && Focused) ? Color.FromArgb(fullAlpha, UnknownColors.White) : hovering && Focused ? Color.FromArgb(100, 50, 50, 50) : Color.FromArgb(blackAlpha, UnknownColors.Black)).Draw();
+                new UIResText(Items[i].Title, SafeSize.AddPoints(new PointF(6, 5 + (itemSize.Height + 3) * i)), 0.35f, Color.FromArgb(fullAlpha, (Index == i && Focused) ? UnknownColors.Black : UnknownColors.White)).Draw();
 
                 if (Focused && hovering && Game.IsControlJustPressed(0, Control.CursorAccept))
                 {
@@ -146,9 +146,9 @@ namespace NativeUI.PauseMenu
             if (!Items[Index].CanBeFocused)
                 Items[Index].Focused = Focused;
             Items[Index].UseDynamicPositionment = false;
-            Items[Index].SafeSize = SafeSize.AddPoints(new Point((int)activeWidth - submenuWidth, 0));
-            Items[Index].TopLeft = SafeSize.AddPoints(new Point((int)activeWidth - submenuWidth, 0));
-            Items[Index].BottomRight = new Point((int)res.Width - SafeSize.X, (int)res.Height - SafeSize.Y);
+            Items[Index].SafeSize = SafeSize.AddPoints(new PointF((int)activeWidth - submenuWidth, 0));
+            Items[Index].TopLeft = SafeSize.AddPoints(new PointF((int)activeWidth - submenuWidth, 0));
+            Items[Index].BottomRight = new PointF((int)res.Width - SafeSize.X, (int)res.Height - SafeSize.Y);
             Items[Index].Draw();
         }
     }

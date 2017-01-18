@@ -29,13 +29,13 @@ namespace NativeUI.PauseMenu
 
             for (int i = 0; i < Dictionary.Count; i++)
             {
-                new UIResRectangle(new Point(TopLeft.X, TopLeft.Y + (40 * i)),
-                    new Size(rectSize, 40), i % 2 == 0 ? Color.FromArgb(alpha, 0, 0, 0) : Color.FromArgb(blackAlpha, 0, 0, 0)).Draw();
+                new UIResRectangle(new PointF(TopLeft.X, TopLeft.Y + (40 * i)),
+                    new SizeF(rectSize, 40), i % 2 == 0 ? Color.FromArgb(alpha, 0, 0, 0) : Color.FromArgb(blackAlpha, 0, 0, 0)).Draw();
 
                 var item = Dictionary.ElementAt(i);
 
-                new UIResText(item.Key, new Point(TopLeft.X + 6, TopLeft.Y + 5 + (40 * i)), 0.35f, Color.FromArgb(fullAlpha, UnknownColors.White)).Draw();
-                new UIResText(item.Value, new Point(BottomRight.X - 6, TopLeft.Y + 5 + (40 * i)), 0.35f, Color.FromArgb(fullAlpha, UnknownColors.White), Font.ChaletLondon, UIResText.Alignment.Right).Draw();
+                new UIResText(item.Key, new PointF(TopLeft.X + 6, TopLeft.Y + 5 + (40 * i)), 0.35f, Color.FromArgb(fullAlpha, UnknownColors.White)).Draw();
+                new UIResText(item.Value, new PointF(BottomRight.X - 6, TopLeft.Y + 5 + (40 * i)), 0.35f, Color.FromArgb(fullAlpha, UnknownColors.White), Font.ChaletLondon, UIResText.Alignment.Right).Draw();
             }
         }
     }

@@ -20,10 +20,10 @@ namespace NativeUI
         public virtual void Draw(int interval)
         {
             SizeF res = UIMenu.GetScreenResolutionMantainRatio();
-            Point safe = UIMenu.GetSafezoneBounds();
+            PointF safe = UIMenu.GetSafezoneBounds();
 
-            new UIResText(Label, new Point((int)res.Width - safe.X - 180, (int)res.Height - safe.Y - (30 + (4 * interval))), 0.3f, UnknownColors.White, Font.ChaletLondon, UIResText.Alignment.Right).Draw();
-            new Sprite("timerbars", "all_black_bg", new Point((int)res.Width - safe.X - 298, (int)res.Height - safe.Y - (40 + (4 * interval))), new Size(300, 37), 0f, Color.FromArgb(180, 255, 255, 255)).Draw();
+            new UIResText(Label, new PointF((int)res.Width - safe.X - 180, (int)res.Height - safe.Y - (30 + (4 * interval))), 0.3f, UnknownColors.White, Font.ChaletLondon, UIResText.Alignment.Right).Draw();
+            new Sprite("timerbars", "all_black_bg", new PointF((int)res.Width - safe.X - 298, (int)res.Height - safe.Y - (40 + (4 * interval))), new SizeF(300, 37), 0f, Color.FromArgb(180, 255, 255, 255)).Draw();
 
             Function.Call(Hash.HIDE_HUD_COMPONENT_THIS_FRAME, (int)HudComponent.AreaName);
             Function.Call(Hash.HIDE_HUD_COMPONENT_THIS_FRAME, (int)HudComponent.StreetName);
@@ -43,10 +43,10 @@ namespace NativeUI
         public override void Draw(int interval)
         {
             SizeF res = UIMenu.GetScreenResolutionMantainRatio();
-            Point safe = UIMenu.GetSafezoneBounds();
+            PointF safe = UIMenu.GetSafezoneBounds();
 
             base.Draw(interval);
-            new UIResText(Text, new Point((int)res.Width - safe.X - 10, (int)res.Height - safe.Y - (42 + (4 * interval))), 0.5f, UnknownColors.White, Font.ChaletLondon, UIResText.Alignment.Right).Draw();
+            new UIResText(Text, new PointF((int)res.Width - safe.X - 10, (int)res.Height - safe.Y - (42 + (4 * interval))), 0.5f, UnknownColors.White, Font.ChaletLondon, UIResText.Alignment.Right).Draw();
         }
     }
 
@@ -69,14 +69,14 @@ namespace NativeUI
         public override void Draw(int interval)
         {
             SizeF res = UIMenu.GetScreenResolutionMantainRatio();
-            Point safe = UIMenu.GetSafezoneBounds();
+            PointF safe = UIMenu.GetSafezoneBounds();
 
             base.Draw(interval);
 
-            var start = new Point((int)res.Width - safe.X - 160, (int)res.Height - safe.Y - (28 + (4 * interval)));
+            var start = new PointF((int)res.Width - safe.X - 160, (int)res.Height - safe.Y - (28 + (4 * interval)));
 
-            new UIResRectangle(start, new Size(150, 15), BackgroundColor).Draw();
-            new UIResRectangle(start, new Size((int)(150 * Percentage), 15), ForegroundColor).Draw();
+            new UIResRectangle(start, new SizeF(150, 15), BackgroundColor).Draw();
+            new UIResRectangle(start, new SizeF((int)(150 * Percentage), 15), ForegroundColor).Draw();
         }
     }
 

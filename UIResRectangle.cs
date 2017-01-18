@@ -13,13 +13,13 @@ namespace NativeUI
         public UIResRectangle()
         { }
 
-        public UIResRectangle(Point pos, Size size) : base(pos, size)
+        public UIResRectangle(PointF pos, SizeF size) : base(pos, size)
         { }
 
-        public UIResRectangle(Point pos, Size size, Color color) : base(pos, size, color)
+        public UIResRectangle(PointF pos, SizeF size, Color color) : base(pos, size, color)
         { }
         
-        public void Draw(Size offset)
+        public override void Draw(SizeF offset)
         {
             if (!Enabled) return;
             int screenw = 1920;// Game.ScreenResolution.Width;

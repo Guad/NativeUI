@@ -10,8 +10,8 @@ namespace NativeUI
 {
     public class Sprite
     {
-        public Point Position;
-        public Size Size;
+        public PointF Position;
+        public SizeF Size;
         public Color Color;
         public bool Visible;
         public float Heading;
@@ -39,7 +39,7 @@ namespace NativeUI
         /// <param name="size"></param>
         /// <param name="heading"></param>
         /// <param name="color"></param>
-        public Sprite(string textureDict, string textureName, Point position, Size size, float heading, Color color) //BASE
+        public Sprite(string textureDict, string textureName, PointF position, SizeF size, float heading, Color color) //BASE
         {
             //if (!Function.Call<bool>(Hash.HAS_STREAMED_TEXTURE_DICT_LOADED, textureDict))
                 //Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, textureDict, true);
@@ -60,7 +60,7 @@ namespace NativeUI
         /// <param name="textureName"></param>
         /// <param name="position"></param>
         /// <param name="size"></param>
-        public Sprite(string textureDict, string textureName, Point position, Size size) : this(textureDict, textureName, position, size, 0f, Color.FromArgb(255, 255, 255, 255))
+        public Sprite(string textureDict, string textureName, PointF position, SizeF size) : this(textureDict, textureName, position, size, 0f, Color.FromArgb(255, 255, 255, 255))
         {
         }
 
@@ -109,14 +109,14 @@ namespace NativeUI
             float reduceY = UI.HEIGHT / height;
 
             
-            Point extra = new Point(0,0);
+            Point extra = new PointF(0,0);
             if (screenw == 1914 && screenh == 1052) //TODO: Fix this when ScriptHookVDotNet 1.2 comes out.
-                extra = new Point(15, 0);
+                extra = new PointF(15, 0);
 
             UI.DrawTexture(path, 1, 1, 60,
-                new Point(Convert.ToInt32(position.X*reduceX) + extra.X, Convert.ToInt32(position.Y*reduceY) + extra.Y),
+                new PointF(Convert.ToInt32(position.X*reduceX) + extra.X, Convert.ToInt32(position.Y*reduceY) + extra.Y),
                 new PointF(0f, 0f), 
-                new Size(Convert.ToInt32(size.Width * reduceX), Convert.ToInt32(size.Height * reduceY)),
+                new SizeF(Convert.ToInt32(size.Width * reduceX), Convert.ToInt32(size.Height * reduceY)),
                 rotation, color);
         }*/
 
@@ -139,14 +139,14 @@ namespace NativeUI
             float reduceY = UI.HEIGHT / height;
 
 
-            Point extra = new Point(0, 0);
+            Point extra = new PointF(0, 0);
             if (screenw == 1914 && screenh == 1052) //TODO: Fix this when ScriptHookVDotNet 1.2 comes out.
-                extra = new Point(15, 0);
+                extra = new PointF(15, 0);
 
             UI.DrawTexture(path, 1, 1, 60,
-                new Point(Convert.ToInt32(position.X * reduceX) + extra.X, Convert.ToInt32(position.Y * reduceY) + extra.Y),
+                new PointF(Convert.ToInt32(position.X * reduceX) + extra.X, Convert.ToInt32(position.Y * reduceY) + extra.Y),
                 new PointF(0f, 0f),
-                new Size(Convert.ToInt32(size.Width * reduceX), Convert.ToInt32(size.Height * reduceY)),
+                new SizeF(Convert.ToInt32(size.Width * reduceX), Convert.ToInt32(size.Height * reduceY)),
                 0f, UnknownColors.White);
         }*/
 
