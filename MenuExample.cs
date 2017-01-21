@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Forms;
-using GTA;
-using GTA.Native;
 using NativeUI;
+using CitizenFX.Core;
+using System.Threading.Tasks;
 
-public class MenuExample : Script
+public class MenuExample : BaseScript
 {
     private bool ketchup = false;
     private string dish = "Banana";
@@ -21,7 +19,7 @@ public class MenuExample : Script
             if (item == newitem)
             {
                 ketchup = checked_;
-                UI.Notify("~r~Ketchup status: ~b~" + ketchup);
+                CitizenFX.Core.UI.Screen.ShowNotification("~r~Ketchup status: ~b~" + ketchup);
             }
         };
     }
@@ -43,7 +41,7 @@ public class MenuExample : Script
             if (item == newitem)
             {
                 dish = item.IndexToItem(index).ToString();
-                UI.Notify("Preparing ~b~" + dish + "~w~...");
+                CitizenFX.Core.UI.Screen.ShowNotification("Preparing ~b~" + dish + "~w~...");
             }
 
         };
@@ -60,7 +58,7 @@ public class MenuExample : Script
             if (item == newitem)
             {
                 string output = ketchup ? "You have ordered ~b~{0}~w~ ~r~with~w~ ketchup." : "You have ordered ~b~{0}~w~ ~r~without~w~ ketchup.";
-                UI.ShowSubtitle(String.Format(output, dish));
+				CitizenFX.Core.UI.Screen.ShowSubtitle(String.Format(output, dish));
             }
         };
         menu.OnIndexChange += (sender, index) =>
@@ -88,11 +86,13 @@ public class MenuExample : Script
         AddMenuAnotherMenu(mainMenu);
         _menuPool.RefreshIndex();
 
-        Tick += (o, e) => _menuPool.ProcessMenus();
-        KeyDown += (o, e) =>
-        {
-            if (e.KeyCode == Keys.F5 && !_menuPool.IsAnyMenuOpen()) // Our menu on/off switch
-                mainMenu.Visible = !mainMenu.Visible;
-        };
-    }
+		Tick += new Func<Task>(async delegate
+		{
+			_menuPool.ProcessMenus();
+			if (Game.IsControlJustReleased(1, CitizenFX.Core.Control.MultiplayerInfo)) // Our menu on/off switch
+			{
+				mainMenu.Visible = !mainMenu.Visible;
+			}
+		});
+	}
 }
