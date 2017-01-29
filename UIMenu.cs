@@ -554,6 +554,15 @@ namespace NativeUI
 
             return new SizeF(width, height);
         }
+        
+        /// <summary>
+        /// Old GetScreenResolutionMantainRatio Method support old versions
+        /// </summary>
+        /// <returns></returns>
+        public static SizeF GetScreenResolutionMantainRatio()
+        {
+            GetScreenResolutionMaintainRatio();
+        }
 
 
         /// <summary>
