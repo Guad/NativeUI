@@ -559,6 +559,7 @@ namespace NativeUI
         /// Old GetScreenResolutionMantainRatio Method support old versions
         /// </summary>
         /// <returns></returns>
+        [Obsolete("Use GetScreenResolutionMaintainRatio")]
         public static SizeF GetScreenResolutionMantainRatio()
         {
             GetScreenResolutionMaintainRatio();
