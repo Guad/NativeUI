@@ -147,7 +147,7 @@ namespace NativeUI.PauseMenu
             base.Draw();
             if (Heists.Count == 0) return;
 
-            var res = UIMenu.GetScreenResolutionMantainRatio();
+            var res = UIMenu.GetScreenResolutionMaintainRatio();
 
             var activeWidth = res.Width - SafeSize.X * 2;
             var itemSize = new Size((int)activeWidth - 515, 40);
@@ -203,17 +203,17 @@ namespace NativeUI.PauseMenu
             if (!string.IsNullOrEmpty(Heists[Index].Description))
             {
                 var propLen = Heists[Index].ValueList.Count;
-                new UIResRectangle(new Point((int) res.Width - SafeSize.X - 512, SafeSize.Y + 256 + 42 + 40*propLen),
+                new UIResRectangle(new Point((int)res.Width - SafeSize.X - 512, SafeSize.Y + 256 + 42 + 40 * propLen),
                     new Size(512, 2), Color.FromArgb(fullAlpha, Color.White)).Draw();
                 new UIResText(Heists[Index].Description,
-                    new Point((int) res.Width - SafeSize.X - 508, SafeSize.Y + 256 + 45 + 40*propLen + 4), 0.35f,
+                    new Point((int)res.Width - SafeSize.X - 508, SafeSize.Y + 256 + 45 + 40 * propLen + 4), 0.35f,
                     Color.FromArgb(fullAlpha, Color.White))
                 {
                     WordWrap = new Size(508, 0),
                 }.Draw();
 
-                new UIResRectangle(new Point((int) res.Width - SafeSize.X - 512, SafeSize.Y + 256 + 44 + 40*propLen),
-                    new Size(512, 45*(StringMeasurer.MeasureString(Heists[Index].Description)/500)),
+                new UIResRectangle(new Point((int)res.Width - SafeSize.X - 512, SafeSize.Y + 256 + 44 + 40 * propLen),
+                    new Size(512, 45 * (StringMeasurer.MeasureString(Heists[Index].Description) / 500)),
                     Color.FromArgb(blackAlpha, 0, 0, 0)).Draw();
             }
         }

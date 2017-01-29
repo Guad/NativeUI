@@ -59,7 +59,7 @@ namespace NativeUI.PauseMenu
 
         public int Index;
         private bool _visible;
-        
+
         private Scaleform _sc;
         public void ShowInstructionalButtons()
         {
@@ -159,7 +159,7 @@ namespace NativeUI.PauseMenu
                     Tabs[Index].Active = false;
                     Tabs[Index].Focused = false;
                     Tabs[Index].Visible = false;
-                    Index = (1000 - (1000%Tabs.Count) + Index - 1)%Tabs.Count;
+                    Index = (1000 - (1000 % Tabs.Count) + Index - 1) % Tabs.Count;
                     Tabs[Index].Active = true;
                     Tabs[Index].Focused = false;
                     Tabs[Index].Visible = true;
@@ -174,7 +174,7 @@ namespace NativeUI.PauseMenu
                     Tabs[Index].Active = false;
                     Tabs[Index].Focused = false;
                     Tabs[Index].Visible = false;
-                    Index = (1000 - (1000%Tabs.Count) + Index + 1)%Tabs.Count;
+                    Index = (1000 - (1000 % Tabs.Count) + Index + 1) % Tabs.Count;
                     Tabs[Index].Active = true;
                     Tabs[Index].Focused = false;
                     Tabs[Index].Visible = true;
@@ -211,8 +211,8 @@ namespace NativeUI.PauseMenu
             Function.Call(Hash.HIDE_HUD_AND_RADAR_THIS_FRAME);
             Function.Call(Hash._SHOW_CURSOR_THIS_FRAME);
 
-            
-            var res = UIMenu.GetScreenResolutionMantainRatio();
+
+            var res = UIMenu.GetScreenResolutionMaintainRatio();
             var safe = new Point(300, 180);
             if (!HideTabs)
             {
@@ -225,16 +225,16 @@ namespace NativeUI.PauseMenu
                 if (Photo == null)
                 {
                     new Sprite("char_multiplayer", "char_multiplayer",
-                        new Point((int) res.Width - safe.X - 64, safe.Y - 80), new Size(64, 64)).Draw();
+                        new Point((int)res.Width - safe.X - 64, safe.Y - 80), new Size(64, 64)).Draw();
                 }
                 else
                 {
-                    Photo.Position = new Point((int) res.Width - safe.X - 100, safe.Y - 80);
+                    Photo.Position = new Point((int)res.Width - safe.X - 100, safe.Y - 80);
                     Photo.Size = new Size(64, 64);
                     Photo.Draw();
                 }
 
-                new UIResText(Name, new Point((int) res.Width - safe.X - 70, safe.Y - 95), 0.7f, Color.White,
+                new UIResText(Name, new Point((int)res.Width - safe.X - 70, safe.Y - 95), 0.7f, Color.White,
                     Font.ChaletComprimeCologne, UIResText.Alignment.Right)
                 {
                     DropShadow = true,
@@ -247,7 +247,7 @@ namespace NativeUI.PauseMenu
                 }
 
 
-                new UIResText(t, new Point((int) res.Width - safe.X - 70, safe.Y - 60), 0.4f, Color.White,
+                new UIResText(t, new Point((int)res.Width - safe.X - 70, safe.Y - 60), 0.4f, Color.White,
                     Font.ChaletComprimeCologne, UIResText.Alignment.Right)
                 {
                     DropShadow = true,
@@ -259,7 +259,7 @@ namespace NativeUI.PauseMenu
                     subt = "";
                 }
 
-                new UIResText(subt, new Point((int) res.Width - safe.X - 70, safe.Y - 40), 0.4f, Color.White,
+                new UIResText(subt, new Point((int)res.Width - safe.X - 70, safe.Y - 40), 0.4f, Color.White,
                     Font.ChaletComprimeCologne, UIResText.Alignment.Right)
                 {
                     DropShadow = true,
@@ -267,30 +267,30 @@ namespace NativeUI.PauseMenu
 
                 for (int i = 0; i < Tabs.Count; i++)
                 {
-                    var activeSize = res.Width - 2*safe.X;
-                    activeSize -= 4*5;
-                    int tabWidth = (int) activeSize/Tabs.Count;
+                    var activeSize = res.Width - 2 * safe.X;
+                    activeSize -= 4 * 5;
+                    int tabWidth = (int)activeSize / Tabs.Count;
 
                     Game.EnableControl(0, Control.CursorX);
                     Game.EnableControl(0, Control.CursorY);
 
-                    var hovering = UIMenu.IsMouseInBounds(safe.AddPoints(new Point((tabWidth + 5)*i, 0)),
+                    var hovering = UIMenu.IsMouseInBounds(safe.AddPoints(new Point((tabWidth + 5) * i, 0)),
                         new Size(tabWidth, 40));
 
                     var tabColor = Tabs[i].Active
                         ? Color.White
                         : hovering ? Color.FromArgb(100, 50, 50, 50) : Color.Black;
-                    new UIResRectangle(safe.AddPoints(new Point((tabWidth + 5)*i, 0)), new Size(tabWidth, 40),
+                    new UIResRectangle(safe.AddPoints(new Point((tabWidth + 5) * i, 0)), new Size(tabWidth, 40),
                         Color.FromArgb(Tabs[i].Active ? 255 : 200, tabColor)).Draw();
 
-                    new UIResText(Tabs[i].Title.ToUpper(), safe.AddPoints(new Point((tabWidth/2) + (tabWidth + 5)*i, 5)),
+                    new UIResText(Tabs[i].Title.ToUpper(), safe.AddPoints(new Point((tabWidth / 2) + (tabWidth + 5) * i, 5)),
                         0.35f,
                         Tabs[i].Active ? Color.Black : Color.White, Font.ChaletLondon, UIResText.Alignment.Centered)
                         .Draw();
 
                     if (Tabs[i].Active)
                     {
-                        new UIResRectangle(safe.SubtractPoints(new Point(-((tabWidth + 5)*i), 10)),
+                        new UIResRectangle(safe.SubtractPoints(new Point(-((tabWidth + 5) * i), 10)),
                             new Size(tabWidth, 10), Color.DodgerBlue).Draw();
                     }
 
@@ -299,7 +299,7 @@ namespace NativeUI.PauseMenu
                         Tabs[Index].Active = false;
                         Tabs[Index].Focused = false;
                         Tabs[Index].Visible = false;
-                        Index = (1000 - (1000%Tabs.Count) + i)%Tabs.Count;
+                        Index = (1000 - (1000 % Tabs.Count) + i) % Tabs.Count;
                         Tabs[Index].Active = true;
                         Tabs[Index].Focused = true;
                         Tabs[Index].Visible = true;

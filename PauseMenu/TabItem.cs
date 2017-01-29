@@ -41,14 +41,14 @@ namespace NativeUI.PauseMenu
 
         public virtual void ProcessControls()
         {
-            
+
         }
 
         public virtual void Draw()
         {
             if (!Visible) return;
 
-            var res = UIMenu.GetScreenResolutionMantainRatio();
+            var res = UIMenu.GetScreenResolutionMaintainRatio();
 
             if (UseDynamicPositionment)
             {
