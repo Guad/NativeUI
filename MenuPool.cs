@@ -106,9 +106,16 @@ namespace NativeUI
         /// </summary>
         public void ProcessControl()
         {
-            foreach (var menu in _menuList.Where(menu => menu.Visible))
+            /*foreach (var menu in _menuList.Where(menu => menu.Visible)) // foreach works slower with List. Also why make a new enumerable every tick
             {
                 menu.ProcessControl();
+            }*/
+
+            int count = _menuList.Count; // Cache count
+            for (int i = 0; i < count; i++)
+            {
+                if (_menuList[i].Visible)
+                    _menuList[i].ProcessControl();
             }
         }
 
@@ -119,9 +126,16 @@ namespace NativeUI
         /// <param name="key"></param>
         public void ProcessKey(Keys key)
         {
-            foreach (var menu in _menuList.Where(menu => menu.Visible))
+            /*foreach (var menu in _menuList.Where(menu => menu.Visible))
             {
                 menu.ProcessKey(key);
+            }*/
+
+            int count = _menuList.Count;
+            for (int i = 0; i < count; i++)
+            {
+                if (_menuList[i].Visible)
+                    _menuList[i].ProcessKey(key);
             }
         }
 
@@ -131,9 +145,16 @@ namespace NativeUI
         /// </summary>
         public void ProcessMouse()
         {
-            foreach (var menu in _menuList.Where(menu => menu.Visible))
+            /*foreach (var menu in _menuList.Where(menu => menu.Visible))
             {
                 menu.ProcessMouse();
+            }*/
+
+            int count = _menuList.Count;
+            for (int i = 0; i < count; i++)
+            {
+                if (_menuList[i].Visible)
+                    _menuList[i].ProcessMouse();
             }
         }
         
@@ -143,9 +164,16 @@ namespace NativeUI
         /// </summary>
         public void Draw()
         {
-            foreach (var menu in _menuList.Where(menu => menu.Visible))
+            /*foreach (var menu in _menuList.Where(menu => menu.Visible))
             {
                 menu.Draw();
+            }*/
+
+            int count = _menuList.Count;
+            for (int i = 0; i < count; i++)
+            {
+                if (_menuList[i].Visible)
+                    _menuList[i].Draw();
             }
         }
 

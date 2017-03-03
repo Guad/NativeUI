@@ -477,7 +477,7 @@ namespace NativeUI
             _mainMenu.Draw();
             if (MenuItems.Count == 0)
             {
-                Function.Call((Hash)0xE3A3DB414A373DAB); // Safezone end
+                Function.Call(Hash._0xE3A3DB414A373DAB);  //Function.Call((Hash)0xE3A3DB414A373DAB); // Safezone end
                 return;
             }
 
@@ -502,12 +502,19 @@ namespace NativeUI
 
             if (MenuItems.Count <= MaxItemsOnScreen + 1)
             {
-                int count = 0;
-                foreach (var item in MenuItems)
+                /*int count = 0;
+                foreach (var item in MenuItems) // foreach works slower with List
                 {
                     item.Position(count * 38 - 37 + _extraYOffset);
                     item.Draw();
                     count++;
+                }*/
+
+                int count = MenuItems.Count;
+                for(int i = 0; i < count; i++)
+                {
+                    MenuItems[i].Position(i * 38 - 37 + _extraYOffset);
+                    MenuItems[i].Draw();
                 }
             }
             else
@@ -515,9 +522,9 @@ namespace NativeUI
                 int count = 0;
                 for (int index = _minItem; index <= _maxItem; index++)
                 {
-                    var item = MenuItems[index];
-                    item.Position(count * 38 - 37 + _extraYOffset);
-                    item.Draw();
+                    //var item = MenuItems[index]; // No need to cache item every time
+                    MenuItems[index].Position(count * 38 - 37 + _extraYOffset);
+                    MenuItems[index].Draw();
                     count++;
                 }
                 _extraRectangleUp.Size = new Size(431 + WidthOffset, 18);
@@ -528,16 +535,16 @@ namespace NativeUI
                 _extraRectangleUp.Draw();
                 _extraRectangleDown.Draw();
                 _upAndDownSprite.Draw();
-                if (_counterText != null)
-                {
+                //if (_counterText != null) // Why check for null if it can't be null? (It creates right in the ctor)
+                //{
                     string cap = (CurrentSelection + 1) + " / " + Size;
                     _counterText.Caption = CounterPretext + cap;
                     _counterText.Draw();
-                }
+                //}
             }
 
             if (ScaleWithSafezone)
-                Function.Call((Hash)0xE3A3DB414A373DAB); // Safezone end
+                Function.Call(Hash._0xE3A3DB414A373DAB); // Function.Call((Hash)0xE3A3DB414A373DAB); // Safezone end
         }
 
         /// <summary>
@@ -562,7 +569,7 @@ namespace NativeUI
         [Obsolete("Use GetScreenResolutionMaintainRatio")]
         public static SizeF GetScreenResolutionMantainRatio()
         {
-            GetScreenResolutionMaintainRatio();
+            return GetScreenResolutionMaintainRatio(); // There was no return keyword
         }
 
 
