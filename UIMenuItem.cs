@@ -40,7 +40,7 @@ namespace NativeUI
         {
             Enabled = true;
 
-            _rectangle = new UIResRectangle(new Point(0, 0), new Size(431, 38), Color.FromArgb(150, 0, 0, 0));
+            _rectangle = new UIResRectangle(new Point(0, 0), new Size(431, 38), Color.FromArgb(20, 255, 255, 255)); // Color.FromArgb(150, 0, 0, 0)
             _text = new UIResText(text, new Point(8, 0), 0.33f, Color.WhiteSmoke, GTA.Font.ChaletLondon, UIResText.Alignment.Left);
             Description = description;
             _selectedSprite = new Sprite("commonmenu", "gradient_nav", new Point(0, 0), new Size(431, 38));
@@ -97,6 +97,7 @@ namespace NativeUI
             _labelText.Position = new Point(420 + Offset.X, y + 148 + Offset.Y);
         }
 
+        private Color _disabledColor = Color.FromArgb(163, 159, 148); // Why allocating memory for same color every time?
 
         /// <summary>
         /// Draw this item.
@@ -108,25 +109,25 @@ namespace NativeUI
 
             if (Hovered && !Selected)
             {
-                _rectangle.Color = Color.FromArgb(20, 255, 255, 255);
+                //_rectangle.Color = Color.FromArgb(20, 255, 255, 255); // Why setting color every time? (I set it in ctor)
                 _rectangle.Draw();
             }
             if (Selected)
                 _selectedSprite.Draw();
 
-            _text.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
+            _text.Color = Enabled ? (Selected ? Color.Black : Color.WhiteSmoke) : _disabledColor; // No alloc anymore there
 
-            if (LeftBadge != BadgeStyle.None)
+            if (LeftBadge == BadgeStyle.None)
+            {
+                _text.Position = new Point(8 + Offset.X, _text.Position.Y);
+            }
+            else
             {
                 _text.Position = new Point(35 + Offset.X, _text.Position.Y);
                 _badgeLeft.TextureDict = BadgeToSpriteLib(LeftBadge);
                 _badgeLeft.TextureName = BadgeToSpriteName(LeftBadge, Selected);
                 _badgeLeft.Color = BadgeToColor(LeftBadge, Selected);
                 _badgeLeft.Draw();
-            }
-            else
-            {
-                _text.Position = new Point(8 + Offset.X, _text.Position.Y);
             }
 
             if (RightBadge != BadgeStyle.None)
@@ -142,9 +143,10 @@ namespace NativeUI
             {
                 _labelText.Position = new Point(420 + Offset.X + Parent.WidthOffset, _labelText.Position.Y);
                 _labelText.Caption = RightLabel;
-                _labelText.Color = _text.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
+                _labelText.Color = _text.Color = Enabled ? (Selected ? Color.Black : Color.WhiteSmoke) : _disabledColor; // No alloc anymore there
                 _labelText.Draw();
             }
+
             _text.Draw();
         }
 
