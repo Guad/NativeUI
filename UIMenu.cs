@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -581,12 +581,21 @@ namespace NativeUI
         /// </summary>
         public void GoLeft()
         {
-            if (!(MenuItems[CurrentSelection] is UIMenuListItem)) return;
-            var it = (UIMenuListItem)MenuItems[CurrentSelection];
-            it.Index = it.Index - 1;
-            Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
-            ListChange(it, it.Index);
-            it.ListChangedTrigger(it.Index);
+            if (MenuItems[CurrentSelection] is UIMenuListItem)
+            {
+                var it = (UIMenuListItem) MenuItems[CurrentSelection];
+                it.Index = it.Index - 1;
+                Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
+                ListChange(it, it.Index);
+                it.ListChangedTrigger(it.Index);
+            }
+            else if (MenuItems[CurrentSelection] is UIMenuDynamicListItem)
+            {
+                var it = (UIMenuDynamicListItem) MenuItems[CurrentSelection];
+                string newItem = it.Callback(it, UIMenuDynamicListItem.ChangeDirection.Left);
+                it.CurrentListItem = newItem;
+                Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
+            }
         }
 
 
@@ -595,12 +604,21 @@ namespace NativeUI
         /// </summary>
         public void GoRight()
         {
-            if (!(MenuItems[CurrentSelection] is UIMenuListItem)) return;
-            var it = (UIMenuListItem)MenuItems[CurrentSelection];
-            it.Index++;
-            Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
-            ListChange(it, it.Index);
-            it.ListChangedTrigger(it.Index);
+            if (MenuItems[CurrentSelection] is UIMenuListItem)
+            {
+                var it = (UIMenuListItem) MenuItems[CurrentSelection];
+                it.Index++;
+                Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
+                ListChange(it, it.Index);
+                it.ListChangedTrigger(it.Index);
+            }
+            else if (MenuItems[CurrentSelection] is UIMenuDynamicListItem)
+            {
+                var it = (UIMenuDynamicListItem)MenuItems[CurrentSelection];
+                string newItem = it.Callback(it, UIMenuDynamicListItem.ChangeDirection.Right);
+                it.CurrentListItem = newItem;
+                Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
+            }
         }
 
 
@@ -862,7 +880,7 @@ namespace NativeUI
         /// <param name="topLeft">top left point of the item.</param>
         /// <param name="safezone">safezone size.</param>
         /// <returns>0 - Not in item at all, 1 - In label, 2 - In arrow space.</returns>
-        private int IsMouseInListItemArrows(UIMenuListItem item, Point topLeft, Point safezone) // TODO: Ability to scroll left and right
+        private int IsMouseInListItemArrows(UIMenuItem item, Point topLeft, Point safezone) // TODO: Ability to scroll left and right
         {
             Function.Call((Hash)0x54CE8AC98E120CAB, "jamyfafi");
             UIResText.AddLongString(item.Text);
@@ -1074,25 +1092,19 @@ namespace NativeUI
                     if (Game.IsControlJustPressed(0, Control.Attack))
                         if (uiMenuItem.Selected && uiMenuItem.Enabled)
                         {
-                            if (MenuItems[i] is UIMenuListItem &&
-                                IsMouseInListItemArrows((UIMenuListItem)MenuItems[i], new Point(xpos, ypos),
+                            if (MenuItems[i] is IListItem &&
+                                IsMouseInListItemArrows(MenuItems[i], new Point(xpos, ypos),
                                     safezoneOffset) > 0)
                             {
-                                int res = IsMouseInListItemArrows((UIMenuListItem)MenuItems[i], new Point(xpos, ypos),
+                                int res = IsMouseInListItemArrows(MenuItems[i], new Point(xpos, ypos),
                                     safezoneOffset);
                                 switch (res)
                                 {
                                     case 1:
-                                        Game.PlaySound(AUDIO_SELECT, AUDIO_LIBRARY);
-                                        MenuItems[i].ItemActivate(this);
-                                        ItemSelect(MenuItems[i], i);
+                                        SelectItem();
                                         break;
                                     case 2:
-                                        var it = (UIMenuListItem)MenuItems[i];
-                                        it.Index++;
-                                        Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
-                                        ListChange(it, it.Index);
-                                        it.ListChangedTrigger(it.Index);
+                                        GoRight();
                                         break;
                                 }
                             }

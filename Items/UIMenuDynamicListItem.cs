@@ -1,65 +1,49 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using GTA;
 using Font = GTA.Font;
 
 namespace NativeUI
 {
-    public class UIMenuListItem : UIMenuItem, IListItem
+    public class UIMenuDynamicListItem : UIMenuItem, IListItem
     {
+        public enum ChangeDirection
+        {
+            Left,
+            Right
+        }
+
+        public delegate string DynamicListItemChangeCallback(UIMenuDynamicListItem sender, ChangeDirection direction);
+
         protected UIResText _itemText;
         protected Sprite _arrowLeft;
         protected Sprite _arrowRight;
 
-        protected int _index;
-        protected List<object> _items;
-
-
-        /// <summary>
-        /// Triggered when the list is changed.
-        /// </summary>
-        public event ItemListEvent OnListChanged;
-
-        
-        /// <summary>
-        /// Returns the current selected index.
-        /// </summary>
-        public int Index
-        {
-            get { return _index % _items.Count; }
-            set { _index = 100000000 - (100000000 % _items.Count) + value; }
-        }
-
+        public string CurrentListItem { get; internal set; }
+        public DynamicListItemChangeCallback Callback { get; set; }
 
         /// <summary>
-        /// List item, with left/right arrows.
+        /// List item with items generated at runtime
         /// </summary>
-        /// <param name="text">Item label.</param>
-        /// <param name="items">List that contains your items.</param>
-        /// <param name="index">Index in the list. If unsure user 0.</param>
-        public UIMenuListItem(string text, List<object> items, int index)
-            : this(text, items, index, "")
+        /// <param name="text">Label text</param>
+        public UIMenuDynamicListItem(string text, string startingItem, DynamicListItemChangeCallback changeCallback) : this(text, null, startingItem, changeCallback)
         {
         }
 
         /// <summary>
-        /// List item, with left/right arrows.
+        /// List item with items generated at runtime
         /// </summary>
-        /// <param name="text">Item label.</param>
-        /// <param name="items">List that contains your items.</param>
-        /// <param name="index">Index in the list. If unsure user 0.</param>
-        /// <param name="description">Description for this item.</param>
-        public UIMenuListItem(string text, List<object> items, int index, string description)
-            : base(text, description)
+        /// <param name="text">Label text</param>
+        /// <param name="description">Item description</param>
+        public UIMenuDynamicListItem(string text, string description, string startingItem, DynamicListItemChangeCallback changeCallback) : base(text, description)
         {
             const int y = 0;
-            _items = items;
             _arrowLeft = new Sprite("commonmenu", "arrowleft", new Point(110, 105 + y), new Size(30, 30));
             _arrowRight = new Sprite("commonmenu", "arrowright", new Point(280, 105 + y), new Size(30, 30));
             _itemText = new UIResText("", new Point(290, y + 104), 0.35f, Color.White, Font.ChaletLondon,
-                UIResText.Alignment.Left) {TextAlignment = UIResText.Alignment.Right};
-            Index = index;
+                UIResText.Alignment.Right);
+
+            CurrentListItem = startingItem;
+            Callback = changeCallback;
         }
 
 
@@ -75,29 +59,6 @@ namespace NativeUI
             base.Position(y);
         }
 
-
-        /// <summary>
-        /// Find an item in the list and return it's index.
-        /// </summary>
-        /// <param name="item">Item to search for.</param>
-        /// <returns>Item index.</returns>
-        public virtual int ItemToIndex(object item)
-        {
-            return _items.FindIndex(p => ReferenceEquals(p, item));
-        }
-
-
-        /// <summary>
-        /// Find an item by it's index and return the item.
-        /// </summary>
-        /// <param name="index">Item's index.</param>
-        /// <returns>Item</returns>
-        public virtual object IndexToItem(int index)
-        {
-            return _items[index];
-        }
-
-
         /// <summary>
         /// Draw item.
         /// </summary>
@@ -105,11 +66,11 @@ namespace NativeUI
         {
             base.Draw();
 
-            string caption = _items[Index].ToString();
+            string caption = CurrentListItem;
             float offset = StringMeasurer.MeasureString(caption, _itemText.Font, _itemText.Scale);
 
             _itemText.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
-            
+
             _itemText.Caption = caption;
 
             _arrowLeft.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
@@ -129,11 +90,6 @@ namespace NativeUI
             _itemText.Draw();
         }
 
-        internal virtual void ListChangedTrigger(int newindex)
-        {
-            OnListChanged?.Invoke(this, newindex);
-        }
-
         public override void SetRightBadge(BadgeStyle badge)
         {
             throw new Exception("UIMenuListItem cannot have a right badge.");
@@ -146,7 +102,7 @@ namespace NativeUI
 
         public string CurrentItem()
         {
-            return _items[Index].ToString();
+            return CurrentListItem;
         }
     }
 }

@@ -51,6 +51,8 @@
   <ItemGroup>
     <Compile Include="BigMessage.cs" />
     <Compile Include="InstructionalButton.cs" />
+    <Compile Include="Items\IListItem.cs" />
+    <Compile Include="Items\UIMenuDynamicListItem.cs" />
     <Compile Include="MenuPool.cs" />
     <Compile Include="PauseMenu\TabItem.cs" />
     <Compile Include="PauseMenu\TabItemSimpleList.cs" />
