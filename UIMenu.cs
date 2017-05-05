@@ -420,12 +420,15 @@ namespace NativeUI
         /// <param name="item">Item object to be added. Can be normal item, checkbox or list item.</param>
         public void AddItem(UIMenuItem item)
         {
+            int selectedItem = CurrentSelection;
+
             item.Offset = _offset;
             item.Parent = this;
             item.Position((MenuItems.Count * 25) - 37 + _extraYOffset);
             MenuItems.Add(item);
 
             RecaulculateDescriptionPosition();
+            CurrentSelection = selectedItem;
         }
 
         /// <summary>
@@ -434,6 +437,7 @@ namespace NativeUI
         /// <param name="index">Index to remove the item at.</param>
         public void RemoveItemAt(int index)
         {
+            int selectedItem = CurrentSelection;
             if (Size > MaxItemsOnScreen && _maxItem == Size - 1)
             {
                 _maxItem--;
@@ -441,6 +445,7 @@ namespace NativeUI
             }
             MenuItems.RemoveAt(index);
             RecaulculateDescriptionPosition();
+            CurrentSelection = selectedItem;
         }
 
         /// <summary>

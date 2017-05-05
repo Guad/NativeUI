@@ -46,17 +46,7 @@ namespace NativeUI
                 Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, substr);
             }
         }
-        /*
-        public static float MeasureStringWidth(string str, Font font, float scale)
-        {
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
-            const float height = 1080f;
-            float ratio = (float)screenw / screenh;
-            float width = height * ratio;
-            return MeasureStringWidthNoConvert(str, font, scale) * width;
-        }
-        */
+        
         public static float MeasureStringWidth(string str, Font font, float scale)
         {
             int screenw = 2560;// Game.ScreenResolution.Width;
