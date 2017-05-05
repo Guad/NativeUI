@@ -19,8 +19,9 @@ namespace NativeUI
             SizeF res = UIMenu.GetScreenResolutionMantainRatio();
             Point safe = UIMenu.GetSafezoneBounds();
 
-            new UIResText(Label, new Point((int)res.Width - safe.X - 180, (int)res.Height - safe.Y - (30 + (4 * interval))), 0.3f, Color.White, Font.ChaletLondon, UIResText.Alignment.Right).Draw();
-            new Sprite("timerbars", "all_black_bg", new Point((int)res.Width - safe.X - 298, (int)res.Height - safe.Y - (40 + (4 * interval))), new Size(300, 37), 0f, Color.FromArgb(180, 255, 255, 255)).Draw();
+            UIResText.Draw(Label, (int)res.Width - safe.X - 180, (int)res.Height - safe.Y - (30 + (4 * interval)), Font.ChaletLondon, 0.3f, Color.White,
+                UIResText.Alignment.Right, false, false, 0);
+            Sprite.Draw("timerbars", "all_black_bg", (int)res.Width - safe.X - 298, (int)res.Height - safe.Y - (40 + (4 * interval)), 300, 37, 0f, Color.FromArgb(180, 255, 255, 255));
 
             UI.HideHudComponentThisFrame(HudComponent.AreaName);
             UI.HideHudComponentThisFrame(HudComponent.StreetName);
@@ -43,7 +44,8 @@ namespace NativeUI
             Point safe = UIMenu.GetSafezoneBounds();
 
             base.Draw(interval);
-            new UIResText(Text, new Point((int)res.Width - safe.X - 10, (int)res.Height - safe.Y - (42 + (4 * interval))), 0.5f, Color.White, Font.ChaletLondon, UIResText.Alignment.Right).Draw();
+            UIResText.Draw(Text, (int)res.Width - safe.X - 10, (int)res.Height - safe.Y - (42 + (4 * interval)), Font.ChaletLondon, 0.5f, Color.White, 
+                UIResText.Alignment.Right, false, false, 0);
         }
     }
 
@@ -72,8 +74,8 @@ namespace NativeUI
 
             var start = new Point((int)res.Width - safe.X - 160, (int)res.Height - safe.Y - (28 + (4 * interval)));
 
-            new UIResRectangle(start, new Size(150, 15), BackgroundColor).Draw();
-            new UIResRectangle(start, new Size((int)(150 * Percentage), 15), ForegroundColor).Draw();
+            UIResRectangle.Draw(start.X, start.Y, 150, 15, BackgroundColor);
+            UIResRectangle.Draw(start.X, start.Y, (int)(150 * Percentage), 15, ForegroundColor);
         }
     }
 

@@ -33,7 +33,7 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ScriptHookVDotNet, Version=2.9.2.0, Culture=neutral, processorArchitecture=AMD64">
+    <Reference Include="ScriptHookVDotNet, Version=2.9.4.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Release\ScriptHookVDotNet.dll</HintPath>
     </Reference>
@@ -51,6 +51,8 @@
   <ItemGroup>
     <Compile Include="BigMessage.cs" />
     <Compile Include="InstructionalButton.cs" />
+    <Compile Include="Items\IListItem.cs" />
+    <Compile Include="Items\UIMenuDynamicListItem.cs" />
     <Compile Include="MenuPool.cs" />
     <Compile Include="PauseMenu\TabItem.cs" />
     <Compile Include="PauseMenu\TabItemSimpleList.cs" />
@@ -61,16 +63,16 @@
     <Compile Include="PauseMenu\TabView.cs" />
     <Compile Include="PointExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sprite.cs" />
+    <Compile Include="Elements\Sprite.cs" />
     <Compile Include="StringMeasurer.cs" />
-    <Compile Include="TimerBars.cs" />
+    <Compile Include="Elements\TimerBars.cs" />
     <Compile Include="UIMenu.cs" />
-    <Compile Include="UIMenuCheckboxItem.cs" />
-    <Compile Include="UIMenuColoredItem.cs" />
-    <Compile Include="UIMenuItem.cs" />
-    <Compile Include="UIMenuListItem.cs" />
-    <Compile Include="UIResRectangle.cs" />
-    <Compile Include="UIResText.cs" />
+    <Compile Include="Items\UIMenuCheckboxItem.cs" />
+    <Compile Include="Items\UIMenuColoredItem.cs" />
+    <Compile Include="Items\UIMenuItem.cs" />
+    <Compile Include="Items\UIMenuListItem.cs" />
+    <Compile Include="Elements\UIResRectangle.cs" />
+    <Compile Include="Elements\UIResText.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

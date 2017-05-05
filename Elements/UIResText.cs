@@ -46,12 +46,11 @@ namespace NativeUI
                 Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, substr);
             }
         }
-
-
+        
         public static float MeasureStringWidth(string str, Font font, float scale)
         {
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
+            int screenw = 2560;// Game.ScreenResolution.Width;
+            int screenh = 1440;// Game.ScreenResolution.Height;
             const float height = 1080f;
             float ratio = (float)screenw / screenh;
             float width = height * ratio;
@@ -64,7 +63,7 @@ namespace NativeUI
             AddLongString(str);
             return Function.Call<float>((Hash)0x85F061DA64ED2F67, (int)font) * scale;
         }
-
+        
         public Size WordWrap { get; set; }
 
         public override void Draw(Size offset)
@@ -77,7 +76,7 @@ namespace NativeUI
 
             float x = (Position.X) / width;
             float y = (Position.Y) / height;
-            
+
             Function.Call(Hash.SET_TEXT_FONT, (int)Font);
             Function.Call(Hash.SET_TEXT_SCALE, 1.0f, Scale);
             Function.Call(Hash.SET_TEXT_COLOUR, Color.R, Color.G, Color.B, Color.A);
@@ -96,7 +95,7 @@ namespace NativeUI
                     break;
             }
 
-            if (WordWrap != new Size(0, 0))
+            if (WordWrap.Width != 0)
             {
                 float xsize = (Position.X + WordWrap.Width)/width;
                 Function.Call(Hash.SET_TEXT_WRAP, x, xsize);
@@ -105,6 +104,46 @@ namespace NativeUI
             Function.Call(Hash._SET_TEXT_ENTRY, "jamyfafi");
             AddLongString(Caption);
             
+            Function.Call(Hash._DRAW_TEXT, x, y);
+        }
+
+        public static void Draw(string caption, int xPos, int yPos, Font font, float scale, Color color, Alignment alignment, bool dropShadow, bool outline, int wordWrap)
+        {
+            int screenw = Game.ScreenResolution.Width;
+            int screenh = Game.ScreenResolution.Height;
+            const float height = 1080f;
+            float ratio = (float)screenw / screenh;
+            var width = height * ratio;
+
+            float x = (xPos) / width;
+            float y = (yPos) / height;
+
+            Function.Call(Hash.SET_TEXT_FONT, (int)font);
+            Function.Call(Hash.SET_TEXT_SCALE, 1.0f, scale);
+            Function.Call(Hash.SET_TEXT_COLOUR, color.R, color.G, color.B, color.A);
+            if (dropShadow)
+                Function.Call(Hash.SET_TEXT_DROP_SHADOW);
+            if (outline)
+                Function.Call(Hash.SET_TEXT_OUTLINE);
+            switch (alignment)
+            {
+                case Alignment.Centered:
+                    Function.Call(Hash.SET_TEXT_CENTRE, true);
+                    break;
+                case Alignment.Right:
+                    Function.Call(Hash.SET_TEXT_RIGHT_JUSTIFY, true);
+                    Function.Call(Hash.SET_TEXT_WRAP, 0, x);
+                    break;
+            }
+
+            if (wordWrap != 0)
+            {
+                float xsize = (xPos + wordWrap) / width;
+                Function.Call(Hash.SET_TEXT_WRAP, x, xsize);
+            }
+
+            Function.Call(Hash._SET_TEXT_ENTRY, "jamyfafi");
+            AddLongString(caption);
 
             Function.Call(Hash._DRAW_TEXT, x, y);
         }
