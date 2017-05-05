@@ -10,6 +10,8 @@ using Font = GTA.Font;
 
 namespace NativeUI
 {
+    #region Delegates
+    
     public delegate void IndexChangedEvent(UIMenu sender, int newIndex);
 
     public delegate void ListChangedEvent(UIMenu sender, UIMenuListItem listItem, int newIndex);
@@ -28,11 +30,14 @@ namespace NativeUI
 
     public delegate void ItemListEvent(UIMenuListItem sender, int newIndex);
 
+    #endregion
+
     /// <summary>
     /// Base class for NativeUI. Calls the next events: OnIndexChange, OnListChanged, OnCheckboxChange, OnItemSelect, OnMenuClose, OnMenuchange.
     /// </summary>
     public class UIMenu
     {
+        #region Private Fields
         private readonly UIContainer _mainMenu;
         private Sprite _logo;
         private readonly Sprite _background;
@@ -42,26 +47,37 @@ namespace NativeUI
         private readonly UIResText _descriptionText;
         private readonly UIResText _counterText;
 
+        private UIResRectangle _tmpRectangle;
         private string _customBanner;
-
         private int _activeItem = 1000;
 
         private bool _visible;
-
+        private bool _buttonsEnabled = true;
         private bool _justOpened = true;
+        private bool _itemsDirty = false;
 
         //Pagination
         private const int MaxItemsOnScreen = 9;
         private int _minItem;
         private int _maxItem = MaxItemsOnScreen;
 
-        
+        //Keys
+        private readonly Dictionary<MenuControls, Tuple<List<Keys>, List<Tuple<Control, int>>>> _keyDictionary =
+            new Dictionary<MenuControls, Tuple<List<Keys>, List<Tuple<Control, int>>>>();
+
+        private readonly List<InstructionalButton> _instructionalButtons = new List<InstructionalButton>();
         private readonly Sprite _upAndDownSprite;
         private readonly UIResRectangle _extraRectangleUp;
         private readonly UIResRectangle _extraRectangleDown;
 
+        private readonly Scaleform _instructionalButtonsScaleform;
+
         private Point _offset;
         private readonly int _extraYOffset;
+
+        #endregion
+
+        #region Public Fields
 
         public string AUDIO_LIBRARY = "HUD_FRONTEND_DEFAULT_SOUNDSET";
 
@@ -79,8 +95,10 @@ namespace NativeUI
         public bool FormatDescriptions = true;
         public bool MouseControlsEnabled = true;
         public bool ScaleWithSafezone = true;
+        
+        #endregion
 
-        //Events
+        #region Events
 
         /// <summary>
         /// Called when user presses up or down, changing current selection.
@@ -112,13 +130,10 @@ namespace NativeUI
         /// </summary>
         public event MenuChangeEvent OnMenuChange;
 
-
-        //Keys
-        private readonly Dictionary<MenuControls, Tuple<List<Keys>, List<Tuple<Control, int>>>> _keyDictionary = new Dictionary<MenuControls, Tuple<List<Keys>, List<Tuple<Control, int>>>> ();
-                         
-        //Tree structure
-        public Dictionary<UIMenuItem, UIMenu> Children { get; }
+        #endregion
         
+        #region Constructors
+
         /// <summary>
         /// Basic Menu constructor.
         /// </summary>
@@ -211,55 +226,9 @@ namespace NativeUI
             SetKey(MenuControls.Back, Control.FrontendPause);
         }
 
-        private void RecaulculateDescriptionPosition()
-        {
-            //_descriptionText.WordWrap = new Size(425 + WidthOffset, 0);
+        #endregion
 
-            _descriptionBar.Position = new Point(_offset.X, 149 - 37 + _extraYOffset + _offset.Y);
-            _descriptionRectangle.Position = new Point(_offset.X, 149 - 37 + _extraYOffset + _offset.Y);
-            _descriptionText.Position = new Point(_offset.X + 8, 155 - 37 + _extraYOffset + _offset.Y);
-
-            _descriptionBar.Size = new Size(431 + WidthOffset, 4);
-            _descriptionRectangle.Size = new Size(431 + WidthOffset, 30);
-
-            int count = Size;
-            if (count > MaxItemsOnScreen + 1)
-                count = MaxItemsOnScreen + 2;
-
-            _descriptionBar.Position = new Point(_offset.X, 38*count + _descriptionBar.Position.Y);
-            _descriptionRectangle.Position = new Point(_offset.X, 38*count + _descriptionRectangle.Position.Y);
-            _descriptionText.Position = new Point(_offset.X + 8, 38*count + _descriptionText.Position.Y);
-        }
-
-
-        /// <summary>
-        /// Returns the current width offset.
-        /// </summary>
-        public int WidthOffset { get; private set; }
-
-
-        /// <summary>
-        /// Change the menu's width. The width is calculated as DefaultWidth + WidthOffset, so a width offset of 10 would enlarge the menu by 10 pixels.
-        /// </summary>
-        /// <param name="widthOffset">New width offset.</param>
-        public void SetMenuWidthOffset(int widthOffset)
-        {
-            WidthOffset = widthOffset;
-            _logo.Size = new Size(431 + WidthOffset, 107);
-            _mainMenu.Items[0].Position = new Point((WidthOffset + _offset.X + 431)/2, 20 + _offset.Y); // Title
-            _counterText.Position = new Point(425 + _offset.X + widthOffset, 110 + _offset.Y);
-            if (_mainMenu.Items.Count >= 1)
-            {
-                var tmp = (UIResRectangle) _mainMenu.Items[1];
-                tmp.Size = new Size(431 + WidthOffset, 37);
-            }
-            if (_tmpRectangle != null)
-            {
-                _tmpRectangle.Size = new Size(431 + WidthOffset, 107);
-            }
-        }
-        
-
+        #region Static Methods
         /// <summary>
         /// Enable or disable all controls but the necessary to operate a menu.
         /// </summary>
@@ -319,7 +288,7 @@ namespace NativeUI
                     Control.LookLeftRight,
                     Control.Aim,
                     Control.Attack,
-                });   
+                });
             }
 
             foreach (var control in list)
@@ -327,8 +296,83 @@ namespace NativeUI
                 Function.Call(Hash.ENABLE_CONTROL_ACTION, 0, (int)control);
             }
         }
-               
-        private bool _buttonsEnabled = true;
+
+        /// <summary>
+        /// Returns the 1080pixels-based screen resolution while mantaining current aspect ratio.
+        /// </summary>
+        /// <returns></returns>
+        public static SizeF GetScreenResolutionMantainRatio()
+        {
+            int screenw = Game.ScreenResolution.Width;
+            int screenh = Game.ScreenResolution.Height;
+            const float height = 1080f;
+            float ratio = (float)screenw / screenh;
+            var width = height * ratio;
+
+            return new SizeF(width, height);
+        }
+
+        /// <summary>
+        /// Chech whether the mouse is inside the specified rectangle.
+        /// </summary>
+        /// <param name="topLeft">top left point of your rectangle.</param>
+        /// <param name="boxSize">size of your rectangle.</param>
+        /// <returns></returns>
+        public static bool IsMouseInBounds(Point topLeft, Size boxSize)
+        {
+            var res = GetScreenResolutionMantainRatio();
+
+            int mouseX = (int)Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)Control.CursorX) * res.Width);
+            int mouseY = (int)Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)Control.CursorY) * res.Height);
+
+            return (mouseX >= topLeft.X && mouseX <= topLeft.X + boxSize.Width)
+                   && (mouseY > topLeft.Y && mouseY < topLeft.Y + boxSize.Height);
+        }
+
+        /// <summary>
+        /// Returns the safezone bounds in pixel, relative to the 1080pixel based system.
+        /// </summary>
+        /// <returns></returns>
+        public static Point GetSafezoneBounds()
+        {
+            float t = Function.Call<float>(Hash.GET_SAFE_ZONE_SIZE); // Safezone size.
+            double g = Math.Round(Convert.ToDouble(t), 2);
+            g = (g * 100) - 90;
+            g = 10 - g;
+
+            const float hmp = 5.4f;
+            int screenw = Game.ScreenResolution.Width;
+            int screenh = Game.ScreenResolution.Height;
+            float ratio = (float)screenw / screenh;
+            float wmp = ratio * hmp;
+
+            return new Point((int)Math.Round(g * wmp), (int)Math.Round(g * hmp));
+        }
+
+        #endregion
+
+        #region Public Methods
+        /// <summary>
+        /// Change the menu's width. The width is calculated as DefaultWidth + WidthOffset, so a width offset of 10 would enlarge the menu by 10 pixels.
+        /// </summary>
+        /// <param name="widthOffset">New width offset.</param>
+        public void SetMenuWidthOffset(int widthOffset)
+        {
+            WidthOffset = widthOffset;
+            _logo.Size = new Size(431 + WidthOffset, 107);
+            _mainMenu.Items[0].Position = new Point((WidthOffset + _offset.X + 431) / 2, 20 + _offset.Y); // Title
+            _counterText.Position = new Point(425 + _offset.X + widthOffset, 110 + _offset.Y);
+            if (_mainMenu.Items.Count >= 1)
+            {
+                var tmp = (UIResRectangle)_mainMenu.Items[1];
+                tmp.Size = new Size(431 + WidthOffset, 37);
+            }
+            if (_tmpRectangle != null)
+            {
+                _tmpRectangle.Size = new Size(431 + WidthOffset, 107);
+            }
+        }
+
         /// <summary>
         /// Enable or disable the instructional buttons.
         /// </summary>
@@ -337,7 +381,6 @@ namespace NativeUI
         {
             _buttonsEnabled = !disable;
         }
-            
 
         /// <summary>
         /// Set the banner to your own Sprite object.
@@ -349,8 +392,7 @@ namespace NativeUI
             _logo.Size = new Size(431 + WidthOffset, 107);
             _logo.Position = new Point(_offset.X, _offset.Y);
         }
-                   
-        private UIResRectangle _tmpRectangle;
+
         /// <summary>
         ///  Set the banner to your own Rectangle.
         /// </summary>
@@ -363,7 +405,6 @@ namespace NativeUI
             _tmpRectangle.Size = new Size(431 + WidthOffset, 107);
         }
 
-
         /// <summary>
         /// Set the banner to your own custom texture. Set it to "" if you want to restore the banner.
         /// </summary>
@@ -372,7 +413,6 @@ namespace NativeUI
         {
             _customBanner = pathToCustomSprite;
         }
-
 
         /// <summary>
         /// Add an item to the menu.
@@ -388,7 +428,6 @@ namespace NativeUI
             RecaulculateDescriptionPosition();
         }
 
-
         /// <summary>
         /// Remove an item at index n.
         /// </summary>
@@ -403,7 +442,6 @@ namespace NativeUI
             MenuItems.RemoveAt(index);
             RecaulculateDescriptionPosition();
         }
-
 
         /// <summary>
         /// Reset the current selected item to 0. Use this after you add or remove items dynamically.
@@ -423,7 +461,6 @@ namespace NativeUI
             _minItem = 0;
         }
 
-
         /// <summary>
         /// Remove all items from the menu.
         /// </summary>
@@ -432,196 +469,6 @@ namespace NativeUI
             MenuItems.Clear();
             RecaulculateDescriptionPosition();
         }
-        
-
-        /// <summary>
-        /// Draw the menu and all of it's components.
-        /// </summary>
-        public void Draw()
-        {
-            if (!Visible) return;
-
-            if(ControlDisablingEnabled)
-                DisEnableControls(false);
-
-            if(_buttonsEnabled)
-                Function.Call(Hash._0x0DF606929C105BE1, _instructionalButtonsScaleform.Handle, 255, 255, 255, 255, 0);
-                // _instructionalButtonsScaleform.Render2D(); // Bug #13
-
-
-            Point safe = GetSafezoneBounds();
-
-            if (ScaleWithSafezone)
-            {
-                Function.Call((Hash) 0xB8A850F20A067EB6, 76, 84); // Safezone
-                Function.Call((Hash) 0xF5A2C681787E579D, 0f, 0f, 0f, 0f); // stuff
-            }
-            else
-            {
-                safe = new Point(0, 0);
-            }
-
-            if (String.IsNullOrWhiteSpace(_customBanner))
-            {
-                if (_logo != null)
-                    _logo.Draw();
-                else
-                {
-                    _tmpRectangle?.Draw();
-                }
-            }
-            else
-            {
-                Sprite.DrawTexture(_customBanner, new Point(safe.X + _offset.X, safe.Y + _offset.Y), new Size(431 + WidthOffset, 107));
-            }
-            _mainMenu.Draw();
-            if (MenuItems.Count == 0)
-            {
-                Function.Call((Hash)0xE3A3DB414A373DAB); // Safezone end
-                return;
-            }
-
-            _background.Size = Size > MaxItemsOnScreen + 1 ? new Size(431 + WidthOffset, 38*(MaxItemsOnScreen + 1)) : new Size(431 + WidthOffset, 38 * Size);
-            _background.Draw();
-            MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
-            if (!String.IsNullOrWhiteSpace(MenuItems[_activeItem%(MenuItems.Count)].Description))
-            {
-                RecaulculateDescriptionPosition();
-                string descCaption = MenuItems[_activeItem % (MenuItems.Count)].Description;
-                if (FormatDescriptions)
-                    _descriptionText.Caption = FormatDescription(descCaption);
-                else
-                    _descriptionText.Caption = descCaption;
-                int numLines = _descriptionText.Caption.Split('\n').Length;
-                _descriptionRectangle.Size = new Size(431 + WidthOffset, (numLines * 25) + 15);
-
-                _descriptionBar.Draw();
-                _descriptionRectangle.Draw();
-                _descriptionText.Draw();
-            }
-
-            if (MenuItems.Count <= MaxItemsOnScreen + 1)
-            {
-                int count = 0;
-                foreach (var item in MenuItems)
-                {
-                    item.Position(count * 38 - 37 + _extraYOffset);
-                    item.Draw();
-                    count++;
-                }
-            }
-            else
-            {
-                int count = 0;
-                for (int index = _minItem; index <= _maxItem; index++)
-                {
-                    var item = MenuItems[index];
-                    item.Position(count * 38 - 37 + _extraYOffset);
-                    item.Draw();
-                    count++;
-                }
-                _extraRectangleUp.Size = new Size(431 + WidthOffset, 18);
-                _extraRectangleDown.Size = new Size(431 + WidthOffset, 18);
-                _upAndDownSprite.Position = new Point(190 + _offset.X + (WidthOffset/2),
-                    147 + 37*(MaxItemsOnScreen + 1) + _offset.Y - 37 + _extraYOffset);
-
-                _extraRectangleUp.Draw();
-                _extraRectangleDown.Draw();
-                _upAndDownSprite.Draw();
-                if (_counterText != null)
-                {
-                    string cap = (CurrentSelection + 1) + " / " + Size;
-                    _counterText.Caption = CounterPretext + cap;
-                    _counterText.Draw();
-                }
-            }
-
-            if (ScaleWithSafezone)
-                Function.Call((Hash)0xE3A3DB414A373DAB); // Safezone end
-        }
-
-        /// <summary>
-        /// Returns the 1080pixels-based screen resolution while mantaining current aspect ratio.
-        /// </summary>
-        /// <returns></returns>
-        public static SizeF GetScreenResolutionMantainRatio()
-        {
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
-            const float height = 1080f;
-            float ratio = (float)screenw / screenh;
-            var width = height * ratio;
-
-            return new SizeF(width, height);
-        }
-
-
-        /// <summary>
-        /// Chech whether the mouse is inside the specified rectangle.
-        /// </summary>
-        /// <param name="topLeft">top left point of your rectangle.</param>
-        /// <param name="boxSize">size of your rectangle.</param>
-        /// <returns></returns>
-        public static bool IsMouseInBounds(Point topLeft, Size boxSize)
-        {
-            var res = GetScreenResolutionMantainRatio();
-
-            int mouseX = Convert.ToInt32(Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)Control.CursorX) * res.Width));
-            int mouseY = Convert.ToInt32(Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)Control.CursorY) * res.Height));
-
-            return (mouseX >= topLeft.X && mouseX <= topLeft.X + boxSize.Width)
-                   && (mouseY > topLeft.Y && mouseY < topLeft.Y + boxSize.Height);
-        }
-
-
-        /// <summary>
-        /// Function to get whether the cursor is in an arrow space, or in label of an UIMenuListItem.
-        /// </summary>
-        /// <param name="item">What item to check</param>
-        /// <param name="topLeft">top left point of the item.</param>
-        /// <param name="safezone">safezone size.</param>
-        /// <returns>0 - Not in item at all, 1 - In label, 2 - In arrow space.</returns>
-        public int IsMouseInListItemArrows(UIMenuListItem item, Point topLeft, Point safezone) // TODO: Ability to scroll left and right
-        {
-            Function.Call((Hash)0x54CE8AC98E120CAB, "jamyfafi");
-            UIResText.AddLongString(item.Text);
-            var res = GetScreenResolutionMantainRatio();
-            var screenw = res.Width;
-            var screenh = res.Height;
-            const float height = 1080f;
-            float ratio = screenw / screenh;
-            var width = height * ratio;
-            int labelSize = Convert.ToInt32(Function.Call<float>((Hash)0x85F061DA64ED2F67, 0) * width * 0.35f);
-
-            int labelSizeX = 5 + labelSize + 10;
-            int arrowSizeX = 431 - labelSizeX;
-            return IsMouseInBounds(topLeft, new Size(labelSizeX, 38))
-                ? 1
-                : IsMouseInBounds(new Point(topLeft.X + labelSizeX, topLeft.Y), new Size(arrowSizeX, 38)) ? 2 : 0;
-
-        }
-
-
-        /// <summary>
-        /// Returns the safezone bounds in pixel, relative to the 1080pixel based system.
-        /// </summary>
-        /// <returns></returns>
-        public static Point GetSafezoneBounds()
-        {
-            float t = Function.Call<float>(Hash.GET_SAFE_ZONE_SIZE); // Safezone size.
-            double g = Math.Round(Convert.ToDouble(t), 2);
-            g = (g * 100) - 90;
-            g = 10 - g;
-
-            const float hmp = 5.4f;
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
-            float ratio = (float)screenw / screenh;
-            float wmp = ratio*hmp;
-            
-            return new Point(Convert.ToInt32(Math.Round(g*wmp)), Convert.ToInt32(Math.Round(g*hmp)));
-        }
-
 
         /// <summary>
         /// Go up the menu if the number of items is more than maximum items on screen.
@@ -795,7 +642,7 @@ namespace NativeUI
                 var tmp = Cursor.Position;
                 ParentMenu.Visible = true;
                 MenuChangeEv(ParentMenu, false);
-                if(ResetCursorOnOpen)
+                if (ResetCursorOnOpen)
                     Cursor.Position = tmp;
             }
             MenuCloseEv();
@@ -829,131 +676,6 @@ namespace NativeUI
             Children.Remove(releaseFrom);
             return true;
         }
-
-         
-        /// <summary>
-        /// Process the mouse's position and check if it's hovering over any UI element. Call this in OnTick
-        /// </summary>
-        public void ProcessMouse()
-        {
-            if (!Visible || _justOpened || MenuItems.Count == 0 || IsUsingController || !MouseControlsEnabled)
-            {
-                Function.Call(Hash.ENABLE_CONTROL_ACTION, (int)Control.LookUpDown);
-                Function.Call(Hash.ENABLE_CONTROL_ACTION, (int)Control.LookLeftRight);
-                Function.Call(Hash.ENABLE_CONTROL_ACTION, (int)Control.Aim);
-                Function.Call(Hash.ENABLE_CONTROL_ACTION, (int)Control.Attack);
-                MenuItems.Where(i => i.Hovered).ToList().ForEach(i => i.Hovered = false);
-                return;
-            }
-
-            Point safezoneOffset = GetSafezoneBounds();
-            Function.Call(Hash._SHOW_CURSOR_THIS_FRAME);
-            int limit = MenuItems.Count - 1;
-            int counter = 0;
-            if (MenuItems.Count > MaxItemsOnScreen + 1)
-                limit = _maxItem;
-
-            if (IsMouseInBounds(new Point(0, 0), new Size(30, 1080)) && MouseEdgeEnabled)
-            {
-                GameplayCamera.RelativeHeading += 5f;
-                Function.Call(Hash._0x8DB8CFFD58B62552, 6);
-            }
-            else if (IsMouseInBounds(new Point(Convert.ToInt32(GetScreenResolutionMantainRatio().Width - 30f), 0), new Size(30, 1080)) &&  MouseEdgeEnabled)
-            {
-                GameplayCamera.RelativeHeading -= 5f;
-                Function.Call(Hash._0x8DB8CFFD58B62552, 7);
-            }
-            else if(MouseEdgeEnabled)
-            {
-                Function.Call(Hash._0x8DB8CFFD58B62552, 1);
-            }
-
-            for (int i = _minItem; i <= limit; i++)
-            {
-                int xpos = _offset.X + safezoneOffset.X;
-                int ypos = _offset.Y + 144 - 37 + _extraYOffset + (counter*38) + safezoneOffset.Y;
-                int xsize = 431 + WidthOffset;
-                const int ysize = 38;
-                UIMenuItem uiMenuItem = MenuItems[i];
-                if (IsMouseInBounds(new Point(xpos, ypos), new Size(xsize, ysize)))
-                {
-                    uiMenuItem.Hovered = true;
-                    if (Game.IsControlJustPressed(0, Control.Attack))
-                        if (uiMenuItem.Selected && uiMenuItem.Enabled)
-                        {
-                            if (MenuItems[i] is UIMenuListItem &&
-                                IsMouseInListItemArrows((UIMenuListItem) MenuItems[i], new Point(xpos, ypos),
-                                    safezoneOffset) > 0)
-                            {
-                                int res = IsMouseInListItemArrows((UIMenuListItem) MenuItems[i], new Point(xpos, ypos),
-                                    safezoneOffset);
-                                switch (res)
-                                {
-                                    case 1:
-                                        Game.PlaySound(AUDIO_SELECT, AUDIO_LIBRARY);
-                                        MenuItems[i].ItemActivate(this);
-                                        ItemSelect(MenuItems[i], i);
-                                        break;
-                                    case 2:
-                                        var it = (UIMenuListItem) MenuItems[i];
-                                        it.Index++;
-                                        Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
-                                        ListChange(it, it.Index);
-                                        it.ListChangedTrigger(it.Index);
-                                        break;
-                                }
-                            }
-                            else
-                                SelectItem();
-                        }
-                        else if(!uiMenuItem.Selected)
-                        {
-                            CurrentSelection = i;
-                            Game.PlaySound(AUDIO_UPDOWN, AUDIO_LIBRARY);
-                            IndexChange(CurrentSelection);
-                            UpdateScaleform();
-                        }
-                        else if (!uiMenuItem.Enabled && uiMenuItem.Selected)
-                        {
-                            Game.PlaySound(AUDIO_ERROR, AUDIO_LIBRARY);
-                        }
-                }
-                else
-                    uiMenuItem.Hovered = false;
-                counter++;
-            }
-            int extraY = 144 + 38*(MaxItemsOnScreen + 1) + _offset.Y - 37 + _extraYOffset + safezoneOffset.Y;
-            int extraX = safezoneOffset.X + _offset.X;
-            if(Size <= MaxItemsOnScreen + 1) return;
-            if (IsMouseInBounds(new Point(extraX, extraY), new Size(431 + WidthOffset, 18)))
-            {
-                _extraRectangleUp.Color = Color.FromArgb(255, 30, 30, 30);
-                if (Game.IsControlJustPressed(0, Control.Attack))
-                {
-                    if(Size > MaxItemsOnScreen+1)
-                        GoUpOverflow();
-                    else
-                        GoUp();
-                }
-            }
-            else
-                _extraRectangleUp.Color = Color.FromArgb(200, 0, 0, 0);
-            
-            if (IsMouseInBounds(new Point(extraX, extraY+18), new Size(431 + WidthOffset, 18)))
-            {
-                _extraRectangleDown.Color = Color.FromArgb(255, 30, 30, 30);
-                if (Game.IsControlJustPressed(0, Control.Attack))
-                {
-                    if (Size > MaxItemsOnScreen + 1)
-                        GoDownOverflow();
-                    else
-                        GoDown();
-                }
-            }
-            else
-                _extraRectangleDown.Color = Color.FromArgb(200, 0, 0, 0);
-        }
-
 
         /// <summary>
         /// Set a key to control a menu. Can be multiple keys for each control.
@@ -1094,14 +816,338 @@ namespace NativeUI
             }
             return false;
         }
-        
+
+        public void AddInstructionalButton(InstructionalButton button)
+        {
+            _instructionalButtons.Add(button);
+        }
+
+        public void RemoveInstructionalButton(InstructionalButton button)
+        {
+            _instructionalButtons.Remove(button);
+        }
+
+        #endregion
+
+        #region Private Methods
+        private void RecaulculateDescriptionPosition()
+        {
+            //_descriptionText.WordWrap = new Size(425 + WidthOffset, 0);
+
+            _descriptionBar.Position = new Point(_offset.X, 149 - 37 + _extraYOffset + _offset.Y);
+            _descriptionRectangle.Position = new Point(_offset.X, 149 - 37 + _extraYOffset + _offset.Y);
+            _descriptionText.Position = new Point(_offset.X + 8, 155 - 37 + _extraYOffset + _offset.Y);
+
+            _descriptionBar.Size = new Size(431 + WidthOffset, 4);
+            _descriptionRectangle.Size = new Size(431 + WidthOffset, 30);
+
+            int count = Size;
+            if (count > MaxItemsOnScreen + 1)
+                count = MaxItemsOnScreen + 2;
+
+            _descriptionBar.Position = new Point(_offset.X, 38 * count + _descriptionBar.Position.Y);
+            _descriptionRectangle.Position = new Point(_offset.X, 38 * count + _descriptionRectangle.Position.Y);
+            _descriptionText.Position = new Point(_offset.X + 8, 38 * count + _descriptionText.Position.Y);
+        }
+
+        /// <summary>
+        /// Function to get whether the cursor is in an arrow space, or in label of an UIMenuListItem.
+        /// </summary>
+        /// <param name="item">What item to check</param>
+        /// <param name="topLeft">top left point of the item.</param>
+        /// <param name="safezone">safezone size.</param>
+        /// <returns>0 - Not in item at all, 1 - In label, 2 - In arrow space.</returns>
+        private int IsMouseInListItemArrows(UIMenuListItem item, Point topLeft, Point safezone) // TODO: Ability to scroll left and right
+        {
+            Function.Call((Hash)0x54CE8AC98E120CAB, "jamyfafi");
+            UIResText.AddLongString(item.Text);
+            var res = GetScreenResolutionMantainRatio();
+            var screenw = res.Width;
+            var screenh = res.Height;
+            const float height = 1080f;
+            float ratio = screenw / screenh;
+            var width = height * ratio;
+            int labelSize = (int)(Function.Call<float>((Hash)0x85F061DA64ED2F67, 0) * width * 0.35f);
+
+            int labelSizeX = 5 + labelSize + 10;
+            int arrowSizeX = 431 - labelSizeX;
+            return IsMouseInBounds(topLeft, new Size(labelSizeX, 38))
+                ? 1
+                : IsMouseInBounds(new Point(topLeft.X + labelSizeX, topLeft.Y), new Size(arrowSizeX, 38)) ? 2 : 0;
+
+        }
+
+        /// <summary>
+        /// Formats the input string so it doesn't go out of bounds of the description box.
+        /// </summary>
+        /// <param name="input">String to format.</param>
+        /// <returns></returns>
+        private string FormatDescription(string input)
+        {
+            int maxPixelsPerLine = 425 + WidthOffset;
+            int aggregatePixels = 0;
+            string output = "";
+            string[] words = input.Split(' ');
+            foreach (string word in words)
+            {
+                int offset = StringMeasurer.MeasureString(word);
+                aggregatePixels += offset;
+                if (aggregatePixels > maxPixelsPerLine)
+                {
+                    output += "\n" + word + " ";
+                    aggregatePixels = offset + StringMeasurer.MeasureString(" ");
+                }
+                else
+                {
+                    output += word + " ";
+                    aggregatePixels += StringMeasurer.MeasureString(" ");
+                }
+            }
+            return output;
+        }
+
+        #endregion
+
+        #region Drawing & Processing
+        /// <summary>
+        /// Draw the menu and all of it's components.
+        /// </summary>
+        public void Draw()
+        {
+            if (!Visible) return;
+
+            if (ControlDisablingEnabled)
+                DisEnableControls(false);
+
+            if (_buttonsEnabled)
+                Function.Call(Hash._0x0DF606929C105BE1, _instructionalButtonsScaleform.Handle, 255, 255, 255, 255, 0);
+            // _instructionalButtonsScaleform.Render2D(); // Bug #13
+
+
+            Point safe = GetSafezoneBounds();
+
+            if (ScaleWithSafezone)
+            {
+                Function.Call((Hash)0xB8A850F20A067EB6, 76, 84); // Safezone
+                Function.Call((Hash)0xF5A2C681787E579D, 0f, 0f, 0f, 0f); // stuff
+            }
+            else
+            {
+                safe = new Point(0, 0);
+            }
+
+            if (String.IsNullOrWhiteSpace(_customBanner))
+            {
+                if (_logo != null)
+                    _logo.Draw();
+                else
+                {
+                    _tmpRectangle?.Draw();
+                }
+            }
+            else
+            {
+                Sprite.DrawTexture(_customBanner, new Point(safe.X + _offset.X, safe.Y + _offset.Y), new Size(431 + WidthOffset, 107));
+            }
+            _mainMenu.Draw();
+            if (MenuItems.Count == 0)
+            {
+                Function.Call((Hash)0xE3A3DB414A373DAB); // Safezone end
+                return;
+            }
+
+            _background.Size = Size > MaxItemsOnScreen + 1 ? new Size(431 + WidthOffset, 38 * (MaxItemsOnScreen + 1)) : new Size(431 + WidthOffset, 38 * Size);
+            _background.Draw();
+            MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
+            if (!String.IsNullOrWhiteSpace(MenuItems[_activeItem % (MenuItems.Count)].Description))
+            {
+                RecaulculateDescriptionPosition();
+                string descCaption = MenuItems[_activeItem % (MenuItems.Count)].Description;
+                if (FormatDescriptions)
+                    _descriptionText.Caption = FormatDescription(descCaption);
+                else
+                    _descriptionText.Caption = descCaption;
+                int numLines = _descriptionText.Caption.Split('\n').Length;
+                _descriptionRectangle.Size = new Size(431 + WidthOffset, (numLines * 25) + 15);
+
+                _descriptionBar.Draw();
+                _descriptionRectangle.Draw();
+                _descriptionText.Draw();
+            }
+
+            if (MenuItems.Count <= MaxItemsOnScreen + 1)
+            {
+                int count = 0;
+                foreach (var item in MenuItems)
+                {
+                    item.Position(count * 38 - 37 + _extraYOffset);
+                    item.Draw();
+                    count++;
+                }
+            }
+            else
+            {
+                int count = 0;
+                for (int index = _minItem; index <= _maxItem; index++)
+                {
+                    var item = MenuItems[index];
+                    item.Position(count * 38 - 37 + _extraYOffset);
+                    item.Draw();
+                    count++;
+                }
+                _extraRectangleUp.Size = new Size(431 + WidthOffset, 18);
+                _extraRectangleDown.Size = new Size(431 + WidthOffset, 18);
+                _upAndDownSprite.Position = new Point(190 + _offset.X + (WidthOffset / 2),
+                    147 + 37 * (MaxItemsOnScreen + 1) + _offset.Y - 37 + _extraYOffset);
+
+                _extraRectangleUp.Draw();
+                _extraRectangleDown.Draw();
+                _upAndDownSprite.Draw();
+                if (_counterText != null)
+                {
+                    string cap = (CurrentSelection + 1) + " / " + Size;
+                    _counterText.Caption = CounterPretext + cap;
+                    _counterText.Draw();
+                }
+            }
+
+            if (ScaleWithSafezone)
+                Function.Call((Hash)0xE3A3DB414A373DAB); // Safezone end
+        }
+
+        /// <summary>
+        /// Process the mouse's position and check if it's hovering over any UI element. Call this in OnTick
+        /// </summary>
+        public void ProcessMouse()
+        {
+            if (!Visible || _justOpened || MenuItems.Count == 0 || IsUsingController || !MouseControlsEnabled)
+            {
+                Function.Call(Hash.ENABLE_CONTROL_ACTION, (int)Control.LookUpDown);
+                Function.Call(Hash.ENABLE_CONTROL_ACTION, (int)Control.LookLeftRight);
+                Function.Call(Hash.ENABLE_CONTROL_ACTION, (int)Control.Aim);
+                Function.Call(Hash.ENABLE_CONTROL_ACTION, (int)Control.Attack);
+                if (_itemsDirty)
+                {
+                    MenuItems.Where(i => i.Hovered).ToList().ForEach(i => i.Hovered = false);
+                    _itemsDirty = false;
+                }
+                return;
+            }
+
+            Point safezoneOffset = GetSafezoneBounds();
+            Function.Call(Hash._SHOW_CURSOR_THIS_FRAME);
+            int limit = MenuItems.Count - 1;
+            int counter = 0;
+            if (MenuItems.Count > MaxItemsOnScreen + 1)
+                limit = _maxItem;
+
+            if (IsMouseInBounds(new Point(0, 0), new Size(30, 1080)) && MouseEdgeEnabled)
+            {
+                GameplayCamera.RelativeHeading += 5f;
+                Function.Call(Hash._0x8DB8CFFD58B62552, 6);
+            }
+            else if (IsMouseInBounds(new Point(Convert.ToInt32(GetScreenResolutionMantainRatio().Width - 30f), 0), new Size(30, 1080)) && MouseEdgeEnabled)
+            {
+                GameplayCamera.RelativeHeading -= 5f;
+                Function.Call(Hash._0x8DB8CFFD58B62552, 7);
+            }
+            else if (MouseEdgeEnabled)
+            {
+                Function.Call(Hash._0x8DB8CFFD58B62552, 1);
+            }
+
+            for (int i = _minItem; i <= limit; i++)
+            {
+                int xpos = _offset.X + safezoneOffset.X;
+                int ypos = _offset.Y + 144 - 37 + _extraYOffset + (counter * 38) + safezoneOffset.Y;
+                int xsize = 431 + WidthOffset;
+                const int ysize = 38;
+                UIMenuItem uiMenuItem = MenuItems[i];
+                if (IsMouseInBounds(new Point(xpos, ypos), new Size(xsize, ysize)))
+                {
+                    uiMenuItem.Hovered = true;
+                    if (Game.IsControlJustPressed(0, Control.Attack))
+                        if (uiMenuItem.Selected && uiMenuItem.Enabled)
+                        {
+                            if (MenuItems[i] is UIMenuListItem &&
+                                IsMouseInListItemArrows((UIMenuListItem)MenuItems[i], new Point(xpos, ypos),
+                                    safezoneOffset) > 0)
+                            {
+                                int res = IsMouseInListItemArrows((UIMenuListItem)MenuItems[i], new Point(xpos, ypos),
+                                    safezoneOffset);
+                                switch (res)
+                                {
+                                    case 1:
+                                        Game.PlaySound(AUDIO_SELECT, AUDIO_LIBRARY);
+                                        MenuItems[i].ItemActivate(this);
+                                        ItemSelect(MenuItems[i], i);
+                                        break;
+                                    case 2:
+                                        var it = (UIMenuListItem)MenuItems[i];
+                                        it.Index++;
+                                        Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
+                                        ListChange(it, it.Index);
+                                        it.ListChangedTrigger(it.Index);
+                                        break;
+                                }
+                            }
+                            else
+                                SelectItem();
+                        }
+                        else if (!uiMenuItem.Selected)
+                        {
+                            CurrentSelection = i;
+                            Game.PlaySound(AUDIO_UPDOWN, AUDIO_LIBRARY);
+                            IndexChange(CurrentSelection);
+                            UpdateScaleform();
+                        }
+                        else if (!uiMenuItem.Enabled && uiMenuItem.Selected)
+                        {
+                            Game.PlaySound(AUDIO_ERROR, AUDIO_LIBRARY);
+                        }
+                }
+                else
+                    uiMenuItem.Hovered = false;
+                counter++;
+            }
+            int extraY = 144 + 38 * (MaxItemsOnScreen + 1) + _offset.Y - 37 + _extraYOffset + safezoneOffset.Y;
+            int extraX = safezoneOffset.X + _offset.X;
+            if (Size <= MaxItemsOnScreen + 1) return;
+            if (IsMouseInBounds(new Point(extraX, extraY), new Size(431 + WidthOffset, 18)))
+            {
+                _extraRectangleUp.Color = Color.FromArgb(255, 30, 30, 30);
+                if (Game.IsControlJustPressed(0, Control.Attack))
+                {
+                    if (Size > MaxItemsOnScreen + 1)
+                        GoUpOverflow();
+                    else
+                        GoUp();
+                }
+            }
+            else
+                _extraRectangleUp.Color = Color.FromArgb(200, 0, 0, 0);
+
+            if (IsMouseInBounds(new Point(extraX, extraY + 18), new Size(431 + WidthOffset, 18)))
+            {
+                _extraRectangleDown.Color = Color.FromArgb(255, 30, 30, 30);
+                if (Game.IsControlJustPressed(0, Control.Attack))
+                {
+                    if (Size > MaxItemsOnScreen + 1)
+                        GoDownOverflow();
+                    else
+                        GoDown();
+                }
+            }
+            else
+                _extraRectangleDown.Color = Color.FromArgb(200, 0, 0, 0);
+        }
 
         /// <summary>
         /// Process control-stroke. Call this in the OnTick event.
         /// </summary>
         public void ProcessControl(Keys key = Keys.None)
         {
-            if(!Visible) return;
+            if (!Visible) return;
             if (_justOpened)
             {
                 _justOpened = false;
@@ -1148,72 +1194,30 @@ namespace NativeUI
 
         }
 
-
         /// <summary>
         /// Process keystroke. Call this in the OnKeyDown event.
         /// </summary>
         /// <param name="key"></param>
         public void ProcessKey(Keys key)
         {
-            if ((from object menuControl in Enum.GetValues(typeof(MenuControls)) select new List<Keys>(_keyDictionary[(MenuControls)menuControl].Item1)).Any(tmpKeys => tmpKeys.Any(k => k == key)))
+            if ((from object menuControl in Enum.GetValues(typeof(MenuControls))
+                    select new List<Keys>(_keyDictionary[(MenuControls)menuControl].Item1))
+                .Any(tmpKeys => tmpKeys.Any(k => k == key)))
             {
                 ProcessControl(key);
             }
         }
 
-
-        /// <summary>
-        /// Formats the input string so it doesn't go out of bounds of the description box.
-        /// </summary>
-        /// <param name="input">String to format.</param>
-        /// <returns></returns>
-        private string FormatDescription(string input)
-        {
-            int maxPixelsPerLine = 425 + WidthOffset;
-            int aggregatePixels = 0;
-            string output = "";
-            string[] words = input.Split(' ');
-            foreach (string word in words)
-            {
-                int offset = StringMeasurer.MeasureString(word);
-                aggregatePixels += offset;
-                if (aggregatePixels > maxPixelsPerLine)
-                {
-                    output += "\n" + word + " ";
-                    aggregatePixels = offset + StringMeasurer.MeasureString(" ");
-                }
-                else
-                {
-                    output += word + " ";
-                    aggregatePixels += StringMeasurer.MeasureString(" ");
-                }
-            }
-            return output;
-        }
-
-        private readonly List<InstructionalButton> _instructionalButtons = new List<InstructionalButton>();
-
-        public void AddInstructionalButton(InstructionalButton button)
-        {
-            _instructionalButtons.Add(button);
-        }
-
-        public void RemoveInstructionalButton(InstructionalButton button)
-        {
-            _instructionalButtons.Remove(button);
-        }
-
-        private readonly Scaleform _instructionalButtonsScaleform;
         /// <summary>
         /// Manually update the instructional buttons scaleform.
         /// </summary>
         public void UpdateScaleform()
-        {   
+        {
             if (!Visible || !_buttonsEnabled) return;
             _instructionalButtonsScaleform.CallFunction("CLEAR_ALL");
             _instructionalButtonsScaleform.CallFunction("TOGGLE_MOUSE_BUTTONS", 0);
             _instructionalButtonsScaleform.CallFunction("CREATE_CONTAINER");
-            
+
 
             _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 0, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)Control.PhoneSelect, 0), "Select");
             _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 1, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)Control.PhoneCancel, 0), "Back");
@@ -1226,6 +1230,9 @@ namespace NativeUI
             _instructionalButtonsScaleform.CallFunction("DRAW_INSTRUCTIONAL_BUTTONS", -1);
         }
 
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// Change whether this menu is visible to the user.
@@ -1234,13 +1241,14 @@ namespace NativeUI
         {
             get { return _visible; }
             set
-            {   
+            {
                 _visible = value;
                 _justOpened = value;
+                _itemsDirty = value;
                 UpdateScaleform();
                 if (ParentMenu != null || !value) return;
                 if (!ResetCursorOnOpen) return;
-                Cursor.Position = new Point(Screen.PrimaryScreen.Bounds.Width/2, Screen.PrimaryScreen.Bounds.Height/2);
+                Cursor.Position = new Point(Screen.PrimaryScreen.Bounds.Width / 2, Screen.PrimaryScreen.Bounds.Height / 2);
                 Function.Call(Hash._0x8DB8CFFD58B62552, 1);
             }
         }
@@ -1255,7 +1263,7 @@ namespace NativeUI
             get { return _activeItem % MenuItems.Count; }
             set
             {
-                MenuItems[_activeItem%(MenuItems.Count)].Selected = false;
+                MenuItems[_activeItem % (MenuItems.Count)].Selected = false;
                 _activeItem = 1000 - (1000 % MenuItems.Count) + value;
                 if (CurrentSelection > _maxItem)
                 {
@@ -1305,13 +1313,23 @@ namespace NativeUI
         /// </summary>
         public UIMenu ParentMenu { get; set; }
 
-        
+
         /// <summary>
-        /// If this is a nested menu, returns the item it was binded to.
+        /// If this is a nested menu, returns the item it was bound to.
         /// </summary>
         public UIMenuItem ParentItem { get; set; }
 
+        //Tree structure
+        public Dictionary<UIMenuItem, UIMenu> Children { get; }
 
+        /// <summary>
+        /// Returns the current width offset.
+        /// </summary>
+        public int WidthOffset { get; private set; }
+
+        #endregion
+
+        #region Event Invokers
         protected virtual void IndexChange(int newindex)
         {
             OnIndexChange?.Invoke(this, newindex);
@@ -1334,7 +1352,7 @@ namespace NativeUI
         {
             OnCheckboxChange?.Invoke(this, sender, Checked);
         }
-        
+
         protected virtual void MenuCloseEv()
         {
             OnMenuClose?.Invoke(this);
@@ -1345,6 +1363,8 @@ namespace NativeUI
             OnMenuChange?.Invoke(this, newmenu, forward);
         }
 
+        #endregion
+        
         public enum MenuControls
         {
             Up,
