@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using GTA;
 
 namespace NativeUI
 {
@@ -116,6 +117,11 @@ namespace NativeUI
                 output += CharMap[input[i]] + 1;
             }
             return output;
+        }
+
+        public static float MeasureString(string input, Font font, float scale)
+        {
+            return UIResText.MeasureStringWidth(input, font, scale);
         }
     }
 }

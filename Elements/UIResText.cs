@@ -46,11 +46,21 @@ namespace NativeUI
                 Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, substr);
             }
         }
-
+        /*
         public static float MeasureStringWidth(string str, Font font, float scale)
         {
             int screenw = Game.ScreenResolution.Width;
             int screenh = Game.ScreenResolution.Height;
+            const float height = 1080f;
+            float ratio = (float)screenw / screenh;
+            float width = height * ratio;
+            return MeasureStringWidthNoConvert(str, font, scale) * width;
+        }
+        */
+        public static float MeasureStringWidth(string str, Font font, float scale)
+        {
+            int screenw = 2560;// Game.ScreenResolution.Width;
+            int screenh = 1440;// Game.ScreenResolution.Height;
             const float height = 1080f;
             float ratio = (float)screenw / screenh;
             float width = height * ratio;
@@ -63,7 +73,7 @@ namespace NativeUI
             AddLongString(str);
             return Function.Call<float>((Hash)0x85F061DA64ED2F67, (int)font) * scale;
         }
-
+        
         public Size WordWrap { get; set; }
 
         public override void Draw(Size offset)

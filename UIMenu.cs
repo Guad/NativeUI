@@ -890,7 +890,7 @@ namespace NativeUI
             string[] words = input.Split(' ');
             foreach (string word in words)
             {
-                int offset = StringMeasurer.MeasureString(word);
+                int offset = (int) StringMeasurer.MeasureString(word, (Font) 0, 0.35f);
                 aggregatePixels += offset;
                 if (aggregatePixels > maxPixelsPerLine)
                 {

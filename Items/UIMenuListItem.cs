@@ -106,7 +106,7 @@ namespace NativeUI
             base.Draw();
 
             string caption = _items[Index].ToString();
-            int offset = StringMeasurer.MeasureString(caption);
+            float offset = StringMeasurer.MeasureString(caption, _itemText.Font, _itemText.Scale);
 
             _itemText.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
             
@@ -115,16 +115,16 @@ namespace NativeUI
             _arrowLeft.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
             _arrowRight.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
 
-            _arrowLeft.Position = new Point(375 - offset + Offset.X + Parent.WidthOffset, _arrowLeft.Position.Y);
+            _arrowLeft.Position = new Point(375 - (int)offset + Offset.X + Parent.WidthOffset, _arrowLeft.Position.Y);
             if (Selected)
             {
                 _arrowLeft.Draw();
                 _arrowRight.Draw();
-                _itemText.Position = new Point(405 + Offset.X + Parent.WidthOffset, _itemText.Position.Y);
+                _itemText.Position = new Point(403 + Offset.X + Parent.WidthOffset, _itemText.Position.Y);
             }
             else
             {
-                _itemText.Position = new Point(420 + Offset.X + Parent.WidthOffset, _itemText.Position.Y);
+                _itemText.Position = new Point(418 + Offset.X + Parent.WidthOffset, _itemText.Position.Y);
             }
             _itemText.Draw();
         }

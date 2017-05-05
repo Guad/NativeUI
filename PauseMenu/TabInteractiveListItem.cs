@@ -217,7 +217,7 @@ namespace NativeUI.PauseMenu
                         UIResText.Alignment.Left) { TextAlignment = UIResText.Alignment.Right };
 
                     string caption = convItem.IndexToItem(convItem.Index).ToString();
-                    int offset = StringMeasurer.MeasureString(caption);
+                    float offset = StringMeasurer.MeasureString(caption, itemText.Font, itemText.Scale);
 
                     var selected = c == Index && Focused;
 
@@ -229,7 +229,7 @@ namespace NativeUI.PauseMenu
                     arrowRight.Color = convItem.Enabled ? selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
 
                     arrowLeft.Position =
-                        SafeSize.AddPoints(new Point(BottomRight.X - SafeSize.X - 60 - offset, yoffset + (itemSize.Height + 3)*i));
+                        SafeSize.AddPoints(new Point(BottomRight.X - SafeSize.X - 60 - (int)offset, yoffset + (itemSize.Height + 3)*i));
                     if (selected)
                     {
                         arrowLeft.Draw();
