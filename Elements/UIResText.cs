@@ -47,17 +47,6 @@ namespace NativeUI
             }
         }
 
-        public static void AddLongString(CallCollection collection, string str)
-        {
-            const int strLen = 99;
-            for (int i = 0; i < str.Length; i += strLen)
-            {
-                string substr = str.Substring(i, Math.Min(strLen, str.Length - i));
-                collection.Call(Hash._ADD_TEXT_COMPONENT_STRING, substr);
-            }
-        }
-
-
         public static float MeasureStringWidth(string str, Font font, float scale)
         {
             int screenw = Game.ScreenResolution.Width;
@@ -79,8 +68,6 @@ namespace NativeUI
 
         public override void Draw(Size offset)
         {
-            var coll = new CallCollection();
-
             int screenw = Game.ScreenResolution.Width;
             int screenh = Game.ScreenResolution.Height;
             const float height = 1080f;
@@ -90,37 +77,75 @@ namespace NativeUI
             float x = (Position.X) / width;
             float y = (Position.Y) / height;
 
-            coll.Call(Hash.SET_TEXT_FONT, (int)Font);
-            coll.Call(Hash.SET_TEXT_SCALE, 1.0f, Scale);
-            coll.Call(Hash.SET_TEXT_COLOUR, Color.R, Color.G, Color.B, Color.A);
+            Function.Call(Hash.SET_TEXT_FONT, (int)Font);
+            Function.Call(Hash.SET_TEXT_SCALE, 1.0f, Scale);
+            Function.Call(Hash.SET_TEXT_COLOUR, Color.R, Color.G, Color.B, Color.A);
             if (DropShadow)
-                coll.Call(Hash.SET_TEXT_DROP_SHADOW);
+                Function.Call(Hash.SET_TEXT_DROP_SHADOW);
             if (Outline)
-                coll.Call(Hash.SET_TEXT_OUTLINE);
+                Function.Call(Hash.SET_TEXT_OUTLINE);
             switch (TextAlignment)
             {
                 case Alignment.Centered:
-                    coll.Call(Hash.SET_TEXT_CENTRE, true);
+                    Function.Call(Hash.SET_TEXT_CENTRE, true);
                     break;
                 case Alignment.Right:
-                    coll.Call(Hash.SET_TEXT_RIGHT_JUSTIFY, true);
-                    coll.Call(Hash.SET_TEXT_WRAP, 0, x);
+                    Function.Call(Hash.SET_TEXT_RIGHT_JUSTIFY, true);
+                    Function.Call(Hash.SET_TEXT_WRAP, 0, x);
                     break;
             }
 
-            if (WordWrap != new Size(0, 0))
+            if (WordWrap.Width != 0)
             {
                 float xsize = (Position.X + WordWrap.Width)/width;
-                coll.Call(Hash.SET_TEXT_WRAP, x, xsize);
+                Function.Call(Hash.SET_TEXT_WRAP, x, xsize);
             }
 
-            coll.Call(Hash._SET_TEXT_ENTRY, "jamyfafi");
-            AddLongString(coll, Caption);
+            Function.Call(Hash._SET_TEXT_ENTRY, "jamyfafi");
+            AddLongString(Caption);
+            
+            Function.Call(Hash._DRAW_TEXT, x, y);
+        }
 
+        public static void Draw(string caption, int xPos, int yPos, Font font, float scale, Color color, Alignment alignment, bool dropShadow, bool outline, int wordWrap)
+        {
+            int screenw = Game.ScreenResolution.Width;
+            int screenh = Game.ScreenResolution.Height;
+            const float height = 1080f;
+            float ratio = (float)screenw / screenh;
+            var width = height * ratio;
 
-            coll.Call(Hash._DRAW_TEXT, x, y);
+            float x = (xPos) / width;
+            float y = (yPos) / height;
 
-            coll.Execute();
+            Function.Call(Hash.SET_TEXT_FONT, (int)font);
+            Function.Call(Hash.SET_TEXT_SCALE, 1.0f, scale);
+            Function.Call(Hash.SET_TEXT_COLOUR, color.R, color.G, color.B, color.A);
+            if (dropShadow)
+                Function.Call(Hash.SET_TEXT_DROP_SHADOW);
+            if (outline)
+                Function.Call(Hash.SET_TEXT_OUTLINE);
+            switch (alignment)
+            {
+                case Alignment.Centered:
+                    Function.Call(Hash.SET_TEXT_CENTRE, true);
+                    break;
+                case Alignment.Right:
+                    Function.Call(Hash.SET_TEXT_RIGHT_JUSTIFY, true);
+                    Function.Call(Hash.SET_TEXT_WRAP, 0, x);
+                    break;
+            }
+
+            if (wordWrap != 0)
+            {
+                float xsize = (xPos + wordWrap) / width;
+                Function.Call(Hash.SET_TEXT_WRAP, x, xsize);
+            }
+
+            Function.Call(Hash._SET_TEXT_ENTRY, "jamyfafi");
+            AddLongString(caption);
+
+            Function.Call(Hash._DRAW_TEXT, x, y);
         }
 
         public enum Alignment
