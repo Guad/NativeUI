@@ -26,7 +26,7 @@ namespace NativeUI.PauseMenu
         protected int _minItem;
         protected int _maxItem;
         private bool _focused;
-        
+
         public void MoveDown()
         {
             Index = (1000 - (1000 % Items.Count) + Index + 1) % Items.Count;
@@ -90,7 +90,7 @@ namespace NativeUI.PauseMenu
             if (Game.IsControlJustPressed(0, Control.FrontendAccept) && Focused && Items[Index] is UIMenuCheckboxItem)
             {
                 Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
-                ((UIMenuCheckboxItem) Items[Index]).Checked = !((UIMenuCheckboxItem) Items[Index]).Checked;
+                ((UIMenuCheckboxItem)Items[Index]).Checked = !((UIMenuCheckboxItem)Items[Index]).Checked;
                 ((UIMenuCheckboxItem)Items[Index]).CheckboxEventTrigger();
             }
             else if (Game.IsControlJustPressed(0, Control.FrontendAccept) && Focused)
@@ -133,7 +133,7 @@ namespace NativeUI.PauseMenu
             if (!Visible) return;
             base.Draw();
 
-            var res = UIMenu.GetScreenResolutionMantainRatio();
+            var res = UIMenu.GetScreenResolutionMaintainRatio();
 
             var alpha = Focused ? 120 : 30;
             var blackAlpha = Focused ? 200 : 100;
@@ -145,7 +145,7 @@ namespace NativeUI.PauseMenu
             int i = 0;
             for (int c = _minItem; c < Math.Min(Items.Count, _maxItem); c++)
             {
-                var hovering = UIMenu.IsMouseInBounds(SafeSize.AddPoints(new Point(0, (itemSize.Height + 3)*i)),
+                var hovering = UIMenu.IsMouseInBounds(SafeSize.AddPoints(new Point(0, (itemSize.Height + 3) * i)),
                     itemSize);
 
                 var hasLeftBadge = Items[c].LeftBadge != UIMenuItem.BadgeStyle.None;
@@ -154,7 +154,7 @@ namespace NativeUI.PauseMenu
                 var hasBothBadges = hasRightBadge && hasLeftBadge;
                 var hasAnyBadge = hasRightBadge || hasLeftBadge;
 
-                new UIResRectangle(SafeSize.AddPoints(new Point(0, (itemSize.Height + 3) * i)), itemSize, (Index == c && Focused) ? Color.FromArgb(fullAlpha, Color.White) : Focused && hovering ? Color.FromArgb(100, 50, 50,50) : Color.FromArgb(blackAlpha, Color.Black)).Draw();
+                new UIResRectangle(SafeSize.AddPoints(new Point(0, (itemSize.Height + 3) * i)), itemSize, (Index == c && Focused) ? Color.FromArgb(fullAlpha, Color.White) : Focused && hovering ? Color.FromArgb(100, 50, 50, 50) : Color.FromArgb(blackAlpha, Color.Black)).Draw();
                 new UIResText(Items[c].Text, SafeSize.AddPoints(new Point((hasBothBadges ? 60 : hasAnyBadge ? 30 : 6), 5 + (itemSize.Height + 3) * i)), 0.35f, Color.FromArgb(fullAlpha, (Index == c && Focused) ? Color.Black : Color.White)).Draw();
 
                 if (hasLeftBadge && !hasRightBadge)
@@ -185,7 +185,7 @@ namespace NativeUI.PauseMenu
                 if (!string.IsNullOrEmpty(Items[c].RightLabel))
                 {
                     new UIResText(Items[c].RightLabel,
-                        SafeSize.AddPoints(new Point(BottomRight.X - SafeSize.X - 5, 5 + (itemSize.Height + 3)*i)),
+                        SafeSize.AddPoints(new Point(BottomRight.X - SafeSize.X - 5, 5 + (itemSize.Height + 3) * i)),
                         0.35f, Color.FromArgb(fullAlpha, (Index == c && Focused) ? Color.Black : Color.White),
                         Font.ChaletLondon, UIResText.Alignment.Right).Draw();
                 }
@@ -205,16 +205,17 @@ namespace NativeUI.PauseMenu
                 }
                 else if (Items[c] is UIMenuListItem)
                 {
-                    var convItem = (UIMenuListItem) Items[c];
+                    var convItem = (UIMenuListItem)Items[c];
 
                     var yoffset = 5;
                     var basePos =
-                        SafeSize.AddPoints(new Point(BottomRight.X - SafeSize.X - 30, yoffset + (itemSize.Height + 3)*i));
+                        SafeSize.AddPoints(new Point(BottomRight.X - SafeSize.X - 30, yoffset + (itemSize.Height + 3) * i));
 
                     var arrowLeft = new Sprite("commonmenu", "arrowleft", basePos, new Size(30, 30));
                     var arrowRight = new Sprite("commonmenu", "arrowright", basePos, new Size(30, 30));
                     var itemText = new UIResText("", basePos, 0.35f, Color.White, Font.ChaletLondon,
-                        UIResText.Alignment.Left) { TextAlignment = UIResText.Alignment.Right };
+                        UIResText.Alignment.Left)
+                    { TextAlignment = UIResText.Alignment.Right };
 
                     string caption = convItem.IndexToItem(convItem.Index).ToString();
                     float offset = StringMeasurer.MeasureString(caption, itemText.Font, itemText.Scale);
@@ -255,8 +256,8 @@ namespace NativeUI.PauseMenu
                         if (Items[Index] is UIMenuCheckboxItem)
                         {
                             Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
-                            ((UIMenuCheckboxItem) Items[Index]).Checked = !((UIMenuCheckboxItem) Items[Index]).Checked;
-                            ((UIMenuCheckboxItem) Items[Index]).CheckboxEventTrigger();
+                            ((UIMenuCheckboxItem)Items[Index]).Checked = !((UIMenuCheckboxItem)Items[Index]).Checked;
+                            ((UIMenuCheckboxItem)Items[Index]).CheckboxEventTrigger();
                         }
                         else
                         {

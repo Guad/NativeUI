@@ -301,7 +301,7 @@ namespace NativeUI
         /// Returns the 1080pixels-based screen resolution while mantaining current aspect ratio.
         /// </summary>
         /// <returns></returns>
-        public static SizeF GetScreenResolutionMantainRatio()
+        public static SizeF GetScreenResolutionMaintainRatio()
         {
             int screenw = Game.ScreenResolution.Width;
             int screenh = Game.ScreenResolution.Height;
@@ -320,7 +320,7 @@ namespace NativeUI
         /// <returns></returns>
         public static bool IsMouseInBounds(Point topLeft, Size boxSize)
         {
-            var res = GetScreenResolutionMantainRatio();
+            var res = GetScreenResolutionMaintainRatio();
 
             int mouseX = (int)Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)Control.CursorX) * res.Width);
             int mouseY = (int)Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)Control.CursorY) * res.Height);
@@ -428,6 +428,7 @@ namespace NativeUI
             MenuItems.Add(item);
 
             RecaulculateDescriptionPosition();
+            
             CurrentSelection = selectedItem;
         }
 
@@ -884,7 +885,7 @@ namespace NativeUI
         {
             Function.Call((Hash)0x54CE8AC98E120CAB, "jamyfafi");
             UIResText.AddLongString(item.Text);
-            var res = GetScreenResolutionMantainRatio();
+            var res = GetScreenResolutionMaintainRatio();
             var screenw = res.Width;
             var screenh = res.Height;
             const float height = 1080f;
@@ -1069,7 +1070,7 @@ namespace NativeUI
                 GameplayCamera.RelativeHeading += 5f;
                 Function.Call(Hash._0x8DB8CFFD58B62552, 6);
             }
-            else if (IsMouseInBounds(new Point(Convert.ToInt32(GetScreenResolutionMantainRatio().Width - 30f), 0), new Size(30, 1080)) && MouseEdgeEnabled)
+            else if (IsMouseInBounds(new Point(Convert.ToInt32(GetScreenResolutionMaintainRatio().Width - 30f), 0), new Size(30, 1080)) && MouseEdgeEnabled)
             {
                 GameplayCamera.RelativeHeading -= 5f;
                 Function.Call(Hash._0x8DB8CFFD58B62552, 7);
@@ -1277,11 +1278,12 @@ namespace NativeUI
         /// </summary>
         public int CurrentSelection
         {
-            get { return _activeItem % MenuItems.Count; }
+            get { return MenuItems.Count == 0 ? 0 : _activeItem % MenuItems.Count; }
             set
             {
+                if (MenuItems.Count == 0) _activeItem = 0;
                 MenuItems[_activeItem % (MenuItems.Count)].Selected = false;
-                _activeItem = 1000 - (1000 % MenuItems.Count) + value;
+                _activeItem = 1000000 - (1000000 % MenuItems.Count) + value;
                 if (CurrentSelection > _maxItem)
                 {
                     _maxItem = CurrentSelection;
