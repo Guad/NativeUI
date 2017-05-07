@@ -796,6 +796,8 @@ namespace NativeUI
 
     public delegate void ListChangedEvent(UIMenu sender, UIMenuListItem listItem, int newIndex);
 
+    public delegate void ListSelectedEvent(UIMenu sender, UIMenuListItem listItem, int newIndex);
+
     public delegate void CheckboxChangeEvent(UIMenu sender, UIMenuCheckboxItem checkboxItem, bool Checked);
 
     public delegate void ItemSelectEvent(UIMenu sender, UIMenuItem selectedItem, int index);
@@ -873,6 +875,11 @@ namespace NativeUI
         /// Called when user presses left or right, changing a list position.
         /// </summary>
         public event ListChangedEvent OnListChange;
+
+        /// <summary>
+        /// Called when user selects a list item.
+        /// </summary>
+        public event ListSelectedEvent OnListSelect;
 
         /// <summary>
         /// Called when user presses enter on a checkbox item.
@@ -1283,12 +1290,19 @@ namespace NativeUI
 
             if (MenuItems.Count <= MaxItemsOnScreen + 1)
             {
-                int count = 0;
-                foreach (var item in MenuItems)
+                /*int count = 0;
+                foreach (var item in MenuItems) // foreach works slower with List
                 {
                     item.Position(count * 38 - 37 + _extraYOffset);
                     item.Draw();
                     count++;
+                }*/
+
+                int count = MenuItems.Count;
+                for(int i = 0; i < count; i++)
+                {
+                    MenuItems[i].Position(i * 38 - 37 + _extraYOffset);
+                    MenuItems[i].Draw();
                 }
             }
             else
@@ -1296,9 +1310,9 @@ namespace NativeUI
                 int count = 0;
                 for (int index = _minItem; index <= _maxItem; index++)
                 {
-                    var item = MenuItems[index];
-                    item.Position(count * 38 - 37 + _extraYOffset);
-                    item.Draw();
+                    //var item = MenuItems[index]; // No need to cache item every time
+                    MenuItems[index].Position(count * 38 - 37 + _extraYOffset);
+                    MenuItems[index].Draw();
                     count++;
                 }
                 _extraRectangleUp.Size = new SizeF(431 + WidthOffset, 18);
@@ -1309,12 +1323,12 @@ namespace NativeUI
                 _extraRectangleUp.Draw();
                 _extraRectangleDown.Draw();
                 _upAndDownSprite.Draw();
-                if (_counterText != null)
-                {
+                //if (_counterText != null) // Why check for null if it can't be null? (It creates right in the ctor)
+                //{
                     string cap = (CurrentSelection + 1) + " / " + Size;
                     _counterText.Caption = CounterPretext + cap;
                     _counterText.Draw();
-                }
+                //}
             }
 
             if (ScaleWithSafezone)
@@ -1322,10 +1336,10 @@ namespace NativeUI
         }
 
         /// <summary>
-        /// Returns the 1080pixels-based screen resolution while mantaining current aspect ratio.
+        /// Returns the 1080pixels-based screen resolution while maintaining current aspect ratio.
         /// </summary>
         /// <returns></returns>
-        public static SizeF GetScreenResolutionMantainRatio()
+        public static SizeF GetScreenResolutionMaintainRatio()
         {
             int screenw = 1920; // Game.ScreenResolution.Width
             int screenh = 1080; // Game.ScreenResolution.Height;
@@ -1334,6 +1348,16 @@ namespace NativeUI
             var width = height * ratio;
 
             return new SizeF(width, height);
+        }
+        
+        /// <summary>
+        /// Old GetScreenResolutionMantainRatio Method support old versions
+        /// </summary>
+        /// <returns></returns>
+        [Obsolete("Use GetScreenResolutionMaintainRatio")]
+        public static SizeF GetScreenResolutionMantainRatio()
+        {
+            return GetScreenResolutionMaintainRatio(); // There was no return keyword
         }
 
 
@@ -1345,7 +1369,7 @@ namespace NativeUI
         /// <returns></returns>
         public static bool IsMouseInBounds(PointF topLeft, SizeF boxSize)
         {
-            var res = GetScreenResolutionMantainRatio();
+            var res = GetScreenResolutionMaintainRatio();
 
             int mouseX = Convert.ToInt32(Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)Control.CursorX) * res.Width));
             int mouseY = Convert.ToInt32(Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)Control.CursorY) * res.Height));
@@ -1366,7 +1390,7 @@ namespace NativeUI
         {
             Function.Call((Hash)0x54CE8AC98E120CAB, "jamyfafi");
             UIResText.AddLongString(item.Text);
-            var res = GetScreenResolutionMantainRatio();
+            var res = GetScreenResolutionMaintainRatio();
             var screenw = res.Width;
             var screenh = res.Height;
             const float height = 1080f;
@@ -1551,6 +1575,13 @@ namespace NativeUI
                 CheckboxChange(it, it.Checked);
                 it.CheckboxEventTrigger();
             }
+            else if(MenuItems[CurrentSelection] is UIMenuListItem)
+            {
+                var it = (UIMenuListItem)MenuItems[CurrentSelection];
+                Game.PlaySound(AUDIO_SELECT, AUDIO_LIBRARY);
+                ListSelect(it, it.Index);
+                it.ListSelectedTrigger(it.Index);
+            }
             else
             {
                 Game.PlaySound(AUDIO_SELECT, AUDIO_LIBRARY);
@@ -1640,7 +1671,7 @@ namespace NativeUI
                 GameplayCamera.RelativeHeading += 5f;
                 Function.Call(Hash._SET_CURSOR_SPRITE, 6);
             }
-            else if (IsMouseInBounds(new PointF(Convert.ToInt32(GetScreenResolutionMantainRatio().Width - 30f), 0), new SizeF(30, 1080)) &&  MouseEdgeEnabled)
+            else if (IsMouseInBounds(new PointF(Convert.ToInt32(GetScreenResolutionMaintainRatio().Width - 30f), 0), new SizeF(30, 1080)) &&  MouseEdgeEnabled)
             {
                 GameplayCamera.RelativeHeading -= 5f;
                 Function.Call(Hash._SET_CURSOR_SPRITE, 7);
@@ -2105,6 +2136,10 @@ namespace NativeUI
             OnListChange?.Invoke(this, sender, newindex);
         }
 
+        protected virtual void ListSelect(UIMenuListItem sender, int newindex)
+        {
+            OnListSelect?.Invoke(this, sender, newindex);
+        }
 
         protected virtual void ItemSelect(UIMenuItem selecteditem, int index)
         {

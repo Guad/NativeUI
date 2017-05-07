@@ -22,6 +22,11 @@ namespace NativeUI
         /// </summary>
         public event ItemListEvent OnListChanged;
 
+        /// <summary>
+        /// Triggered when a list item is selected.
+        /// </summary>
+        public event ItemListEvent OnListSelected;
+
         protected int _index;
         
         /// <summary>
@@ -134,6 +139,11 @@ namespace NativeUI
         internal virtual void ListChangedTrigger(int newindex)
         {
             OnListChanged?.Invoke(this, newindex);
+        }
+
+        internal virtual void ListSelectedTrigger(int newindex)
+        {
+            OnListSelected?.Invoke(this, newindex);
         }
 
         public override void SetRightBadge(BadgeStyle badge)

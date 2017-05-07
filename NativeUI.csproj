@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CitizenFX.Core">
-      <HintPath>E:\FiveRebornClient\citizen\clr2\lib\mono\4.5\CitizenFX.Core.dll</HintPath>
+      <HintPath>packages\CitizenFX.Core.1.0.0\lib\net45\CitizenFX.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
@@ -70,7 +70,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetPath) %25userprofile%25\Dropbox\proyekt\cfx-server\resources\[gamemodes]\test\nativeui.net.dll /Y</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -30,15 +30,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CitizenFX.Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>E:\FiveRebornClient\citizen\clr2\lib\mono\4.5\CitizenFX.Core.dll</HintPath>
+    <Reference Include="CitizenFX.Core, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\CitizenFX.Core.1.0.0\lib\net45\CitizenFX.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="NativeUI">
       <HintPath>..\..\NativeUI.dll</HintPath>
-    </Reference>
-    <Reference Include="ScriptHookVDotNet">
-      <HintPath>..\..\ScriptHookVDotNet.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -52,6 +49,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MenuExample.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

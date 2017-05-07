@@ -96,7 +96,7 @@ namespace NativeUI.PauseMenu
             if (!Visible) return;
             base.Draw();
 
-            var res = UIMenu.GetScreenResolutionMantainRatio();
+            var res = UIMenu.GetScreenResolutionMaintainRatio();
 
             var alpha = Focused ? 120 : 30;
             var blackAlpha = Focused ? 200 : 100;

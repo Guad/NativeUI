@@ -59,7 +59,7 @@ namespace NativeUI.PauseMenu
 
         public int Index;
         private bool _visible;
-        
+
         private Scaleform _sc;
         public void ShowInstructionalButtons()
         {
@@ -211,7 +211,7 @@ namespace NativeUI.PauseMenu
             Function.Call(Hash._SHOW_CURSOR_THIS_FRAME);
 
             
-            var res = UIMenu.GetScreenResolutionMantainRatio();
+            var res = UIMenu.GetScreenResolutionMaintainRatio();
             var safe = new PointF(300, 180);
             if (!HideTabs)
             {

@@ -148,7 +148,7 @@ namespace NativeUI.PauseMenu
             base.Draw();
             if (Heists.Count == 0) return;
 
-            var res = UIMenu.GetScreenResolutionMantainRatio();
+            var res = UIMenu.GetScreenResolutionMaintainRatio();
 
             var activeWidth = res.Width - SafeSize.X * 2;
             var itemSize = new SizeF((int)activeWidth - 515, 40);

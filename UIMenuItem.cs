@@ -97,6 +97,7 @@ namespace NativeUI
             _labelText.Position = new PointF(420 + Offset.X, y + 148 + Offset.Y);
         }
 
+        private Color _disabledColor = Color.FromArgb(163, 159, 148); // Why allocating memory for same color every time?
 
         /// <summary>
         /// Draw this item.
@@ -108,7 +109,7 @@ namespace NativeUI
 
             if (Hovered && !Selected)
             {
-                _rectangle.Color = Color.FromArgb(20, 255, 255, 255);
+                //_rectangle.Color = Color.FromArgb(20, 255, 255, 255); // Why setting color every time? (I set it in ctor)
                 _rectangle.Draw();
             }
             if (Selected)
@@ -116,17 +117,17 @@ namespace NativeUI
 
             _text.Color = Enabled ? Selected ? UnknownColors.Black : UnknownColors.WhiteSmoke : Color.FromArgb(163, 159, 148);
 
-            if (LeftBadge != BadgeStyle.None)
+            if (LeftBadge == BadgeStyle.None)
+            {
+                _text.Position = new PointF(8 + Offset.X, (int)_text.Position.Y);
+            }
+            else
             {
                 _text.Position = new PointF(35 + Offset.X, (int)_text.Position.Y);
                 _badgeLeft.TextureDict = BadgeToSpriteLib(LeftBadge);
                 _badgeLeft.TextureName = BadgeToSpriteName(LeftBadge, Selected);
                 _badgeLeft.Color = BadgeToColor(LeftBadge, Selected);
                 _badgeLeft.Draw();
-            }
-            else
-            {
-                _text.Position = new PointF(8 + Offset.X, (int)_text.Position.Y);
             }
 
             if (RightBadge != BadgeStyle.None)
