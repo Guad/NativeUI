@@ -54,15 +54,15 @@ namespace NativeUI
         /// <param name="menu">The parent menu to which the submenu must be added.</param>
         /// <param name="text">The name of the submenu.</param>
         /// <returns>The newly created submenu.</returns>
-        public UIMenu AddSubMenu(UIMenu menu, string text)
-        {
-            var item = new UIMenuItem(text);
-            menu.AddItem(item);
-            var submenu = new UIMenu(menu.Title.Caption, text);
-            this.Add(submenu);
-            menu.BindMenuToItem(submenu, item);
-            return submenu;
-        }
+        //public UIMenu AddSubMenu(UIMenu menu, string text)
+        //{
+        //    var item = new UIMenuItem(text);
+        //    menu.AddItem(item);
+        //    var submenu = new UIMenu(menu.Title.Caption, text);
+        //    this.Add(submenu);
+        //    menu.BindMenuToItem(submenu, item);
+        //    return submenu;
+        //}
         
         /// <summary>
         /// Create and add a submenu to the menu pool.
@@ -73,11 +73,10 @@ namespace NativeUI
         /// <param name="text">The name of the submenu.</param>
         /// <param name="description">The name of the submenu.</param>
         /// <returns>The newly created submenu.</returns>
-        public UIMenu AddSubMenu(UIMenu menu, string text, string description)
+        public UIMenu AddSubMenu(UIMenu menu, UIMenuItem item)
         {
-            var item = new UIMenuItem(text, description);
             menu.AddItem(item);
-            var submenu = new UIMenu(menu.Title.Caption, text);
+            var submenu = new UIMenu(menu.Title.Caption, item.Text);
             this.Add(submenu);
             menu.BindMenuToItem(submenu, item);
             return submenu;
