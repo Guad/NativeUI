@@ -90,7 +90,7 @@ namespace NativeUI.PauseMenu
             if (!Visible || TemporarilyHidden) return;
             Function.Call(Hash.DISABLE_ALL_CONTROL_ACTIONS, 0);
 
-            if (Game.IsControlJustPressed(0, Control.PhoneLeft) && FocusLevel == 0)
+            if (Game.IsControlJustPressed(Control.PhoneLeft) && FocusLevel == 0)
             {
                 Tabs[Index].Active = false;
                 Tabs[Index].Focused = false;
@@ -103,7 +103,7 @@ namespace NativeUI.PauseMenu
                 Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
             }
 
-            else if (Game.IsControlJustPressed(0, Control.PhoneRight) && FocusLevel == 0)
+            else if (Game.IsControlJustPressed(Control.PhoneRight) && FocusLevel == 0)
             {
                 Tabs[Index].Active = false;
                 Tabs[Index].Focused = false;
@@ -116,7 +116,7 @@ namespace NativeUI.PauseMenu
                 Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
             }
 
-            else if (Game.IsControlJustPressed(0, Control.FrontendAccept) && FocusLevel == 0)
+            else if (Game.IsControlJustPressed(Control.FrontendAccept) && FocusLevel == 0)
             {
                 if (Tabs[Index].CanBeFocused)
                 {
@@ -134,7 +134,7 @@ namespace NativeUI.PauseMenu
 
             }
 
-            else if (Game.IsControlJustPressed(0, Control.PhoneCancel) && FocusLevel == 1)
+            else if (Game.IsControlJustPressed(Control.PhoneCancel) && FocusLevel == 1)
             {
                 Tabs[Index].Focused = false;
                 FocusLevel = 0;
@@ -142,7 +142,7 @@ namespace NativeUI.PauseMenu
                 Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "BACK", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
             }
 
-            else if (Game.IsControlJustPressed(0, Control.PhoneCancel) && FocusLevel == 0 && CanLeave)
+            else if (Game.IsControlJustPressed(Control.PhoneCancel) && FocusLevel == 0 && CanLeave)
             {
                 Visible = false;
                 Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "BACK", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
@@ -153,7 +153,7 @@ namespace NativeUI.PauseMenu
             if (!HideTabs)
             {
 
-                if (Game.IsControlJustPressed(0, Control.FrontendLb))
+                if (Game.IsControlJustPressed(Control.FrontendLb))
                 {
                     Tabs[Index].Active = false;
                     Tabs[Index].Focused = false;
@@ -168,7 +168,7 @@ namespace NativeUI.PauseMenu
                     Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
                 }
 
-                else if (Game.IsControlJustPressed(0, Control.FrontendRb))
+                else if (Game.IsControlJustPressed(Control.FrontendRb))
                 {
                     Tabs[Index].Active = false;
                     Tabs[Index].Focused = false;
@@ -270,8 +270,8 @@ namespace NativeUI.PauseMenu
                     activeSize -= 4*5;
                     int tabWidth = (int) activeSize/Tabs.Count;
 
-                    Game.EnableControlThisFrame(0, Control.CursorX);
-                    Game.EnableControlThisFrame(0, Control.CursorY);
+                    Game.EnableControlThisFrame(Control.CursorX);
+                    Game.EnableControlThisFrame(Control.CursorY);
 
                     var hovering = UIMenu.IsMouseInBounds(safe.AddPoints(new Point((tabWidth + 5)*i, 0)),
                         new Size(tabWidth, 40));
@@ -293,7 +293,7 @@ namespace NativeUI.PauseMenu
                             new Size(tabWidth, 10), Color.DodgerBlue).Draw();
                     }
 
-                    if (hovering && Game.IsControlJustPressed(0, Control.CursorAccept) && !Tabs[i].Active)
+                    if (hovering && Game.IsControlJustPressed(Control.CursorAccept) && !Tabs[i].Active)
                     {
                         Tabs[Index].Active = false;
                         Tabs[Index].Focused = false;

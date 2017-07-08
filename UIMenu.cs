@@ -672,7 +672,7 @@ namespace NativeUI
                 _activeItem--;
                 MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
             }
-            Game.PlaySound(AUDIO_UPDOWN, AUDIO_LIBRARY);
+            Audio.PlaySoundFrontend(AUDIO_UPDOWN, AUDIO_LIBRARY);
             IndexChange(CurrentSelection);
         }
 
@@ -686,7 +686,7 @@ namespace NativeUI
             MenuItems[_activeItem % (MenuItems.Count)].Selected = false;
             _activeItem--;
             MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
-            Game.PlaySound(AUDIO_UPDOWN, AUDIO_LIBRARY);
+            Audio.PlaySoundFrontend(AUDIO_UPDOWN, AUDIO_LIBRARY);
             IndexChange(CurrentSelection);
         }
 
@@ -722,7 +722,7 @@ namespace NativeUI
                 _activeItem++;
                 MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
             }
-            Game.PlaySound(AUDIO_UPDOWN, AUDIO_LIBRARY);
+            Audio.PlaySoundFrontend(AUDIO_UPDOWN, AUDIO_LIBRARY);
             IndexChange(CurrentSelection);
         }
 
@@ -736,7 +736,7 @@ namespace NativeUI
             MenuItems[_activeItem % (MenuItems.Count)].Selected = false;
             _activeItem++;
             MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
-            Game.PlaySound(AUDIO_UPDOWN, AUDIO_LIBRARY);
+            Audio.PlaySoundFrontend(AUDIO_UPDOWN, AUDIO_LIBRARY);
             IndexChange(CurrentSelection);
         }
 
@@ -749,7 +749,7 @@ namespace NativeUI
             if (!(MenuItems[CurrentSelection] is UIMenuListItem)) return;
             var it = (UIMenuListItem)MenuItems[CurrentSelection];
             it.Index--;
-            Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
+            Audio.PlaySoundFrontend(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
             ListChange(it, it.Index);
             it.ListChangedTrigger(it.Index);
         }
@@ -763,7 +763,7 @@ namespace NativeUI
             if (!(MenuItems[CurrentSelection] is UIMenuListItem)) return;
             var it = (UIMenuListItem)MenuItems[CurrentSelection];
             it.Index++;
-            Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
+            Audio.PlaySoundFrontend(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
             ListChange(it, it.Index);
             it.ListChangedTrigger(it.Index);
         }
@@ -776,11 +776,11 @@ namespace NativeUI
         {
             if (!MenuItems[CurrentSelection].Enabled)
             {
-                Game.PlaySound(AUDIO_ERROR, AUDIO_LIBRARY);
+                Audio.PlaySoundFrontend(AUDIO_ERROR, AUDIO_LIBRARY);
                 return;
             }
 
-            Game.PlaySound(AUDIO_SELECT, AUDIO_LIBRARY);
+            Audio.PlaySoundFrontend(AUDIO_SELECT, AUDIO_LIBRARY);
             MenuItems[CurrentSelection].ProcessControl(MenuControls.Select);
         }
 
@@ -790,7 +790,7 @@ namespace NativeUI
         /// </summary>
         public void GoBack()
         {
-            Game.PlaySound(AUDIO_BACK, AUDIO_LIBRARY);
+            Audio.PlaySoundFrontend(AUDIO_BACK, AUDIO_LIBRARY);
             Visible = false;
             if (ParentMenu != null)
             {
@@ -880,7 +880,7 @@ namespace NativeUI
                 if (IsMouseInBounds(new Point(xpos, ypos), new Size(xsize, ysize)))
                 {
                     uiMenuItem.Hovered = true;
-                    if (Game.IsControlJustPressed(0, Control.Attack))
+                    if (Game.IsControlJustPressed(Control.Attack))
                         if (uiMenuItem.Selected && uiMenuItem.Enabled)
                         {
                             if (MenuItems[i] is UIMenuListItem &&
@@ -892,14 +892,14 @@ namespace NativeUI
                                 switch (res)
                                 {
                                     case 1:
-                                        Game.PlaySound(AUDIO_SELECT, AUDIO_LIBRARY);
+                                        Audio.PlaySoundFrontend(AUDIO_SELECT, AUDIO_LIBRARY);
                                         MenuItems[i].ItemActivate(this);
                                         ItemSelect(MenuItems[i], i);
                                         break;
                                     case 2:
                                         var it = (UIMenuListItem) MenuItems[i];
                                         it.Index++;
-                                        Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
+                                        Audio.PlaySoundFrontend(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
                                         ListChange(it, it.Index);
                                         it.ListChangedTrigger(it.Index);
                                         break;
@@ -911,13 +911,13 @@ namespace NativeUI
                         else if(!uiMenuItem.Selected)
                         {
                             CurrentSelection = i;
-                            Game.PlaySound(AUDIO_UPDOWN, AUDIO_LIBRARY);
+                            Audio.PlaySoundFrontend(AUDIO_UPDOWN, AUDIO_LIBRARY);
                             IndexChange(CurrentSelection);
                             UpdateScaleform();
                         }
                         else if (!uiMenuItem.Enabled && uiMenuItem.Selected)
                         {
-                            Game.PlaySound(AUDIO_ERROR, AUDIO_LIBRARY);
+                            Audio.PlaySoundFrontend(AUDIO_ERROR, AUDIO_LIBRARY);
                         }
                 }
                 else
@@ -930,7 +930,7 @@ namespace NativeUI
             if (IsMouseInBounds(new Point(extraX, extraY), new Size(431 + WidthOffset, 18)))
             {
                 _extraRectangleUp.Color = Color.FromArgb(255, 30, 30, 30);
-                if (Game.IsControlJustPressed(0, Control.Attack))
+                if (Game.IsControlJustPressed(Control.Attack))
                 {
                     if(Size > MaxItemsOnScreen+1)
                         GoUpOverflow();
@@ -944,7 +944,7 @@ namespace NativeUI
             if (IsMouseInBounds(new Point(extraX, extraY+18), new Size(431 + WidthOffset, 18)))
             {
                 _extraRectangleDown.Color = Color.FromArgb(255, 30, 30, 30);
-                if (Game.IsControlJustPressed(0, Control.Attack))
+                if (Game.IsControlJustPressed(Control.Attack))
                 {
                     if (Size > MaxItemsOnScreen + 1)
                         GoDownOverflow();
@@ -1035,7 +1035,7 @@ namespace NativeUI
                 if (tmpKeys.Any(Game.IsKeyPressed))
                     return true;
             }
-            if (tmpControls.Any(tuple => Game.IsControlJustPressed(tuple.Item2, tuple.Item1)))
+            if (tmpControls.Any(tuple => Game.IsControlJustPressed(tuple.Item1)))
                 return true;
             return false;
         }
@@ -1057,7 +1057,7 @@ namespace NativeUI
                 if (tmpKeys.Any(Game.IsKeyPressed))
                     return true;
             }
-            if (tmpControls.Any(tuple => Game.IsControlJustReleased(tuple.Item2, tuple.Item1)))
+            if (tmpControls.Any(tuple => Game.IsControlJustReleased(tuple.Item1)))
                 return true;
             return false;
         }
@@ -1089,7 +1089,7 @@ namespace NativeUI
                     return true;
                 }
             }
-            if (tmpControls.Any(tuple => Game.IsControlPressed(tuple.Item2, tuple.Item1)))
+            if (tmpControls.Any(tuple => Game.IsControlPressed(tuple.Item1)))
             {
                 _controlCounter = 1;
                 return true;

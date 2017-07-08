@@ -111,7 +111,7 @@ namespace NativeUI
         {
             if (!Enabled)
             {
-                Game.PlaySound(Parent.AUDIO_ERROR, Parent.AUDIO_LIBRARY);
+                Audio.PlaySoundFrontend(Parent.AUDIO_ERROR, Parent.AUDIO_LIBRARY);
                 return true;
             }
 
@@ -121,13 +121,13 @@ namespace NativeUI
                     Index--;
                     Parent.ListChange(this, Index);
                     ListChangedTrigger(Index);
-                    Game.PlaySound(Parent.AUDIO_LEFTRIGHT, Parent.AUDIO_LIBRARY);
+                    Audio.PlaySoundFrontend(Parent.AUDIO_LEFTRIGHT, Parent.AUDIO_LIBRARY);
                     break;
                 case UIMenu.MenuControls.Right:
                     Index++;
                     Parent.ListChange(this, Index);
                     ListChangedTrigger(Index);
-                    Game.PlaySound(Parent.AUDIO_LEFTRIGHT, Parent.AUDIO_LIBRARY);
+                    Audio.PlaySoundFrontend(Parent.AUDIO_LEFTRIGHT, Parent.AUDIO_LIBRARY);
                     break;
             }
 

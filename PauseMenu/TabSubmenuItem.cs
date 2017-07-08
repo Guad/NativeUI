@@ -52,7 +52,7 @@ namespace NativeUI.PauseMenu
 
             if (!Focused) return;
 
-            if (Game.IsControlJustPressed(0, Control.PhoneSelect) && Focused && Parent.FocusLevel == 1)
+            if (Game.IsControlJustPressed(Control.PhoneSelect) && Focused && Parent.FocusLevel == 1)
             {
                 Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
                 if (Items[Index].CanBeFocused && !Items[Index].Focused)
@@ -67,7 +67,7 @@ namespace NativeUI.PauseMenu
                 }
             }
 
-            if (Game.IsControlJustPressed(0, Control.PhoneCancel) && Focused && Parent.FocusLevel > 1)
+            if (Game.IsControlJustPressed(Control.PhoneCancel) && Focused && Parent.FocusLevel > 1)
             {
                 Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "CANCEL", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
                 if (Items[Index].CanBeFocused && Items[Index].Focused)
@@ -77,12 +77,12 @@ namespace NativeUI.PauseMenu
                 }
             }
 
-            if ((Game.IsControlJustPressed(0, Control.FrontendUp) || Game.IsControlJustPressed(0, Control.MoveUpOnly) || Game.IsControlJustPressed(0, Control.CursorScrollUp)) && Parent.FocusLevel == 1)
+            if ((Game.IsControlJustPressed(Control.FrontendUp) || Game.IsControlJustPressed(Control.MoveUpOnly) || Game.IsControlJustPressed(Control.CursorScrollUp)) && Parent.FocusLevel == 1)
             {
                 Index = (1000 - (1000 % Items.Count) + Index - 1) % Items.Count;
                 Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
             }
-            else if ((Game.IsControlJustPressed(0, Control.FrontendDown) || Game.IsControlJustPressed(0, Control.MoveDownOnly) || Game.IsControlJustPressed(0, Control.CursorScrollDown)) && Parent.FocusLevel == 1)
+            else if ((Game.IsControlJustPressed(Control.FrontendDown) || Game.IsControlJustPressed(Control.MoveDownOnly) || Game.IsControlJustPressed(Control.CursorScrollDown)) && Parent.FocusLevel == 1)
             {
                 Index = (1000 - (1000 % Items.Count) + Index + 1) % Items.Count;
                 Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
@@ -114,7 +114,7 @@ namespace NativeUI.PauseMenu
                 new UIResRectangle(SafeSize.AddPoints(new Point(0, (itemSize.Height + 3) * i)), itemSize, (Index == i && Focused) ? Color.FromArgb(fullAlpha, Color.White) : hovering && Focused ? Color.FromArgb(100, 50, 50, 50) : Color.FromArgb(blackAlpha, Color.Black)).Draw();
                 new UIResText(Items[i].Title, SafeSize.AddPoints(new Point(6, 5 + (itemSize.Height + 3) * i)), 0.35f, Color.FromArgb(fullAlpha, (Index == i && Focused) ? Color.Black : Color.White)).Draw();
 
-                if (Focused && hovering && Game.IsControlJustPressed(0, Control.CursorAccept))
+                if (Focused && hovering && Game.IsControlJustPressed(Control.CursorAccept))
                 {
                     Items[Index].Focused = false;
                     Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
