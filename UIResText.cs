@@ -32,7 +32,7 @@ namespace NativeUI
 
         public Alignment TextAlignment { get; set; }
         public bool DropShadow { get; set; } = false;
-        public bool Outline { get; set; } = false;
+        public new bool Outline { get; set; } = false;
 
         /// <summary>
         /// Push a long string into the stack.
@@ -110,7 +110,7 @@ namespace NativeUI
             Function.Call(Hash._DRAW_TEXT, x, y);
         }
 
-        public enum Alignment
+        public new enum Alignment
         {
             Left,
             Centered,

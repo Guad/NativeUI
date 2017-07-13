@@ -95,13 +95,13 @@ namespace NativeUI.PauseMenu
                 return;
             }
 
-            if (Game.IsControlJustPressed(0, Control.PhoneSelect))
+            if (Game.IsControlJustPressed(Control.PhoneSelect))
             {
                 Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
                 OnItemSelect?.Invoke(Heists[Index]);
             }
 
-            if (Game.IsControlJustPressed(0, Control.FrontendUp) || Game.IsControlJustPressed(0, Control.MoveUpOnly))
+            if (Game.IsControlJustPressed(Control.FrontendUp) || Game.IsControlJustPressed(Control.MoveUpOnly))
             {
                 Index = (1000 - (1000 % Heists.Count) + Index - 1) % Heists.Count;
                 Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
@@ -121,7 +121,7 @@ namespace NativeUI.PauseMenu
                 }
             }
 
-            else if (Game.IsControlJustPressed(0, Control.FrontendDown) || Game.IsControlJustPressed(0, Control.MoveDownOnly))
+            else if (Game.IsControlJustPressed(Control.FrontendDown) || Game.IsControlJustPressed(Control.MoveDownOnly))
             {
                 Index = (1000 - (1000 % Heists.Count) + Index + 1) % Heists.Count;
                 Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
