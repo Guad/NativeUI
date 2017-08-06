@@ -23,7 +23,7 @@ namespace NativeUI
             new Sprite("timerbars", "all_black_bg", new Point((int)res.Width - safe.X - 298, (int)res.Height - safe.Y - (40 + (interval))), new Size(300, 37), 0f, Color.FromArgb(180, 255, 255, 255)).Draw();
 
             Screen.Hud.HideComponentThisFrame(HudComponent.AreaName);
-			Screen.Hud.HideComponentThisFrame(HudComponent.StreetName);
+	    Screen.Hud.HideComponentThisFrame(HudComponent.StreetName);
             Screen.Hud.HideComponentThisFrame(HudComponent.VehicleName);
         }
     }
