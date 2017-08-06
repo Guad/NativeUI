@@ -103,11 +103,11 @@ namespace NativeUI
                 Function.Call(Hash.SET_TEXT_WRAP, x, xsize);
             }
 
-            Function.Call(Hash._SET_TEXT_ENTRY, "jamyfafi");
+            Function.Call(Hash.BEGIN_TEXT_COMMAND_DISPLAY_TEXT, "jamyfafi");
             AddLongString(Caption);
             
 
-            Function.Call(Hash._DRAW_TEXT, x, y);
+            Function.Call(Hash.END_TEXT_COMMAND_DISPLAY_TEXT, x, y);
         }
 
         public new enum Alignment

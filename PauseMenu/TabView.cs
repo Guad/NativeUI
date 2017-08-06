@@ -73,16 +73,16 @@ namespace NativeUI.PauseMenu
             _sc.CallFunction("CREATE_CONTAINER");
 
 
-            _sc.CallFunction("SET_DATA_SLOT", 0, Function.Call<string>(Hash._GET_CONTROL_ACTION_NAME, 2, (int)Control.PhoneSelect, 0), "Select");
-            _sc.CallFunction("SET_DATA_SLOT", 1, Function.Call<string>(Hash._GET_CONTROL_ACTION_NAME, 2, (int)Control.PhoneCancel, 0), "Back");
+            _sc.CallFunction("SET_DATA_SLOT", 0, Function.Call<string>(Hash.GET_CONTROL_INSTRUCTIONAL_BUTTON, 2, (int)Control.PhoneSelect, 0), "Select");
+            _sc.CallFunction("SET_DATA_SLOT", 1, Function.Call<string>(Hash.GET_CONTROL_INSTRUCTIONAL_BUTTON, 2, (int)Control.PhoneCancel, 0), "Back");
 
-            _sc.CallFunction("SET_DATA_SLOT", 2, Function.Call<string>(Hash._GET_CONTROL_ACTION_NAME, 2, (int)Control.FrontendRb, 0), "");
-            _sc.CallFunction("SET_DATA_SLOT", 3, Function.Call<string>(Hash._GET_CONTROL_ACTION_NAME, 2, (int)Control.FrontendLb, 0), "Browse");
+            _sc.CallFunction("SET_DATA_SLOT", 2, Function.Call<string>(Hash.GET_CONTROL_INSTRUCTIONAL_BUTTON, 2, (int)Control.FrontendRb, 0), "");
+            _sc.CallFunction("SET_DATA_SLOT", 3, Function.Call<string>(Hash.GET_CONTROL_INSTRUCTIONAL_BUTTON, 2, (int)Control.FrontendLb, 0), "Browse");
         }
 
         public void DrawInstructionalButton(int slot, Control control, string text)
         {
-            _sc.CallFunction("SET_DATA_SLOT", slot, Function.Call<string>(Hash._GET_CONTROL_ACTION_NAME, 2, (int)control, 0), text);
+            _sc.CallFunction("SET_DATA_SLOT", slot, Function.Call<string>(Hash.GET_CONTROL_INSTRUCTIONAL_BUTTON, 2, (int)control, 0), text);
         }
 
         public void ProcessControls()
