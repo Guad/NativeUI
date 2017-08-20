@@ -484,7 +484,7 @@ namespace NativeUI
 
             _extraRectangleDown.Size = new Size(431 + WidthOffset, 18);
 
-            _upAndDownSprite.Position = new Point(190 + _offset.X + (WidthOffset / 2), 147 + 37 * (MaxItemsOnScreen + 1) + _offset.Y - 37 + _extraYOffset);
+            _upAndDownSprite.Position = new Point(190 + _offset.X + (WidthOffset > 0 ? (WidthOffset / 2) : WidthOffset), 147 + 37 * (MaxItemsOnScreen + 1) + _offset.Y - 37 + _extraYOffset);
 
             reDraw = false;
         }
