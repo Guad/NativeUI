@@ -5,6 +5,8 @@ using Control = GTA.Control;
 
 namespace NativeUI
 {
+    public delegate void AllMenusClosedEvent();
+
     /// <summary>
     /// Helper class that handles all of your Menus. After instatiating it, you will have to add your menu by using the Add method.
     /// </summary>
@@ -36,6 +38,10 @@ namespace NativeUI
 
         private readonly List<UIMenu> _menuList = new List<UIMenu>();
 
+        /// <summary>
+        /// Called when CloseAllMenus() fires.
+        /// </summary>
+        public event AllMenusClosedEvent OnAllClosed;
 
         /// <summary>
         /// Add your menu to the menu pool.
@@ -179,6 +185,8 @@ namespace NativeUI
             {
                 menu.Visible = false;
             }
+
+            AllClosedEvent();
         }
 
         public void SetBannerType(Sprite bannerType)
@@ -216,6 +224,9 @@ namespace NativeUI
             _menuList.ForEach(m => m.ResetKey(menuControl));
         }
 
-        
+        private void AllClosedEvent()
+        {
+            OnAllClosed?.Invoke();
+        }
     }
 }
