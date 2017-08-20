@@ -81,6 +81,12 @@ namespace NativeUI
         public bool MouseControlsEnabled = true;
         public bool ScaleWithSafezone = true;
 
+        // Draw Variables
+        private Point safe { get; set; }
+        private Size backgroundSize { get; set; }
+        private Size drawWidth { get; set; }
+        private bool reDraw = true;
+
         //Events
 
         /// <summary>
@@ -259,76 +265,65 @@ namespace NativeUI
                 _tmpRectangle.Size = new Size(431 + WidthOffset, 107);
             }
         }
-        
+
+        private static List<Control> disabledControls = Enum.GetValues(typeof(Control)).Cast<Control>().ToList(); // All Controls
+
+        private static List<Control> enabledControls = new List<Control> // Select controls we want  -Frontend -Mouse -Walk/Move
+        {
+            Control.FrontendAccept,
+            Control.FrontendAxisX,
+            Control.FrontendAxisY,
+            Control.FrontendDown,
+            Control.FrontendUp,
+            Control.FrontendLeft,
+            Control.FrontendRight,
+            Control.FrontendCancel,
+            Control.FrontendSelect,
+            Control.CursorScrollDown,
+            Control.CursorScrollUp,
+            Control.CursorX,
+            Control.CursorY,
+            Control.MoveUpDown,
+            Control.MoveLeftRight,
+            Control.Sprint,
+            Control.Jump,
+            Control.Enter,
+            Control.VehicleExit,
+            Control.VehicleAccelerate,
+            Control.VehicleBrake,
+            Control.VehicleMoveLeftRight,
+            Control.VehicleFlyYawLeft,
+            Control.FlyLeftRight,
+            Control.FlyUpDown,
+            Control.VehicleFlyYawRight,
+            Control.VehicleHandbrake,
+        };
+
+        private static Control[] enabledController = new Control[] // Controller controls.
+        {
+            Control.LookUpDown,
+            Control.LookLeftRight,
+            Control.Aim,
+            Control.Attack,
+        };
 
         /// <summary>
         /// Enable or disable all controls but the necessary to operate a menu.
         /// </summary>
         /// <param name="enable"></param>
-        public static void DisEnableControls(bool enable)
+        public static void EnableControls(bool enable)
         {
             Hash thehash = enable ? Hash.ENABLE_CONTROL_ACTION : Hash.DISABLE_CONTROL_ACTION;
-            foreach (var con in Enum.GetValues(typeof(Control)))
-            {
-                Function.Call(thehash, 0, (int)con);
-                Function.Call(thehash, 1, (int)con);
-                Function.Call(thehash, 2, (int)con);
-            }
-            //Controls we want
-            // -Frontend
-            // -Mouse
-            // -Walk/Move
-            // -
+
+            foreach (int con in disabledControls) Function.Call(thehash, 0, con, enable);
 
             if (enable) return;
-            var list = new List<Control>
-            {
-                Control.FrontendAccept,
-                Control.FrontendAxisX,
-                Control.FrontendAxisY,
-                Control.FrontendDown,
-                Control.FrontendUp,
-                Control.FrontendLeft,
-                Control.FrontendRight,
-                Control.FrontendCancel,
-                Control.FrontendSelect,
-                Control.CursorScrollDown,
-                Control.CursorScrollUp,
-                Control.CursorX,
-                Control.CursorY,
-                Control.MoveUpDown,
-                Control.MoveLeftRight,
-                Control.Sprint,
-                Control.Jump,
-                Control.Enter,
-                Control.VehicleExit,
-                Control.VehicleAccelerate,
-                Control.VehicleBrake,
-                Control.VehicleMoveLeftRight,
-                Control.VehicleFlyYawLeft,
-                Control.FlyLeftRight,
-                Control.FlyUpDown,
-                Control.VehicleFlyYawRight,
-                Control.VehicleHandbrake,
-            };
 
-            if (IsUsingController)
-            {
-                list.AddRange(new Control[]
-                {
-                    Control.LookUpDown,
-                    Control.LookLeftRight,
-                    Control.Aim,
-                    Control.Attack,
-                });   
-            }
+            foreach (Control control in enabledControls) Function.Call(Hash.ENABLE_CONTROL_ACTION, 0, control, true);
 
-            foreach (var control in list)
-            {
-                Function.Call(Hash.ENABLE_CONTROL_ACTION, 0, (int)control);
-            }
+            if (IsUsingController) foreach (Control control in enabledController) Function.Call(Hash.ENABLE_CONTROL_ACTION, 0, control, true);            
         }
-               
+
         private bool _buttonsEnabled = true;
         /// <summary>
         /// Enable or disable the instructional buttons.
@@ -438,6 +433,8 @@ namespace NativeUI
             _activeItem = 1000 - (1000 % MenuItems.Count);
             _maxItem = MaxItemsOnScreen;
             _minItem = 0;
+
+            reDraw = true;
         }
 
 
@@ -449,6 +446,37 @@ namespace NativeUI
             MenuItems.Clear();
             RecaulculateDescriptionPosition();
         }
+
+        private void DrawCalculations()
+        {
+            drawWidth = new Size(431 + WidthOffset, 107);
+
+            safe = GetSafezoneBounds();
+
+            backgroundSize = Size > MaxItemsOnScreen + 1 ? new Size(431 + WidthOffset, 38 * (MaxItemsOnScreen + 1)) : new Size(431 + WidthOffset, 38 * Size);
+
+            if (!String.IsNullOrWhiteSpace(MenuItems[_activeItem % (MenuItems.Count)].Description))
+            {
+                RecaulculateDescriptionPosition();
+
+                string descCaption = MenuItems[_activeItem % (MenuItems.Count)].Description;
+
+                if (FormatDescriptions) _descriptionText.Caption = FormatDescription(descCaption);
+                else _descriptionText.Caption = descCaption;
+
+                int numLines = _descriptionText.Caption.Split('\n').Length;
+
+                _descriptionRectangle.Size = new Size(431 + WidthOffset, (numLines * 25) + 15);
+            }
+
+            _extraRectangleUp.Size = new Size(431 + WidthOffset, 18);
+
+            _extraRectangleDown.Size = new Size(431 + WidthOffset, 18);
+
+            _upAndDownSprite.Position = new Point(190 + _offset.X + (WidthOffset / 2), 147 + 37 * (MaxItemsOnScreen + 1) + _offset.Y - 37 + _extraYOffset);
+
+            reDraw = false;
+        }
         
 
         /// <summary>
@@ -458,60 +486,47 @@ namespace NativeUI
         {
             if (!Visible) return;
 
-            if(ControlDisablingEnabled)
-                DisEnableControls(false);
+            if (ControlDisablingEnabled) EnableControls(false);
 
-            if(_buttonsEnabled)
-                Function.Call(Hash.DRAW_SCALEFORM_MOVIE_FULLSCREEN, _instructionalButtonsScaleform.Handle, 255, 255, 255, 255, 0);
-                // _instructionalButtonsScaleform.Render2D(); // Bug #13
-
-
-            Point safe = GetSafezoneBounds();
+            if(_buttonsEnabled) Function.Call(Hash.DRAW_SCALEFORM_MOVIE_FULLSCREEN, _instructionalButtonsScaleform.Handle, 255, 255, 255, 255, 0); // _instructionalButtonsScaleform.Render2D(); // Bug #13
 
             if (ScaleWithSafezone)
             {
-                Function.Call((Hash) 0xB8A850F20A067EB6, 76, 84); // Safezone
-                Function.Call((Hash) 0xF5A2C681787E579D, 0f, 0f, 0f, 0f); // stuff
+                Function.Call(Hash._SCREEN_DRAW_POSITION_BEGIN, 76, 84); // Safezone
+
+                Function.Call(Hash._SCREEN_DRAW_POSITION_RATIO, 0f, 0f, 0f, 0f); // stuff
             }
-            else
-            {
-                safe = new Point(0, 0);
-            }
+
+            if (reDraw) DrawCalculations();
 
             if (String.IsNullOrWhiteSpace(_customBanner))
             {
-                if (_logo != null)
-                    _logo.Draw();
-                else
-                {
-                    _tmpRectangle?.Draw();
-                }
+                if (_logo != null) _logo.Draw();  else _tmpRectangle?.Draw();
             }
             else
             {
-                Sprite.DrawTexture(_customBanner, new Point(safe.X + _offset.X, safe.Y + _offset.Y), new Size(431 + WidthOffset, 107));
+                Point start = ((ScaleWithSafezone) ? safe : new Point(0, 0));
+
+                Sprite.DrawTexture(_customBanner, new Point(start.X + _offset.X, start.Y + _offset.Y), drawWidth);
             }
+
             _mainMenu.Draw();
+
             if (MenuItems.Count == 0)
             {
-                Function.Call((Hash)0xE3A3DB414A373DAB); // Safezone end
+                Function.Call(Hash._SCREEN_DRAW_POSITION_END); // Safezone end
+
                 return;
             }
 
-            _background.Size = Size > MaxItemsOnScreen + 1 ? new Size(431 + WidthOffset, 38*(MaxItemsOnScreen + 1)) : new Size(431 + WidthOffset, 38 * Size);
+            _background.Size = backgroundSize;
+
             _background.Draw();
+
             MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
+
             if (!String.IsNullOrWhiteSpace(MenuItems[_activeItem%(MenuItems.Count)].Description))
             {
-                RecaulculateDescriptionPosition();
-                string descCaption = MenuItems[_activeItem % (MenuItems.Count)].Description;
-                if (FormatDescriptions)
-                    _descriptionText.Caption = FormatDescription(descCaption);
-                else
-                    _descriptionText.Caption = descCaption;
-                int numLines = _descriptionText.Caption.Split('\n').Length;
-                _descriptionRectangle.Size = new Size(431 + WidthOffset, (numLines * 25) + 15);
-
                 _descriptionBar.Draw();
                 _descriptionRectangle.Draw();
                 _descriptionText.Draw();
@@ -520,6 +535,7 @@ namespace NativeUI
             if (MenuItems.Count <= MaxItemsOnScreen + 1)
             {
                 int count = 0;
+
                 foreach (var item in MenuItems)
                 {
                     item.Position(count * 38 - 37 + _extraYOffset);
@@ -530,6 +546,7 @@ namespace NativeUI
             else
             {
                 int count = 0;
+
                 for (int index = _minItem; index <= _maxItem; index++)
                 {
                     var item = MenuItems[index];
@@ -537,14 +554,11 @@ namespace NativeUI
                     item.Draw();
                     count++;
                 }
-                _extraRectangleUp.Size = new Size(431 + WidthOffset, 18);
-                _extraRectangleDown.Size = new Size(431 + WidthOffset, 18);
-                _upAndDownSprite.Position = new Point(190 + _offset.X + (WidthOffset/2),
-                    147 + 37*(MaxItemsOnScreen + 1) + _offset.Y - 37 + _extraYOffset);
 
                 _extraRectangleUp.Draw();
                 _extraRectangleDown.Draw();
                 _upAndDownSprite.Draw();
+
                 if (_counterText != null)
                 {
                     string cap = (CurrentSelection + 1) + " / " + Size;
@@ -553,8 +567,7 @@ namespace NativeUI
                 }
             }
 
-            if (ScaleWithSafezone)
-                Function.Call((Hash)0xE3A3DB414A373DAB); // Safezone end
+            if (ScaleWithSafezone) Function.Call(Hash._SCREEN_DRAW_POSITION_END); // Safezone end
         }
 
         /// <summary>
@@ -1246,7 +1259,7 @@ namespace NativeUI
                 if (ParentMenu != null || !value) return;
                 if (!ResetCursorOnOpen) return;
                 Cursor.Position = new Point(System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width/2, System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height/2);
-                Function.Call((Hash) 0x8DB8CFFD58B62552, 1);
+                Screen.Hud.CursorSprite = GTA.UI.CursorSprite.Normal;
             }
         }
 
@@ -1319,6 +1332,8 @@ namespace NativeUI
 
         internal virtual void IndexChange(int newindex)
         {
+            reDraw = true;
+
             OnIndexChange?.Invoke(this, newindex);
         }
 
