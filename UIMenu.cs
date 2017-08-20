@@ -313,15 +313,26 @@ namespace NativeUI
         /// <param name="enable"></param>
         public static void EnableControls(bool enable)
         {
-            Hash thehash = enable ? Hash.ENABLE_CONTROL_ACTION : Hash.DISABLE_CONTROL_ACTION;
+            if (enable)
+            {
+                Function.Call(Hash.ENABLE_ALL_CONTROL_ACTIONS, 0);
 
-            foreach (int con in disabledControls) Function.Call(thehash, 0, con, enable);
+                return;
+            }
+            else Function.Call(Hash.DISABLE_ALL_CONTROL_ACTIONS, 0);
 
-            if (enable) return;
+            foreach (Control control in enabledControls)
+            {
+                Function.Call(Hash.ENABLE_CONTROL_ACTION, 0, control, true);
+            }
 
-            foreach (Control control in enabledControls) Function.Call(Hash.ENABLE_CONTROL_ACTION, 0, control, true);
-
-            if (IsUsingController) foreach (Control control in enabledController) Function.Call(Hash.ENABLE_CONTROL_ACTION, 0, control, true);            
+            if (IsUsingController)
+            {
+                foreach (Control control in enabledController)
+                {
+                    Function.Call(Hash.ENABLE_CONTROL_ACTION, 0, control, true);
+                }
+            }
         }
 
         private bool _buttonsEnabled = true;
