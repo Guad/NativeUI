@@ -57,7 +57,7 @@ namespace NativeUI
 
             for (int i = 0; i < input.Length; i += maxByteLengthPerString)
             {
-                string substr = (input.Substring(i * maxByteLengthPerString, Math.Min(maxByteLengthPerString, input.Length - i * maxByteLengthPerString)));
+                string substr = (input.Substring(i, Math.Min(maxByteLengthPerString, input.Length - i)));
                 Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, substr);
             }
         }
