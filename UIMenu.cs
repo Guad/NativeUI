@@ -11,7 +11,7 @@ using Font = GTA.Font;
 namespace NativeUI
 {
     #region Delegates
-    
+
     public delegate void IndexChangedEvent(UIMenu sender, int newIndex);
 
     public delegate void ListChangedEvent(UIMenu sender, UIMenuListItem listItem, int newIndex);
@@ -75,6 +75,46 @@ namespace NativeUI
         private Point _offset;
         private readonly int _extraYOffset;
 
+        private static readonly MenuControls[] _menuControls = Enum.GetValues(typeof(MenuControls)).Cast<MenuControls>().ToArray();
+
+        private static readonly List<Control> _necessaryControlsForKeyboard = new List<Control>
+            {
+                Control.FrontendAccept,
+                Control.FrontendAxisX,
+                Control.FrontendAxisY,
+                Control.FrontendDown,
+                Control.FrontendUp,
+                Control.FrontendLeft,
+                Control.FrontendRight,
+                Control.FrontendCancel,
+                Control.FrontendSelect,
+                Control.CursorScrollDown,
+                Control.CursorScrollUp,
+                Control.CursorX,
+                Control.CursorY,
+                Control.MoveUpDown,
+                Control.MoveLeftRight,
+                Control.Sprint,
+                Control.Jump,
+                Control.Enter,
+                Control.VehicleExit,
+                Control.VehicleAccelerate,
+                Control.VehicleBrake,
+                Control.VehicleMoveLeftRight,
+                Control.VehicleFlyYawLeft,
+                Control.FlyLeftRight,
+                Control.FlyUpDown,
+                Control.VehicleFlyYawRight,
+                Control.VehicleHandbrake,
+            };
+        private static readonly List<Control> _necessaryControlsForController = _necessaryControlsForKeyboard.Concat(new Control[]
+            {
+                Control.LookUpDown,
+                Control.LookLeftRight,
+                Control.Aim,
+                Control.Attack,
+            })
+            .ToList();
         #endregion
 
         #region Public Fields
@@ -86,7 +126,7 @@ namespace NativeUI
         public string AUDIO_SELECT = "SELECT";
         public string AUDIO_BACK = "BACK";
         public string AUDIO_ERROR = "ERROR";
-        
+
         public List<UIMenuItem> MenuItems = new List<UIMenuItem>();
 
         public bool MouseEdgeEnabled = true;
@@ -95,7 +135,7 @@ namespace NativeUI
         public bool FormatDescriptions = true;
         public bool MouseControlsEnabled = true;
         public bool ScaleWithSafezone = true;
-        
+
         #endregion
 
         #region Events
@@ -131,7 +171,7 @@ namespace NativeUI
         public event MenuChangeEvent OnMenuChange;
 
         #endregion
-        
+
         #region Constructors
 
         /// <summary>
@@ -211,7 +251,7 @@ namespace NativeUI
 
             _background = new Sprite("commonmenu", "gradient_bgd", new Point(_offset.X, 144 + _offset.Y - 37 + _extraYOffset), new Size(290, 25));
 
-            
+
             SetKey(MenuControls.Up, Control.PhoneUp);
             SetKey(MenuControls.Up, Control.CursorScrollUp);
 
@@ -235,13 +275,10 @@ namespace NativeUI
         /// <param name="enable"></param>
         public static void DisEnableControls(bool enable)
         {
-            Hash thehash = enable ? Hash.ENABLE_CONTROL_ACTION : Hash.DISABLE_CONTROL_ACTION;
-            foreach (var con in Enum.GetValues(typeof(Control)))
-            {
-                Function.Call(thehash, 0, (int)con);
-                Function.Call(thehash, 1, (int)con);
-                Function.Call(thehash, 2, (int)con);
-            }
+            if (enable)
+                Game.EnableAllControlsThisFrame(2);
+            else
+                Game.DisableAllControlsThisFrame(2);
             //Controls we want
             // -Frontend
             // -Mouse
@@ -249,47 +286,7 @@ namespace NativeUI
             // -
 
             if (enable) return;
-            var list = new List<Control>
-            {
-                Control.FrontendAccept,
-                Control.FrontendAxisX,
-                Control.FrontendAxisY,
-                Control.FrontendDown,
-                Control.FrontendUp,
-                Control.FrontendLeft,
-                Control.FrontendRight,
-                Control.FrontendCancel,
-                Control.FrontendSelect,
-                Control.CursorScrollDown,
-                Control.CursorScrollUp,
-                Control.CursorX,
-                Control.CursorY,
-                Control.MoveUpDown,
-                Control.MoveLeftRight,
-                Control.Sprint,
-                Control.Jump,
-                Control.Enter,
-                Control.VehicleExit,
-                Control.VehicleAccelerate,
-                Control.VehicleBrake,
-                Control.VehicleMoveLeftRight,
-                Control.VehicleFlyYawLeft,
-                Control.FlyLeftRight,
-                Control.FlyUpDown,
-                Control.VehicleFlyYawRight,
-                Control.VehicleHandbrake,
-            };
-
-            if (IsUsingController)
-            {
-                list.AddRange(new Control[]
-                {
-                    Control.LookUpDown,
-                    Control.LookLeftRight,
-                    Control.Aim,
-                    Control.Attack,
-                });
-            }
+            var list = (IsUsingController ? _necessaryControlsForController : _necessaryControlsForKeyboard);
 
             foreach (var control in list)
             {
@@ -428,7 +425,7 @@ namespace NativeUI
             MenuItems.Add(item);
 
             RecaulculateDescriptionPosition();
-            
+
             CurrentSelection = selectedItem;
         }
 
@@ -914,7 +911,7 @@ namespace NativeUI
             string[] words = input.Split(' ');
             foreach (string word in words)
             {
-                int offset = (int) StringMeasurer.MeasureString(word, (Font) 0, 0.35f);
+                int offset = (int) StringMeasurer.MeasureString(word, (Font)0, 0.35f);
                 aggregatePixels += offset;
                 if (aggregatePixels > maxPixelsPerLine)
                 {
@@ -1218,8 +1215,8 @@ namespace NativeUI
         /// <param name="key"></param>
         public void ProcessKey(Keys key)
         {
-            if ((from object menuControl in Enum.GetValues(typeof(MenuControls))
-                    select new List<Keys>(_keyDictionary[(MenuControls)menuControl].Item1))
+            if ((from MenuControls menuControl in _menuControls
+                 select new List<Keys>(_keyDictionary[menuControl].Item1))
                 .Any(tmpKeys => tmpKeys.Any(k => k == key)))
             {
                 ProcessControl(key);
@@ -1383,7 +1380,7 @@ namespace NativeUI
         }
 
         #endregion
-        
+
         public enum MenuControls
         {
             Up,
