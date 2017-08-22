@@ -30,6 +30,8 @@ namespace NativeUI.PauseMenu
         public bool CanLeave { get; set; }
         public bool HideTabs { get; set; }
 
+        internal readonly static string _browseTextLocalized = Game.GetGXTEntry("HUD_INPUT1C");
+
         public event EventHandler OnMenuClose;
 
         public bool Visible
@@ -74,11 +76,11 @@ namespace NativeUI.PauseMenu
             _sc.CallFunction("CREATE_CONTAINER");
 
 
-            _sc.CallFunction("SET_DATA_SLOT", 0, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)Control.PhoneSelect, 0), "Select");
-            _sc.CallFunction("SET_DATA_SLOT", 1, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)Control.PhoneCancel, 0), "Back");
+            _sc.CallFunction("SET_DATA_SLOT", 0, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)Control.PhoneSelect, 0), UIMenu._selectTextLocalized);
+            _sc.CallFunction("SET_DATA_SLOT", 1, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)Control.PhoneCancel, 0), UIMenu._backTextLocalized);
 
             _sc.CallFunction("SET_DATA_SLOT", 2, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)Control.FrontendRb, 0), "");
-            _sc.CallFunction("SET_DATA_SLOT", 3, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)Control.FrontendLb, 0), "Browse");
+            _sc.CallFunction("SET_DATA_SLOT", 3, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)Control.FrontendLb, 0), _browseTextLocalized);
         }
 
         public void DrawInstructionalButton(int slot, Control control, string text)
