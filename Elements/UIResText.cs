@@ -39,67 +39,67 @@ namespace NativeUI
         /// <param name="str"></param>
         public static void AddLongString(string str)
         {
-			var utf8ByteCount = System.Text.Encoding.UTF8.GetByteCount(str);
+            var utf8ByteCount = System.Text.Encoding.UTF8.GetByteCount(str);
 
-			if (utf8ByteCount == str.Length)
-			{
-				AddLongStringForAscii(str);
-			}
-			else
-			{
-				AddLongStringForUtf8(str);
-			}
-		}
+            if (utf8ByteCount == str.Length)
+            {
+                AddLongStringForAscii(str);
+            }
+            else
+            {
+                AddLongStringForUtf8(str);
+            }
+        }
 
-		private static void AddLongStringForAscii(string input)
-		{
+        private static void AddLongStringForAscii(string input)
+        {
             const int maxByteLengthPerString = 99;
 
-			for (int i = 0; i < input.Length; i += maxByteLengthPerString)
-			{
-				string substr = (input.Substring(i * maxByteLengthPerString, Math.Min(maxByteLengthPerString, input.Length - i * maxByteLengthPerString)));
-				Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, substr);
-			}
-		}
+            for (int i = 0; i < input.Length; i += maxByteLengthPerString)
+            {
+                string substr = (input.Substring(i * maxByteLengthPerString, Math.Min(maxByteLengthPerString, input.Length - i * maxByteLengthPerString)));
+                Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, substr);
+            }
+        }
 
-		private static void AddLongStringForUtf8(string input)
-		{
+        private static void AddLongStringForUtf8(string input)
+        {
             const int maxByteLengthPerString = 99;
 
             if (maxByteLengthPerString < 0)
-			{
-				throw new ArgumentOutOfRangeException("maxLengthPerString");
-			}
-			if (string.IsNullOrEmpty(input) || maxByteLengthPerString == 0)
-			{
-				return;
-			}
+            {
+                throw new ArgumentOutOfRangeException("maxLengthPerString");
+            }
+            if (string.IsNullOrEmpty(input) || maxByteLengthPerString == 0)
+            {
+                return;
+            }
 
-			var enc = System.Text.Encoding.UTF8;
+            var enc = System.Text.Encoding.UTF8;
 
-			var utf8ByteCount = enc.GetByteCount(input);
-			if (utf8ByteCount < maxByteLengthPerString)
-			{
-				Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, input);
-				return;
-			}
+            var utf8ByteCount = enc.GetByteCount(input);
+            if (utf8ByteCount < maxByteLengthPerString)
+            {
+                Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, input);
+                return;
+            }
 
-			var startIndex = 0;
+            var startIndex = 0;
 
-			for (int i = 0; i < input.Length; i++)
-			{
-				var length = i - startIndex;
-				if (enc.GetByteCount(input.Substring(startIndex, length)) > maxByteLengthPerString)
-				{
-					string substr = (input.Substring(startIndex, length - 1));
-					Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, substr);
+            for (int i = 0; i < input.Length; i++)
+            {
+                var length = i - startIndex;
+                if (enc.GetByteCount(input.Substring(startIndex, length)) > maxByteLengthPerString)
+                {
+                    string substr = (input.Substring(startIndex, length - 1));
+                    Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, substr);
 
-					i -= 1;
-					startIndex = (startIndex + length - 1);
-				}
-			}
-			Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, input.Substring(startIndex, input.Length - startIndex));
-		}
+                    i -= 1;
+                    startIndex = (startIndex + length - 1);
+                }
+            }
+            Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, input.Substring(startIndex, input.Length - startIndex));
+        }
 
         public static float MeasureStringWidth(string str, Font font, float scale)
         {
