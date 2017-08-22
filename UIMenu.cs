@@ -78,43 +78,50 @@ namespace NativeUI
         private static readonly MenuControls[] _menuControls = Enum.GetValues(typeof(MenuControls)).Cast<MenuControls>().ToArray();
 
         private static readonly List<Control> _necessaryControlsForKeyboard = new List<Control>
-            {
-                Control.FrontendAccept,
-                Control.FrontendAxisX,
-                Control.FrontendAxisY,
-                Control.FrontendDown,
-                Control.FrontendUp,
-                Control.FrontendLeft,
-                Control.FrontendRight,
-                Control.FrontendCancel,
-                Control.FrontendSelect,
-                Control.CursorScrollDown,
-                Control.CursorScrollUp,
-                Control.CursorX,
-                Control.CursorY,
-                Control.MoveUpDown,
-                Control.MoveLeftRight,
-                Control.Sprint,
-                Control.Jump,
-                Control.Enter,
-                Control.VehicleExit,
-                Control.VehicleAccelerate,
-                Control.VehicleBrake,
-                Control.VehicleMoveLeftRight,
-                Control.VehicleFlyYawLeft,
-                Control.FlyLeftRight,
-                Control.FlyUpDown,
-                Control.VehicleFlyYawRight,
-                Control.VehicleHandbrake,
-            };
+        {
+            Control.FrontendAccept,
+            Control.FrontendAxisX,
+            Control.FrontendAxisY,
+            Control.FrontendDown,
+            Control.FrontendUp,
+            Control.FrontendLeft,
+            Control.FrontendRight,
+            Control.FrontendCancel,
+            Control.FrontendSelect,
+            Control.CursorScrollDown,
+            Control.CursorScrollUp,
+            Control.CursorX,
+            Control.CursorY,
+            Control.MoveUpDown,
+            Control.MoveLeftRight,
+            Control.Sprint,
+            Control.Jump,
+            Control.Enter,
+            Control.VehicleExit,
+            Control.VehicleAccelerate,
+            Control.VehicleBrake,
+            Control.VehicleMoveLeftRight,
+            Control.VehicleFlyYawLeft,
+            Control.FlyLeftRight,
+            Control.FlyUpDown,
+            Control.VehicleFlyYawRight,
+            Control.VehicleHandbrake,
+        };
         private static readonly List<Control> _necessaryControlsForController = _necessaryControlsForKeyboard.Concat(new Control[]
-            {
-                Control.LookUpDown,
-                Control.LookLeftRight,
-                Control.Aim,
-                Control.Attack,
-            })
-            .ToList();
+        {
+            Control.LookUpDown,
+            Control.LookLeftRight,
+            Control.Aim,
+            Control.Attack,
+        })
+        .ToList();
+
+        // Draw Variables
+        private Point safe { get; set; }
+        private Size backgroundSize { get; set; }
+        private Size drawWidth { get; set; }
+        private bool reDraw = true;
+
         #endregion
 
         #region Public Fields
@@ -462,6 +469,8 @@ namespace NativeUI
             _activeItem = 1000 - (1000 % MenuItems.Count);
             _maxItem = MaxItemsOnScreen;
             _minItem = 0;
+
+            reDraw = true;
         }
 
         /// <summary>
@@ -471,6 +480,37 @@ namespace NativeUI
         {
             MenuItems.Clear();
             RecaulculateDescriptionPosition();
+        }
+
+        private void DrawCalculations()
+        {
+            drawWidth = new Size(431 + WidthOffset, 107);
+
+            safe = GetSafezoneBounds();
+
+            backgroundSize = Size > MaxItemsOnScreen + 1 ? new Size(431 + WidthOffset, 38 * (MaxItemsOnScreen + 1)) : new Size(431 + WidthOffset, 38 * Size);
+
+            if (!String.IsNullOrWhiteSpace(MenuItems[_activeItem % (MenuItems.Count)].Description))
+            {
+                RecaulculateDescriptionPosition();
+
+                string descCaption = MenuItems[_activeItem % (MenuItems.Count)].Description;
+
+                if (FormatDescriptions) _descriptionText.Caption = FormatDescription(descCaption);
+                else _descriptionText.Caption = descCaption;
+
+                int numLines = _descriptionText.Caption.Split('\n').Length;
+
+                _descriptionRectangle.Size = new Size(431 + WidthOffset, (numLines * 25) + 15);
+            }
+
+            _extraRectangleUp.Size = new Size(431 + WidthOffset, 18);
+
+            _extraRectangleDown.Size = new Size(431 + WidthOffset, 18);
+
+            _upAndDownSprite.Position = new Point(190 + _offset.X + (WidthOffset > 0 ? (WidthOffset / 2) : WidthOffset), 147 + 37 * (MaxItemsOnScreen + 1) + _offset.Y - 37 + _extraYOffset);
+
+            reDraw = false;
         }
 
         /// <summary>
@@ -952,10 +992,8 @@ namespace NativeUI
                 Function.Call((Hash)0xB8A850F20A067EB6, 76, 84); // Safezone
                 Function.Call((Hash)0xF5A2C681787E579D, 0f, 0f, 0f, 0f); // stuff
             }
-            else
-            {
-                safe = new Point(0, 0);
-            }
+
+            if (reDraw) DrawCalculations();
 
             if (String.IsNullOrWhiteSpace(_customBanner))
             {
@@ -968,7 +1006,9 @@ namespace NativeUI
             }
             else
             {
-                Sprite.DrawTexture(_customBanner, new Point(safe.X + _offset.X, safe.Y + _offset.Y), new Size(431 + WidthOffset, 107));
+                Point start = ((ScaleWithSafezone) ? safe : new Point(0, 0));
+
+                Sprite.DrawTexture(_customBanner, new Point(start.X + _offset.X, start.Y + _offset.Y), drawWidth);
             }
             _mainMenu.Draw();
             if (MenuItems.Count == 0)
@@ -977,20 +1017,13 @@ namespace NativeUI
                 return;
             }
 
-            _background.Size = Size > MaxItemsOnScreen + 1 ? new Size(431 + WidthOffset, 38 * (MaxItemsOnScreen + 1)) : new Size(431 + WidthOffset, 38 * Size);
+            _background.Size = backgroundSize;
+
             _background.Draw();
+
             MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
             if (!String.IsNullOrWhiteSpace(MenuItems[_activeItem % (MenuItems.Count)].Description))
             {
-                RecaulculateDescriptionPosition();
-                string descCaption = MenuItems[_activeItem % (MenuItems.Count)].Description;
-                if (FormatDescriptions)
-                    _descriptionText.Caption = FormatDescription(descCaption);
-                else
-                    _descriptionText.Caption = descCaption;
-                int numLines = _descriptionText.Caption.Split('\n').Length;
-                _descriptionRectangle.Size = new Size(431 + WidthOffset, (numLines * 25) + 15);
-
                 _descriptionBar.Draw();
                 _descriptionRectangle.Draw();
                 _descriptionText.Draw();
@@ -999,6 +1032,7 @@ namespace NativeUI
             if (MenuItems.Count <= MaxItemsOnScreen + 1)
             {
                 int count = 0;
+
                 foreach (var item in MenuItems)
                 {
                     item.Position(count * 38 - 37 + _extraYOffset);
@@ -1009,6 +1043,7 @@ namespace NativeUI
             else
             {
                 int count = 0;
+
                 for (int index = _minItem; index <= _maxItem; index++)
                 {
                     var item = MenuItems[index];
@@ -1016,14 +1051,11 @@ namespace NativeUI
                     item.Draw();
                     count++;
                 }
-                _extraRectangleUp.Size = new Size(431 + WidthOffset, 18);
-                _extraRectangleDown.Size = new Size(431 + WidthOffset, 18);
-                _upAndDownSprite.Position = new Point(190 + _offset.X + (WidthOffset / 2),
-                    147 + 37 * (MaxItemsOnScreen + 1) + _offset.Y - 37 + _extraYOffset);
 
                 _extraRectangleUp.Draw();
                 _extraRectangleDown.Draw();
                 _upAndDownSprite.Draw();
+
                 if (_counterText != null)
                 {
                     string cap = (CurrentSelection + 1) + " / " + Size;
