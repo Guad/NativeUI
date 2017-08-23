@@ -493,7 +493,15 @@ namespace NativeUI
 
             backgroundSize = Size > MaxItemsOnScreen + 1 ? new Size(431 + WidthOffset, 38 * (MaxItemsOnScreen + 1)) : new Size(431 + WidthOffset, 38 * Size);
 
-            if (!String.IsNullOrWhiteSpace(MenuItems[_activeItem % (MenuItems.Count)].Description))
+            _extraRectangleUp.Size = new Size(431 + WidthOffset, 18);
+
+            _extraRectangleDown.Size = new Size(431 + WidthOffset, 18);
+
+            _upAndDownSprite.Position = new Point(190 + _offset.X + (WidthOffset > 0 ? (WidthOffset / 2) : WidthOffset), 147 + 37 * (MaxItemsOnScreen + 1) + _offset.Y - 37 + _extraYOffset);
+
+            reDraw = false;
+
+            if (MenuItems.Count != 0 && !String.IsNullOrWhiteSpace(MenuItems[_activeItem % (MenuItems.Count)].Description))
             {
                 RecaulculateDescriptionPosition();
 
@@ -505,15 +513,7 @@ namespace NativeUI
                 int numLines = _descriptionText.Caption.Split('\n').Length;
 
                 _descriptionRectangle.Size = new Size(431 + WidthOffset, (numLines * 25) + 15);
-            }
-
-            _extraRectangleUp.Size = new Size(431 + WidthOffset, 18);
-
-            _extraRectangleDown.Size = new Size(431 + WidthOffset, 18);
-
-            _upAndDownSprite.Position = new Point(190 + _offset.X + (WidthOffset > 0 ? (WidthOffset / 2) : WidthOffset), 147 + 37 * (MaxItemsOnScreen + 1) + _offset.Y - 37 + _extraYOffset);
-
-            reDraw = false;
+            }         
         }
 
         /// <summary>
