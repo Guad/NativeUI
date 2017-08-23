@@ -987,9 +987,6 @@ namespace NativeUI
                 Function.Call(Hash._0x0DF606929C105BE1, _instructionalButtonsScaleform.Handle, 255, 255, 255, 255, 0);
             // _instructionalButtonsScaleform.Render2D(); // Bug #13
 
-
-            Point safe = GetSafezoneBounds();
-
             if (ScaleWithSafezone)
             {
                 Function.Call((Hash)0xB8A850F20A067EB6, 76, 84); // Safezone
