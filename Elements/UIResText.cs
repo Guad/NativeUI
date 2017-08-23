@@ -39,14 +39,68 @@ namespace NativeUI
         /// <param name="str"></param>
         public static void AddLongString(string str)
         {
-            const int strLen = 99;
-            for (int i = 0; i < str.Length; i += strLen)
+            var utf8ByteCount = System.Text.Encoding.UTF8.GetByteCount(str);
+
+            if (utf8ByteCount == str.Length)
             {
-                string substr = str.Substring(i, Math.Min(strLen, str.Length - i));
+                AddLongStringForAscii(str);
+            }
+            else
+            {
+                AddLongStringForUtf8(str);
+            }
+        }
+
+        private static void AddLongStringForAscii(string input)
+        {
+            const int maxByteLengthPerString = 99;
+
+            for (int i = 0; i < input.Length; i += maxByteLengthPerString)
+            {
+                string substr = (input.Substring(i, Math.Min(maxByteLengthPerString, input.Length - i)));
                 Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, substr);
             }
         }
-        
+
+        private static void AddLongStringForUtf8(string input)
+        {
+            const int maxByteLengthPerString = 99;
+
+            if (maxByteLengthPerString < 0)
+            {
+                throw new ArgumentOutOfRangeException("maxLengthPerString");
+            }
+            if (string.IsNullOrEmpty(input) || maxByteLengthPerString == 0)
+            {
+                return;
+            }
+
+            var enc = System.Text.Encoding.UTF8;
+
+            var utf8ByteCount = enc.GetByteCount(input);
+            if (utf8ByteCount < maxByteLengthPerString)
+            {
+                Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, input);
+                return;
+            }
+
+            var startIndex = 0;
+
+            for (int i = 0; i < input.Length; i++)
+            {
+                var length = i - startIndex;
+                if (enc.GetByteCount(input.Substring(startIndex, length)) > maxByteLengthPerString)
+                {
+                    string substr = (input.Substring(startIndex, length - 1));
+                    Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, substr);
+
+                    i -= 1;
+                    startIndex = (startIndex + length - 1);
+                }
+            }
+            Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, input.Substring(startIndex, input.Length - startIndex));
+        }
+
         public static float MeasureStringWidth(string str, Font font, float scale)
         {
             int screenw = 2560;// Game.ScreenResolution.Width;
@@ -63,7 +117,7 @@ namespace NativeUI
             AddLongString(str);
             return Function.Call<float>((Hash)0x85F061DA64ED2F67, (int)font) * scale;
         }
-        
+
         public Size WordWrap { get; set; }
 
         public override void Draw(Size offset)
@@ -97,13 +151,13 @@ namespace NativeUI
 
             if (WordWrap.Width != 0)
             {
-                float xsize = (Position.X + WordWrap.Width)/width;
+                float xsize = (Position.X + WordWrap.Width) / width;
                 Function.Call(Hash.SET_TEXT_WRAP, x, xsize);
             }
 
             Function.Call(Hash._SET_TEXT_ENTRY, "jamyfafi");
             AddLongString(Caption);
-            
+
             Function.Call(Hash._DRAW_TEXT, x, y);
         }
 
