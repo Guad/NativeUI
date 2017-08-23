@@ -1383,6 +1383,8 @@ namespace NativeUI
         #region Event Invokers
         protected virtual void IndexChange(int newindex)
         {
+            reDraw = true;
+
             OnIndexChange?.Invoke(this, newindex);
         }
 
