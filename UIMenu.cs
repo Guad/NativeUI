@@ -11,7 +11,7 @@ using Font = GTA.Font;
 namespace NativeUI
 {
     #region Delegates
-    
+
     public delegate void IndexChangedEvent(UIMenu sender, int newIndex);
 
     public delegate void ListChangedEvent(UIMenu sender, UIMenuListItem listItem, int newIndex);
@@ -75,6 +75,53 @@ namespace NativeUI
         private Point _offset;
         private readonly int _extraYOffset;
 
+        private static readonly MenuControls[] _menuControls = Enum.GetValues(typeof(MenuControls)).Cast<MenuControls>().ToArray();
+
+        private static readonly List<Control> _necessaryControlsForKeyboard = new List<Control>
+        {
+            Control.FrontendAccept,
+            Control.FrontendAxisX,
+            Control.FrontendAxisY,
+            Control.FrontendDown,
+            Control.FrontendUp,
+            Control.FrontendLeft,
+            Control.FrontendRight,
+            Control.FrontendCancel,
+            Control.FrontendSelect,
+            Control.CursorScrollDown,
+            Control.CursorScrollUp,
+            Control.CursorX,
+            Control.CursorY,
+            Control.MoveUpDown,
+            Control.MoveLeftRight,
+            Control.Sprint,
+            Control.Jump,
+            Control.Enter,
+            Control.VehicleExit,
+            Control.VehicleAccelerate,
+            Control.VehicleBrake,
+            Control.VehicleMoveLeftRight,
+            Control.VehicleFlyYawLeft,
+            Control.FlyLeftRight,
+            Control.FlyUpDown,
+            Control.VehicleFlyYawRight,
+            Control.VehicleHandbrake,
+        };
+        private static readonly List<Control> _necessaryControlsForController = _necessaryControlsForKeyboard.Concat(new Control[]
+        {
+            Control.LookUpDown,
+            Control.LookLeftRight,
+            Control.Aim,
+            Control.Attack,
+        })
+        .ToList();
+
+        // Draw Variables
+        private Point safe { get; set; }
+        private Size backgroundSize { get; set; }
+        private Size drawWidth { get; set; }
+        private bool reDraw = true;
+
         internal readonly static string _selectTextLocalized = Game.GetGXTEntry("HUD_INPUT2");
         internal readonly static string _backTextLocalized = Game.GetGXTEntry("HUD_INPUT3");
 
@@ -89,7 +136,7 @@ namespace NativeUI
         public string AUDIO_SELECT = "SELECT";
         public string AUDIO_BACK = "BACK";
         public string AUDIO_ERROR = "ERROR";
-        
+
         public List<UIMenuItem> MenuItems = new List<UIMenuItem>();
 
         public bool MouseEdgeEnabled = true;
@@ -98,7 +145,7 @@ namespace NativeUI
         public bool FormatDescriptions = true;
         public bool MouseControlsEnabled = true;
         public bool ScaleWithSafezone = true;
-        
+
         #endregion
 
         #region Events
@@ -134,7 +181,7 @@ namespace NativeUI
         public event MenuChangeEvent OnMenuChange;
 
         #endregion
-        
+
         #region Constructors
 
         /// <summary>
@@ -214,7 +261,7 @@ namespace NativeUI
 
             _background = new Sprite("commonmenu", "gradient_bgd", new Point(_offset.X, 144 + _offset.Y - 37 + _extraYOffset), new Size(290, 25));
 
-            
+
             SetKey(MenuControls.Up, Control.PhoneUp);
             SetKey(MenuControls.Up, Control.CursorScrollUp);
 
@@ -238,13 +285,10 @@ namespace NativeUI
         /// <param name="enable"></param>
         public static void DisEnableControls(bool enable)
         {
-            Hash thehash = enable ? Hash.ENABLE_CONTROL_ACTION : Hash.DISABLE_CONTROL_ACTION;
-            foreach (var con in Enum.GetValues(typeof(Control)))
-            {
-                Function.Call(thehash, 0, (int)con);
-                Function.Call(thehash, 1, (int)con);
-                Function.Call(thehash, 2, (int)con);
-            }
+            if (enable)
+                Game.EnableAllControlsThisFrame(2);
+            else
+                Game.DisableAllControlsThisFrame(2);
             //Controls we want
             // -Frontend
             // -Mouse
@@ -252,47 +296,7 @@ namespace NativeUI
             // -
 
             if (enable) return;
-            var list = new List<Control>
-            {
-                Control.FrontendAccept,
-                Control.FrontendAxisX,
-                Control.FrontendAxisY,
-                Control.FrontendDown,
-                Control.FrontendUp,
-                Control.FrontendLeft,
-                Control.FrontendRight,
-                Control.FrontendCancel,
-                Control.FrontendSelect,
-                Control.CursorScrollDown,
-                Control.CursorScrollUp,
-                Control.CursorX,
-                Control.CursorY,
-                Control.MoveUpDown,
-                Control.MoveLeftRight,
-                Control.Sprint,
-                Control.Jump,
-                Control.Enter,
-                Control.VehicleExit,
-                Control.VehicleAccelerate,
-                Control.VehicleBrake,
-                Control.VehicleMoveLeftRight,
-                Control.VehicleFlyYawLeft,
-                Control.FlyLeftRight,
-                Control.FlyUpDown,
-                Control.VehicleFlyYawRight,
-                Control.VehicleHandbrake,
-            };
-
-            if (IsUsingController)
-            {
-                list.AddRange(new Control[]
-                {
-                    Control.LookUpDown,
-                    Control.LookLeftRight,
-                    Control.Aim,
-                    Control.Attack,
-                });
-            }
+            var list = (IsUsingController ? _necessaryControlsForController : _necessaryControlsForKeyboard);
 
             foreach (var control in list)
             {
@@ -431,7 +435,7 @@ namespace NativeUI
             MenuItems.Add(item);
 
             RecaulculateDescriptionPosition();
-            
+
             CurrentSelection = selectedItem;
         }
 
@@ -468,6 +472,8 @@ namespace NativeUI
             _activeItem = 1000 - (1000 % MenuItems.Count);
             _maxItem = MaxItemsOnScreen;
             _minItem = 0;
+
+            reDraw = true;
         }
 
         /// <summary>
@@ -477,6 +483,37 @@ namespace NativeUI
         {
             MenuItems.Clear();
             RecaulculateDescriptionPosition();
+        }
+
+        private void DrawCalculations()
+        {
+            drawWidth = new Size(431 + WidthOffset, 107);
+
+            safe = GetSafezoneBounds();
+
+            backgroundSize = Size > MaxItemsOnScreen + 1 ? new Size(431 + WidthOffset, 38 * (MaxItemsOnScreen + 1)) : new Size(431 + WidthOffset, 38 * Size);
+
+            _extraRectangleUp.Size = new Size(431 + WidthOffset, 18);
+
+            _extraRectangleDown.Size = new Size(431 + WidthOffset, 18);
+
+            _upAndDownSprite.Position = new Point(190 + _offset.X + (WidthOffset > 0 ? (WidthOffset / 2) : WidthOffset), 147 + 37 * (MaxItemsOnScreen + 1) + _offset.Y - 37 + _extraYOffset);
+
+            reDraw = false;
+
+            if (MenuItems.Count != 0 && !String.IsNullOrWhiteSpace(MenuItems[_activeItem % (MenuItems.Count)].Description))
+            {
+                RecaulculateDescriptionPosition();
+
+                string descCaption = MenuItems[_activeItem % (MenuItems.Count)].Description;
+
+                if (FormatDescriptions) _descriptionText.Caption = FormatDescription(descCaption);
+                else _descriptionText.Caption = descCaption;
+
+                int numLines = _descriptionText.Caption.Split('\n').Length;
+
+                _descriptionRectangle.Size = new Size(431 + WidthOffset, (numLines * 25) + 15);
+            }         
         }
 
         /// <summary>
@@ -917,7 +954,7 @@ namespace NativeUI
             string[] words = input.Split(' ');
             foreach (string word in words)
             {
-                int offset = (int) StringMeasurer.MeasureString(word, (Font) 0, 0.35f);
+                int offset = (int) StringMeasurer.MeasureString(word, (Font)0, 0.35f);
                 aggregatePixels += offset;
                 if (aggregatePixels > maxPixelsPerLine)
                 {
@@ -950,18 +987,13 @@ namespace NativeUI
                 Function.Call(Hash._0x0DF606929C105BE1, _instructionalButtonsScaleform.Handle, 255, 255, 255, 255, 0);
             // _instructionalButtonsScaleform.Render2D(); // Bug #13
 
-
-            Point safe = GetSafezoneBounds();
-
             if (ScaleWithSafezone)
             {
                 Function.Call((Hash)0xB8A850F20A067EB6, 76, 84); // Safezone
                 Function.Call((Hash)0xF5A2C681787E579D, 0f, 0f, 0f, 0f); // stuff
             }
-            else
-            {
-                safe = new Point(0, 0);
-            }
+
+            if (reDraw) DrawCalculations();
 
             if (String.IsNullOrWhiteSpace(_customBanner))
             {
@@ -974,7 +1006,9 @@ namespace NativeUI
             }
             else
             {
-                Sprite.DrawTexture(_customBanner, new Point(safe.X + _offset.X, safe.Y + _offset.Y), new Size(431 + WidthOffset, 107));
+                Point start = ((ScaleWithSafezone) ? safe : new Point(0, 0));
+
+                Sprite.DrawTexture(_customBanner, new Point(start.X + _offset.X, start.Y + _offset.Y), drawWidth);
             }
             _mainMenu.Draw();
             if (MenuItems.Count == 0)
@@ -983,20 +1017,13 @@ namespace NativeUI
                 return;
             }
 
-            _background.Size = Size > MaxItemsOnScreen + 1 ? new Size(431 + WidthOffset, 38 * (MaxItemsOnScreen + 1)) : new Size(431 + WidthOffset, 38 * Size);
+            _background.Size = backgroundSize;
+
             _background.Draw();
+
             MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
             if (!String.IsNullOrWhiteSpace(MenuItems[_activeItem % (MenuItems.Count)].Description))
             {
-                RecaulculateDescriptionPosition();
-                string descCaption = MenuItems[_activeItem % (MenuItems.Count)].Description;
-                if (FormatDescriptions)
-                    _descriptionText.Caption = FormatDescription(descCaption);
-                else
-                    _descriptionText.Caption = descCaption;
-                int numLines = _descriptionText.Caption.Split('\n').Length;
-                _descriptionRectangle.Size = new Size(431 + WidthOffset, (numLines * 25) + 15);
-
                 _descriptionBar.Draw();
                 _descriptionRectangle.Draw();
                 _descriptionText.Draw();
@@ -1005,6 +1032,7 @@ namespace NativeUI
             if (MenuItems.Count <= MaxItemsOnScreen + 1)
             {
                 int count = 0;
+
                 foreach (var item in MenuItems)
                 {
                     item.Position(count * 38 - 37 + _extraYOffset);
@@ -1015,6 +1043,7 @@ namespace NativeUI
             else
             {
                 int count = 0;
+
                 for (int index = _minItem; index <= _maxItem; index++)
                 {
                     var item = MenuItems[index];
@@ -1022,14 +1051,11 @@ namespace NativeUI
                     item.Draw();
                     count++;
                 }
-                _extraRectangleUp.Size = new Size(431 + WidthOffset, 18);
-                _extraRectangleDown.Size = new Size(431 + WidthOffset, 18);
-                _upAndDownSprite.Position = new Point(190 + _offset.X + (WidthOffset / 2),
-                    147 + 37 * (MaxItemsOnScreen + 1) + _offset.Y - 37 + _extraYOffset);
 
                 _extraRectangleUp.Draw();
                 _extraRectangleDown.Draw();
                 _upAndDownSprite.Draw();
+
                 if (_counterText != null)
                 {
                     string cap = (CurrentSelection + 1) + " / " + Size;
@@ -1221,8 +1247,8 @@ namespace NativeUI
         /// <param name="key"></param>
         public void ProcessKey(Keys key)
         {
-            if ((from object menuControl in Enum.GetValues(typeof(MenuControls))
-                    select new List<Keys>(_keyDictionary[(MenuControls)menuControl].Item1))
+            if ((from MenuControls menuControl in _menuControls
+                 select new List<Keys>(_keyDictionary[menuControl].Item1))
                 .Any(tmpKeys => tmpKeys.Any(k => k == key)))
             {
                 ProcessControl(key);
@@ -1354,6 +1380,8 @@ namespace NativeUI
         #region Event Invokers
         protected virtual void IndexChange(int newindex)
         {
+            reDraw = true;
+
             OnIndexChange?.Invoke(this, newindex);
         }
 
@@ -1386,7 +1414,7 @@ namespace NativeUI
         }
 
         #endregion
-        
+
         public enum MenuControls
         {
             Up,
