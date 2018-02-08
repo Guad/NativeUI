@@ -1530,30 +1530,52 @@ namespace NativeUI
 
 
         /// <summary>
-        /// Go left on a UIMenuListItem.
+        /// Go left on a UIMenuListItem & UIMenuSliderItem.
         /// </summary>
         public void GoLeft()
         {
-            if (!(MenuItems[CurrentSelection] is UIMenuListItem)) return;
-            var it = (UIMenuListItem)MenuItems[CurrentSelection];
-            it.Index = it.Index - 1;
-            Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
-            ListChange(it, it.Index);
-            it.ListChangedTrigger(it.Index);
+            if (!(MenuItems[CurrentSelection] is UIMenuListItem) && !(MenuItems[CurrentSelection] is UIMenuSliderItem)) return;
+            if (MenuItems[CurrentSelection] is UIMenuListItem)
+            {
+                var it = (UIMenuListItem)MenuItems[CurrentSelection];
+                it.Index = it.Index - 1;
+                Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
+                ListChange(it, it.Index);
+                it.ListChangedTrigger(it.Index);
+            }
+            else
+            {
+                var it = (UIMenuSliderItem)MenuItems[CurrentSelection];
+                it.Index = it.Index - 1;
+                Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
+                SliderChange(it, it.Index);
+                it.SliderChangedTrigger(it.Index);
+            }
         }
 
 
         /// <summary>
-        /// Go right on a UIMenuListItem.
+        /// Go right on a UIMenuListItem & UIMenuSliderItem.
         /// </summary>
         public void GoRight()
         {
-            if (!(MenuItems[CurrentSelection] is UIMenuListItem)) return;
-            var it = (UIMenuListItem)MenuItems[CurrentSelection];
-            it.Index++;
-            Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
-            ListChange(it, it.Index);
-            it.ListChangedTrigger(it.Index);
+            if (!(MenuItems[CurrentSelection] is UIMenuListItem) && !(MenuItems[CurrentSelection] is UIMenuSliderItem)) return;
+            if (MenuItems[CurrentSelection] is UIMenuListItem)
+            {
+                var it = (UIMenuListItem)MenuItems[CurrentSelection];
+                it.Index++;
+                Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
+                ListChange(it, it.Index);
+                it.ListChangedTrigger(it.Index);
+            }
+            else
+            {
+                var it = (UIMenuSliderItem)MenuItems[CurrentSelection];
+                it.Index++;
+                Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
+                SliderChange(it, it.Index);
+                it.SliderChangedTrigger(it.Index);
+            }
         }
 
 
