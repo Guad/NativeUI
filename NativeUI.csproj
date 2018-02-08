@@ -33,8 +33,8 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CitizenFX.Core">
-      <HintPath>packages\CitizenFX.Core.1.0.0\lib\net45\CitizenFX.Core.dll</HintPath>
+    <Reference Include="CitizenFX.Client">
+      <HintPath>..\C#\fivem-scripts\inc\CitizenFX.Client.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
