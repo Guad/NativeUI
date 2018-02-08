@@ -1604,12 +1604,11 @@ namespace NativeUI
             Visible = false;
             if (ParentMenu != null)
             {
-                /*
-                var tmp = Cursor.Position;
+                //var tmp = Cursor.Position;
                 ParentMenu.Visible = true;
                 MenuChangeEv(ParentMenu, false);
-                if(ResetCursorOnOpen)
-                    Cursor.Position = tmp;*/
+                //if(ResetCursorOnOpen)
+                    //Cursor.Position = tmp;*/
             }
             MenuCloseEv();
         }
