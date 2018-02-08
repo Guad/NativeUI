@@ -61,6 +61,7 @@
     <Compile Include="UIMenuColoredItem.cs" />
     <Compile Include="UIMenuItem.cs" />
     <Compile Include="UIMenuListItem.cs" />
+    <Compile Include="UIMenuSliderItem.cs" />
     <Compile Include="UIResRectangle.cs" />
     <Compile Include="UIResText.cs" />
     <Compile Include="UnknownColors.cs" />
