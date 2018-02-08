@@ -796,7 +796,11 @@ namespace NativeUI
 
     public delegate void ListChangedEvent(UIMenu sender, UIMenuListItem listItem, int newIndex);
 
+    public delegate void SliderChangedEvent(UIMenu sender, UIMenuSliderItem listItem, int newIndex);
+
     public delegate void ListSelectedEvent(UIMenu sender, UIMenuListItem listItem, int newIndex);
+
+    public delegate void SliderSelectedEvent(UIMenu sender, UIMenuSliderItem listItem, int newIndex);
 
     public delegate void CheckboxChangeEvent(UIMenu sender, UIMenuCheckboxItem checkboxItem, bool Checked);
 
@@ -812,6 +816,7 @@ namespace NativeUI
 
     public delegate void ItemListEvent(UIMenuListItem sender, int newIndex);
 
+    public delegate void ItemSliderEvent(UIMenuSliderItem sender, int newIndex);
     /// <summary>
     /// Base class for NativeUI. Calls the next events: OnIndexChange, OnListChanged, OnCheckboxChange, OnItemSelect, OnMenuClose, OnMenuchange.
     /// </summary>
@@ -877,9 +882,19 @@ namespace NativeUI
         public event ListChangedEvent OnListChange;
 
         /// <summary>
+        /// Called when user presses left or right, changing a slider position.
+        /// </summary>
+        public event SliderChangedEvent OnSliderChange;
+
+        /// <summary>
         /// Called when user selects a list item.
         /// </summary>
         public event ListSelectedEvent OnListSelect;
+
+        /// <summary>
+        /// Called when user selects a slider item.
+        /// </summary>
+        public event SliderSelectedEvent OnSliderSelect;
 
         /// <summary>
         /// Called when user presses enter on a checkbox item.
@@ -2162,11 +2177,20 @@ namespace NativeUI
             OnListSelect?.Invoke(this, sender, newindex);
         }
 
+        protected virtual void SliderChange(UIMenuSliderItem sender, int newindex)
+        {
+            OnSliderChange?.Invoke(this, sender, newindex);
+        }
+
         protected virtual void ItemSelect(UIMenuItem selecteditem, int index)
         {
             OnItemSelect?.Invoke(this, selecteditem, index);
         }
 
+        protected virtual void SliderSelect(UIMenuSliderItem sender, int newindex)
+        {
+            OnSliderSelect?.Invoke(this, sender, newindex);
+        }
 
         protected virtual void CheckboxChange(UIMenuCheckboxItem sender, bool Checked)
         {
