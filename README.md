@@ -29,3 +29,9 @@ Thanks to jedijosh920 for helping out on natives and making it look a lot more l
 Copyright (c) 2016 Phillipp
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+### Port to CitizenFX
+This is a ported version to CitizenFX. 
+Developers looking to create C# Resources for [FiveM](https://fivem.net/) can use this port to create custom menus.
+Note, not all features are documented. 
+This ported version may contain small changes and some features from the original NativeUI by GUAD have been disabled because they are not available through CitizenFX.
