@@ -17,6 +17,8 @@ namespace NativeUI
 
         protected UIResText _labelText;
 
+        private readonly Color _disabledColor = Color.FromArgb(163, 159, 148); // Why allocating memory for same color every time?
+
         /// <summary>
         /// Called when user selects the current item.
         /// </summary>
@@ -40,7 +42,7 @@ namespace NativeUI
         {
             Enabled = true;
 
-            _rectangle = new UIResRectangle(new PointF(0, 0), new SizeF(431, 38), Color.FromArgb(150, 0, 0, 0));
+            _rectangle = new UIResRectangle(new PointF(0, 0), new SizeF(431, 38), Color.FromArgb(20, 255, 255, 255)); // Color.FromArgb(150, 0, 0, 0)
             _text = new UIResText(text, new PointF(8, 0), 0.33f, UnknownColors.WhiteSmoke, CitizenFX.Core.UI.Font.ChaletLondon, UIResText.Alignment.Left);
             Description = description;
             _selectedSprite = new Sprite("commonmenu", "gradient_nav", new PointF(0, 0), new SizeF(431, 38));
@@ -97,8 +99,6 @@ namespace NativeUI
             _labelText.Position = new PointF(420 + Offset.X, y + 148 + Offset.Y);
         }
 
-        private Color _disabledColor = Color.FromArgb(163, 159, 148); // Why allocating memory for same color every time?
-
         /// <summary>
         /// Draw this item.
         /// </summary>
@@ -115,15 +115,15 @@ namespace NativeUI
             if (Selected)
                 _selectedSprite.Draw();
 
-            _text.Color = Enabled ? Selected ? UnknownColors.Black : UnknownColors.WhiteSmoke : Color.FromArgb(163, 159, 148);
+            _text.Color = Enabled ? (Selected ? UnknownColors.Black : UnknownColors.WhiteSmoke) : _disabledColor; // No alloc anymore there
 
             if (LeftBadge == BadgeStyle.None)
             {
-                _text.Position = new PointF(8 + Offset.X, (int)_text.Position.Y);
+                _text.Position = new PointF(8 + Offset.X, _text.Position.Y);
             }
             else
             {
-                _text.Position = new PointF(35 + Offset.X, (int)_text.Position.Y);
+                _text.Position = new PointF(35 + Offset.X, _text.Position.Y);
                 _badgeLeft.TextureDict = BadgeToSpriteLib(LeftBadge);
                 _badgeLeft.TextureName = BadgeToSpriteName(LeftBadge, Selected);
                 _badgeLeft.Color = BadgeToColor(LeftBadge, Selected);
@@ -141,11 +141,12 @@ namespace NativeUI
 
             if (!String.IsNullOrWhiteSpace(RightLabel))
             {
-                _labelText.Position = new PointF(420 + Offset.X + Parent.WidthOffset, (int)_labelText.Position.Y);
+                _labelText.Position = new PointF(420 + Offset.X + Parent.WidthOffset, _labelText.Position.Y);
                 _labelText.Caption = RightLabel;
-                _labelText.Color = _text.Color = Enabled ? Selected ? UnknownColors.Black : UnknownColors.WhiteSmoke : Color.FromArgb(163, 159, 148);
+                _labelText.Color = _text.Color = Enabled ? (Selected ? UnknownColors.Black : UnknownColors.WhiteSmoke) : _disabledColor; // No alloc anymore there
                 _labelText.Draw();
             }
+
             _text.Draw();
         }
 

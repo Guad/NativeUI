@@ -58,25 +58,25 @@ namespace NativeUI.PauseMenu
                 BottomRight = new PointF((int)res.Width - SafeSize.X, (int)res.Height - SafeSize.Y);
             }
 
-            var rectSize = new SizeF(BottomRight.SubtractPoints(TopLeft));
+            var rectSizeF = new SizeF(BottomRight.SubtractPoints(TopLeft));
 
             DrawInstructionalButtons?.Invoke(this, EventArgs.Empty);
 
             if (DrawBg)
             {
-                new UIResRectangle(TopLeft, rectSize,
+                new UIResRectangle(TopLeft, rectSizeF,
                     Color.FromArgb((Focused || !FadeInWhenFocused) ? 200 : 120, 0, 0, 0)).Draw();
 
-                var tileSize = 100;
-                RockstarTile.Size = new SizeF(tileSize, tileSize);
+                var tileSizeF = 100;
+                RockstarTile.Size = new SizeF(tileSizeF, tileSizeF);
 
-                var cols = (int)rectSize.Width / tileSize;
+                var cols = rectSizeF.Width / tileSizeF;
                 var fils = 4;
 
                 for (int i = 0; i < cols * fils; i++)
                 {
-                    RockstarTile.Position = TopLeft.AddPoints(new PointF(tileSize * (i % cols), tileSize * (i / cols)));
-                    RockstarTile.Color = Color.FromArgb((int)MiscExtensions.LinearFloatLerp(40, 0, i / cols, fils), 255, 255, 255);
+                    RockstarTile.Position = TopLeft.AddPoints(new PointF(tileSizeF * (i % cols), tileSizeF * (i / cols)));
+                    RockstarTile.Color = Color.FromArgb((int)MiscExtensions.LinearFloatLerp(40, 0, i / (int)cols, fils), 255, 255, 255);
                     RockstarTile.Draw();
                 }
             }

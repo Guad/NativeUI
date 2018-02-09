@@ -1,6 +1,5 @@
 ﻿using CitizenFX.Core.Native;
 
-
 namespace NativeUI
 {
     public class InstructionalButton
@@ -17,7 +16,7 @@ namespace NativeUI
         /// Add a dynamic button to the instructional buttons array.
         /// Changes whether the controller is being used and changes depending on keybinds.
         /// </summary>
-        /// <param name="control">CitizenFX.Core.Control that gets converted into a button.</param>
+        /// <param name="control">GTA.Control that gets converted into a button.</param>
         /// <param name="text">Help text that goes with the button.</param>
         public InstructionalButton(CitizenFX.Core.Control control, string text)
         {
@@ -51,7 +50,7 @@ namespace NativeUI
 
         public string GetButtonId()
         {
-            return _usingControls ? Function.Call<string>(Hash._GET_CONTROL_ACTION_NAME, 2, (int) _buttonControl, 0) : "t_" + _buttonString;
+            return _usingControls ? Function.Call<string>(Hash.GET_CONTROL_INSTRUCTIONAL_BUTTON, 2, (int) _buttonControl, 0) : "t_" + _buttonString;
         }
     }
 }

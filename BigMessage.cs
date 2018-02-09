@@ -32,7 +32,7 @@ namespace NativeUI
             _sc = null;
         }
 
-        public async void ShowMissionPassedMessage(string msg, int time = 5000)
+        public async void ShowMissionPassedMessageAsync(string msg, int time = 5000)
         {
             await Load();
             _start = Game.GameTime;
@@ -40,7 +40,7 @@ namespace NativeUI
             _timer = time;
         }
 
-        public async void ShowColoredShard(string msg, string desc, HudColor textColor, HudColor bgColor, int time = 5000)
+        public async void ShowColoredShardAsync(string msg, string desc, HudColor textColor, HudColor bgColor, int time = 5000)
         {
             await Load();
             _start = Game.GameTime;
@@ -48,7 +48,7 @@ namespace NativeUI
             _timer = time;
         }
 
-        public async void ShowOldMessage(string msg, int time = 5000)
+        public async void ShowOldMessageAsync(string msg, int time = 5000)
         {
             await Load();
             _start = Game.GameTime;
@@ -56,7 +56,7 @@ namespace NativeUI
             _timer = time;
         }
 
-        public async void ShowSimpleShard(string title, string subtitle, int time = 5000)
+        public async void ShowSimpleShardAsync(string title, string subtitle, int time = 5000)
         {
             await Load();
             _start = Game.GameTime;
@@ -64,7 +64,7 @@ namespace NativeUI
             _timer = time;
         }
 
-        public async void ShowRankupMessage(string msg, string subtitle, int rank, int time = 5000)
+        public async void ShowRankupMessageAsync(string msg, string subtitle, int rank, int time = 5000)
         {
             await Load();
             _start = Game.GameTime;
@@ -72,7 +72,7 @@ namespace NativeUI
             _timer = time;
         }
 
-        public async void ShowWeaponPurchasedMessage(string bigMessage, string weaponName, WeaponHash weapon, int time = 5000)
+        public async void ShowWeaponPurchasedMessageAsync(string bigMessage, string weaponName, WeaponHash weapon, int time = 5000)
         {
             await Load();
             _start = Game.GameTime;
@@ -80,7 +80,7 @@ namespace NativeUI
             _timer = time;
         }
 
-        public async void ShowMpMessageLarge(string msg, int time = 5000)
+        public async void ShowMpMessageLargeAsync(string msg, int time = 5000)
         {
             await Load();
             _start = Game.GameTime;
@@ -89,7 +89,7 @@ namespace NativeUI
             _timer = time;
         }
 
-        public async void ShowCustomShard(string funcName, params object[] paremeters)
+        public async void ShowCustomShardAsync(string funcName, params object[] paremeters)
         {
             await Load();
             _sc.CallFunction(funcName, paremeters);
@@ -119,7 +119,7 @@ namespace NativeUI
             Tick += BigMessageThread_Tick;
         }
 
-        private async System.Threading.Tasks.Task BigMessageThread_Tick()
+        private async Task BigMessageThread_Tick()
         {
             MessageInstance.Update();
         }

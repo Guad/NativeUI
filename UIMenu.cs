@@ -1,16 +1,16 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-
+using System.Drawing;
 using System.Linq;
 using CitizenFX.Core;
 using CitizenFX.Core.Native;
 using Control = CitizenFX.Core.Control;
 using Font = CitizenFX.Core.UI.Font;
 using CitizenFX.Core.UI;
-using System.Drawing;
 
 namespace NativeUI
 {
+    #region Delegates
     public enum Keys
     {
         //
@@ -796,8 +796,6 @@ namespace NativeUI
 
     public delegate void ListChangedEvent(UIMenu sender, UIMenuListItem listItem, int newIndex);
 
-    public delegate void ListSelectedEvent(UIMenu sender, UIMenuListItem listItem, int newIndex);
-
     public delegate void CheckboxChangeEvent(UIMenu sender, UIMenuCheckboxItem checkboxItem, bool Checked);
 
     public delegate void ItemSelectEvent(UIMenu sender, UIMenuItem selectedItem, int index);
@@ -812,11 +810,14 @@ namespace NativeUI
 
     public delegate void ItemListEvent(UIMenuListItem sender, int newIndex);
 
+    #endregion
+
     /// <summary>
     /// Base class for NativeUI. Calls the next events: OnIndexChange, OnListChanged, OnCheckboxChange, OnItemSelect, OnMenuClose, OnMenuchange.
     /// </summary>
     public class UIMenu
     {
+        #region Private Fields
         private readonly Container _mainMenu;
         private Sprite _logo;
         private readonly Sprite _background;
@@ -826,26 +827,87 @@ namespace NativeUI
         private readonly UIResText _descriptionText;
         private readonly UIResText _counterText;
 
+        private UIResRectangle _tmpRectangle;
         private string _customBanner;
-
         private int _activeItem = 1000;
 
         private bool _visible;
-
+        private bool _buttonsEnabled = true;
         private bool _justOpened = true;
+        private bool _itemsDirty = false;
 
         //Pagination
         private const int MaxItemsOnScreen = 9;
         private int _minItem;
         private int _maxItem = MaxItemsOnScreen;
 
-        
+        //Keys
+        private readonly Dictionary<MenuControls, Tuple<List<Keys>, List<Tuple<Control, int>>>> _keyDictionary =
+            new Dictionary<MenuControls, Tuple<List<Keys>, List<Tuple<Control, int>>>>();
+
+        private readonly List<InstructionalButton> _instructionalButtons = new List<InstructionalButton>();
         private readonly Sprite _upAndDownSprite;
         private readonly UIResRectangle _extraRectangleUp;
         private readonly UIResRectangle _extraRectangleDown;
 
+        private readonly Scaleform _instructionalButtonsScaleform;
+
         private PointF _offset;
         private readonly int _extraYOffset;
+
+        private static readonly MenuControls[] _menuControls = Enum.GetValues(typeof(MenuControls)).Cast<MenuControls>().ToArray();
+
+        private static readonly List<Control> _necessaryControlsForKeyboard = new List<Control>
+        {
+            Control.FrontendAccept,
+            Control.FrontendAxisX,
+            Control.FrontendAxisY,
+            Control.FrontendDown,
+            Control.FrontendUp,
+            Control.FrontendLeft,
+            Control.FrontendRight,
+            Control.FrontendCancel,
+            Control.FrontendSelect,
+            Control.CursorScrollDown,
+            Control.CursorScrollUp,
+            Control.CursorX,
+            Control.CursorY,
+            Control.MoveUpDown,
+            Control.MoveLeftRight,
+            Control.Sprint,
+            Control.Jump,
+            Control.Enter,
+            Control.VehicleExit,
+            Control.VehicleAccelerate,
+            Control.VehicleBrake,
+            Control.VehicleMoveLeftRight,
+            Control.VehicleFlyYawLeft,
+            Control.FlyLeftRight,
+            Control.FlyUpDown,
+            Control.VehicleFlyYawRight,
+            Control.VehicleHandbrake,
+        };
+        private static readonly List<Control> _necessaryControlsForController = _necessaryControlsForKeyboard.Concat(new Control[]
+        {
+            Control.LookUpDown,
+            Control.LookLeftRight,
+            Control.Aim,
+            Control.Attack,
+        })
+        .ToList();
+
+        // Draw Variables
+        private PointF safe { get; set; }
+        private SizeF backgroundSize { get; set; }
+        private SizeF drawWidth { get; set; }
+        private bool reDraw = true;
+
+        internal readonly static string _selectTextLocalized = Game.GetGXTEntry("HUD_INPUT2");
+        internal readonly static string _backTextLocalized = Game.GetGXTEntry("HUD_INPUT3");
+
+        #endregion
+
+        #region Public Fields
 
         public string AUDIO_LIBRARY = "HUD_FRONTEND_DEFAULT_SOUNDSET";
 
@@ -854,7 +916,7 @@ namespace NativeUI
         public string AUDIO_SELECT = "SELECT";
         public string AUDIO_BACK = "BACK";
         public string AUDIO_ERROR = "ERROR";
-        
+
         public List<UIMenuItem> MenuItems = new List<UIMenuItem>();
 
         public bool MouseEdgeEnabled = true;
@@ -864,7 +926,9 @@ namespace NativeUI
         public bool MouseControlsEnabled = true;
         public bool ScaleWithSafezone = true;
 
-        //Events
+        #endregion
+
+        #region Events
 
         /// <summary>
         /// Called when user presses up or down, changing current selection.
@@ -875,11 +939,6 @@ namespace NativeUI
         /// Called when user presses left or right, changing a list position.
         /// </summary>
         public event ListChangedEvent OnListChange;
-
-        /// <summary>
-        /// Called when user selects a list item.
-        /// </summary>
-        public event ListSelectedEvent OnListSelect;
 
         /// <summary>
         /// Called when user presses enter on a checkbox item.
@@ -901,13 +960,10 @@ namespace NativeUI
         /// </summary>
         public event MenuChangeEvent OnMenuChange;
 
+        #endregion
 
-        //Keys
-        private readonly Dictionary<MenuControls, Tuple<List<Keys>, List<Tuple<Control, int>>>> _keyDictionary = new Dictionary<MenuControls, Tuple<List<Keys>, List<Tuple<Control, int>>>> ();
-                         
-        //Tree structure
-        public Dictionary<UIMenuItem, UIMenu> Children { get; }
-        
+        #region Constructors
+
         /// <summary>
         /// Basic Menu constructor.
         /// </summary>
@@ -923,7 +979,7 @@ namespace NativeUI
         /// </summary>
         /// <param name="title">Title that appears on the big banner.</param>
         /// <param name="subtitle">Subtitle that appears in capital letters in a small black bar. Set to "" if you dont want a subtitle.</param>
-        /// <param name="offset">Point object with X and Y data for offsets. Applied to all menu elements.</param>
+        /// <param name="offset">PointF object with X and Y data for offsets. Applied to all menu elements.</param>
         public UIMenu(string title, string subtitle, PointF offset) : this(title, subtitle, offset, "commonmenu", "interaction_bgd")
         {
         }
@@ -933,7 +989,7 @@ namespace NativeUI
         /// </summary>
         /// <param name="title">Title that appears on the big banner. Set to "" if you don't want a title.</param>
         /// <param name="subtitle">Subtitle that appears in capital letters in a small black bar. Set to "" if you dont want a subtitle.</param>
-        /// <param name="offset">Point object with X and Y data for offsets. Applied to all menu elements.</param>
+        /// <param name="offset">PointF object with X and Y data for offsets. Applied to all menu elements.</param>
         /// <param name="customBanner">Path to your custom texture.</param>
         public UIMenu(string title, string subtitle, PointF offset, string customBanner) : this(title, subtitle, offset, "commonmenu", "interaction_bgd")
         {
@@ -946,7 +1002,7 @@ namespace NativeUI
         /// </summary>
         /// <param name="title">Title that appears on the big banner. Set to "" if you are using a custom banner.</param>
         /// <param name="subtitle">Subtitle that appears in capital letters in a small black bar.</param>
-        /// <param name="offset">Point object with X and Y data for offsets. Applied to all menu elements.</param>
+        /// <param name="offset">PointF object with X and Y data for offsets. Applied to all menu elements.</param>
         /// <param name="spriteLibrary">Sprite library name for the banner.</param>
         /// <param name="spriteName">Sprite name for the banner.</param>
         public UIMenu(string title, string subtitle, PointF offset, string spriteLibrary, string spriteName)
@@ -984,7 +1040,7 @@ namespace NativeUI
 
             _background = new Sprite("commonmenu", "gradient_bgd", new PointF(_offset.X, 144 + _offset.Y - 37 + _extraYOffset), new SizeF(290, 25));
 
-            
+
             SetKey(MenuControls.Up, Control.PhoneUp);
             SetKey(MenuControls.Up, Control.CursorScrollUp);
 
@@ -999,33 +1055,89 @@ namespace NativeUI
             SetKey(MenuControls.Back, Control.FrontendPause);
         }
 
-        private void RecaulculateDescriptionPosition()
+        #endregion
+
+        #region Static Methods
+        /// <summary>
+        /// Enable or disable all controls but the necessary to operate a menu.
+        /// </summary>
+        /// <param name="enable"></param>
+        public static void DisEnableControls(bool enable)
         {
-            //_descriptionText.WordWrap = new SizeF(425 + WidthOffset, 0);
+            if (enable)
+                Game.EnableAllControlsThisFrame(2);
+            else
+                Game.DisableAllControlsThisFrame(2);
+            //Controls we want
+            // -Frontend
+            // -Mouse
+            // -Walk/Move
+            // -
 
-            _descriptionBar.Position = new PointF(_offset.X, 149 - 37 + _extraYOffset + _offset.Y);
-            _descriptionRectangle.Position = new PointF(_offset.X, 149 - 37 + _extraYOffset + _offset.Y);
-            _descriptionText.Position = new PointF(_offset.X + 8, 155 - 37 + _extraYOffset + _offset.Y);
+            if (enable) return;
+            var list = (IsUsingController ? _necessaryControlsForController : _necessaryControlsForKeyboard);
 
-            _descriptionBar.Size = new SizeF(431 + WidthOffset, 4);
-            _descriptionRectangle.Size = new SizeF(431 + WidthOffset, 30);
-
-            int count = Size;
-            if (count > MaxItemsOnScreen + 1)
-                count = MaxItemsOnScreen + 2;
-
-            _descriptionBar.Position = new PointF(_offset.X, (int)(38*count + _descriptionBar.Position.Y));
-            _descriptionRectangle.Position = new PointF(_offset.X, 38*count + _descriptionRectangle.Position.Y);
-            _descriptionText.Position = new PointF(_offset.X + 8, (int)(38 *count + _descriptionText.Position.Y));
+            foreach (var control in list)
+            {
+                Function.Call(Hash.ENABLE_CONTROL_ACTION, 0, (int)control);
+            }
         }
 
+        /// <summary>
+        /// Returns the 1080pixels-based screen resolution while mantaining current aspect ratio.
+        /// </summary>
+        /// <returns></returns>
+        public static SizeF GetScreenResolutionMaintainRatio()
+        {
+            int screenw = Screen.Resolution.Width;
+            int screenh = Screen.Resolution.Height;
+            const float height = 1080f;
+            float ratio = (float)screenw / screenh;
+            var width = height * ratio;
+
+            return new SizeF(width, height);
+        }
 
         /// <summary>
-        /// Returns the current width offset.
+        /// Chech whether the mouse is inside the specified rectangle.
         /// </summary>
-        public int WidthOffset { get; private set; }
+        /// <param name="topLeft">top left point of your rectangle.</param>
+        /// <param name="boxSize">size of your rectangle.</param>
+        /// <returns></returns>
+        public static bool IsMouseInBounds(PointF topLeft, SizeF boxSize)
+        {
+            var res = GetScreenResolutionMaintainRatio();
 
+            int mouseX = (int)Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)Control.CursorX) * res.Width);
+            int mouseY = (int)Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)Control.CursorY) * res.Height);
 
+            return (mouseX >= topLeft.X && mouseX <= topLeft.X + boxSize.Width)
+                   && (mouseY > topLeft.Y && mouseY < topLeft.Y + boxSize.Height);
+        }
+
+        /// <summary>
+        /// Returns the safezone bounds in pixel, relative to the 1080pixel based system.
+        /// </summary>
+        /// <returns></returns>
+        public static PointF GetSafezoneBounds()
+        {
+            float t = Function.Call<float>(Hash.GET_SAFE_ZONE_SIZE); // Safezone size.
+            double g = Math.Round(Convert.ToDouble(t), 2);
+            g = (g * 100) - 90;
+            g = 10 - g;
+
+            const float hmp = 5.4f;
+            int screenw = Screen.Resolution.Width;
+            int screenh = Screen.Resolution.Height;
+            float ratio = (float)screenw / screenh;
+            float wmp = ratio * hmp;
+
+            return new PointF((int)Math.Round(g * wmp), (int)Math.Round(g * hmp));
+        }
+
+        #endregion
+
+        #region Public Methods
         /// <summary>
         /// Change the menu's width. The width is calculated as DefaultWidth + WidthOffset, so a width offset of 10 would enlarge the menu by 10 pixels.
         /// </summary>
@@ -1034,11 +1146,11 @@ namespace NativeUI
         {
             WidthOffset = widthOffset;
             _logo.Size = new SizeF(431 + WidthOffset, 107);
-            _mainMenu.Items[0].Position = new PointF((WidthOffset + _offset.X + 431)/2, 20 + _offset.Y); // Title
+            _mainMenu.Items[0].Position = new PointF((WidthOffset + _offset.X + 431) / 2, 20 + _offset.Y); // Title
             _counterText.Position = new PointF(425 + _offset.X + widthOffset, 110 + _offset.Y);
             if (_mainMenu.Items.Count >= 1)
             {
-                var tmp = (UIResRectangle) _mainMenu.Items[1];
+                var tmp = (UIResRectangle)_mainMenu.Items[1];
                 tmp.Size = new SizeF(431 + WidthOffset, 37);
             }
             if (_tmpRectangle != null)
@@ -1046,77 +1158,7 @@ namespace NativeUI
                 _tmpRectangle.Size = new SizeF(431 + WidthOffset, 107);
             }
         }
-        
 
-        /// <summary>
-        /// Enable or disable all controls but the necessary to operate a menu.
-        /// </summary>
-        /// <param name="enable"></param>
-        public static void DisEnableControls(bool enable)
-        {
-            Hash thehash = enable ? Hash.ENABLE_CONTROL_ACTION : Hash.DISABLE_CONTROL_ACTION;
-            foreach (var con in Enum.GetValues(typeof(Control)))
-            {
-                Function.Call(thehash, 0, (int)con);
-                Function.Call(thehash, 1, (int)con);
-                Function.Call(thehash, 2, (int)con);
-            }
-            //Controls we want
-            // -Frontend
-            // -Mouse
-            // -Walk/Move
-            // -
-
-            if (enable) return;
-            var list = new List<Control>
-            {
-                Control.FrontendAccept,
-                Control.FrontendAxisX,
-                Control.FrontendAxisY,
-                Control.FrontendDown,
-                Control.FrontendUp,
-                Control.FrontendLeft,
-                Control.FrontendRight,
-                Control.FrontendCancel,
-                Control.FrontendSelect,
-                Control.CursorScrollDown,
-                Control.CursorScrollUp,
-                Control.CursorX,
-                Control.CursorY,
-                Control.MoveUpDown,
-                Control.MoveLeftRight,
-                Control.Sprint,
-                Control.Jump,
-                Control.Enter,
-                Control.VehicleExit,
-                Control.VehicleAccelerate,
-                Control.VehicleBrake,
-                Control.VehicleMoveLeftRight,
-                Control.VehicleFlyYawLeft,
-                Control.FlyLeftRight,
-                Control.FlyUpDown,
-                Control.VehicleFlyYawRight,
-                Control.VehicleHandbrake,
-            };
-
-            if (IsUsingController)
-            {
-                list.AddRange(new Control[]
-                {
-                    Control.LookUpDown,
-                    Control.LookLeftRight,
-                    Control.Aim,
-                    Control.Attack,
-                });   
-            }
-
-            foreach (var control in list)
-            {
-                Function.Call(Hash.ENABLE_CONTROL_ACTION, 0, (int)control);
-            }
-        }
-               
-        private bool _buttonsEnabled = true;
         /// <summary>
         /// Enable or disable the instructional buttons.
         /// </summary>
@@ -1125,7 +1167,6 @@ namespace NativeUI
         {
             _buttonsEnabled = !disable;
         }
-            
 
         /// <summary>
         /// Set the banner to your own Sprite object.
@@ -1137,8 +1178,7 @@ namespace NativeUI
             _logo.Size = new SizeF(431 + WidthOffset, 107);
             _logo.Position = new PointF(_offset.X, _offset.Y);
         }
-                   
-        private UIResRectangle _tmpRectangle;
+
         /// <summary>
         ///  Set the banner to your own Rectangle.
         /// </summary>
@@ -1151,7 +1191,6 @@ namespace NativeUI
             _tmpRectangle.Size = new SizeF(431 + WidthOffset, 107);
         }
 
-
         /// <summary>
         /// Set the banner to your own custom texture. Set it to "" if you want to restore the banner.
         /// </summary>
@@ -1161,21 +1200,23 @@ namespace NativeUI
             _customBanner = pathToCustomSprite;
         }
 
-
         /// <summary>
         /// Add an item to the menu.
         /// </summary>
         /// <param name="item">Item object to be added. Can be normal item, checkbox or list item.</param>
         public void AddItem(UIMenuItem item)
         {
+            int selectedItem = CurrentSelection;
+
             item.Offset = _offset;
             item.Parent = this;
             item.Position((MenuItems.Count * 25) - 37 + _extraYOffset);
             MenuItems.Add(item);
 
             RecaulculateDescriptionPosition();
-        }
 
+            CurrentSelection = selectedItem;
+        }
 
         /// <summary>
         /// Remove an item at index n.
@@ -1183,6 +1224,7 @@ namespace NativeUI
         /// <param name="index">Index to remove the item at.</param>
         public void RemoveItemAt(int index)
         {
+            int selectedItem = CurrentSelection;
             if (Size > MaxItemsOnScreen && _maxItem == Size - 1)
             {
                 _maxItem--;
@@ -1190,8 +1232,8 @@ namespace NativeUI
             }
             MenuItems.RemoveAt(index);
             RecaulculateDescriptionPosition();
+            CurrentSelection = selectedItem;
         }
-
 
         /// <summary>
         /// Reset the current selected item to 0. Use this after you add or remove items dynamically.
@@ -1209,8 +1251,9 @@ namespace NativeUI
             _activeItem = 1000 - (1000 % MenuItems.Count);
             _maxItem = MaxItemsOnScreen;
             _minItem = 0;
-        }
 
+            reDraw = true;
+        }
 
         /// <summary>
         /// Remove all items from the menu.
@@ -1220,213 +1263,37 @@ namespace NativeUI
             MenuItems.Clear();
             RecaulculateDescriptionPosition();
         }
-        
 
-        /// <summary>
-        /// Draw the menu and all of it's components.
-        /// </summary>
-        public void Draw()
+        private void DrawCalculations()
         {
-            if (!Visible) return;
+            drawWidth = new SizeF(431 + WidthOffset, 107);
 
-            if(ControlDisablingEnabled)
-                DisEnableControls(false);
+            safe = GetSafezoneBounds();
 
-            if(_buttonsEnabled)
-                Function.Call(Hash.DRAW_SCALEFORM_MOVIE_FULLSCREEN, _instructionalButtonsScaleform.Handle, 255, 255, 255, 255, 0);
-                // _instructionalButtonsScaleform.Render2D(); // Bug #13
+            backgroundSize = Size > MaxItemsOnScreen + 1 ? new SizeF(431 + WidthOffset, 38 * (MaxItemsOnScreen + 1)) : new SizeF(431 + WidthOffset, 38 * Size);
 
+            _extraRectangleUp.Size = new SizeF(431 + WidthOffset, 18);
 
-            PointF safe = GetSafezoneBounds();
+            _extraRectangleDown.Size = new SizeF(431 + WidthOffset, 18);
 
-            if (ScaleWithSafezone)
-            {
-                Function.Call((Hash) 0xB8A850F20A067EB6, 76, 84); // Safezone
-                Function.Call((Hash) 0xF5A2C681787E579D, 0f, 0f, 0f, 0f); // stuff
-            }
-            else
-            {
-                safe = new PointF(0, 0);
-            }
+            _upAndDownSprite.Position = new PointF(190 + _offset.X + (WidthOffset > 0 ? (WidthOffset / 2) : WidthOffset), 147 + 37 * (MaxItemsOnScreen + 1) + _offset.Y - 37 + _extraYOffset);
 
-            if (String.IsNullOrWhiteSpace(_customBanner))
-            {
-                if (_logo != null)
-                    _logo.Draw();
-                else
-                {
-                    _tmpRectangle?.Draw();
-                }
-            }
-            else
-            {
-                //Sprite.DrawTexture(_customBanner, new PointF(safe.X + _offset.X, safe.Y + _offset.Y), new SizeF(431 + WidthOffset, 107));
-            }
-            _mainMenu.Draw();
-            if (MenuItems.Count == 0)
-            {
-                Function.Call((Hash)0xE3A3DB414A373DAB); // Safezone end
-                return;
-            }
+            reDraw = false;
 
-            _background.Size = Size > MaxItemsOnScreen + 1 ? new SizeF(431 + WidthOffset, 38*(MaxItemsOnScreen + 1)) : new SizeF(431 + WidthOffset, 38 * Size);
-            _background.Draw();
-            MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
-            if (!String.IsNullOrWhiteSpace(MenuItems[_activeItem%(MenuItems.Count)].Description))
+            if (MenuItems.Count != 0 && !String.IsNullOrWhiteSpace(MenuItems[_activeItem % (MenuItems.Count)].Description))
             {
                 RecaulculateDescriptionPosition();
+
                 string descCaption = MenuItems[_activeItem % (MenuItems.Count)].Description;
-                if (FormatDescriptions)
-                    _descriptionText.Caption = FormatDescription(descCaption);
-                else
-                    _descriptionText.Caption = descCaption;
+
+                if (FormatDescriptions) _descriptionText.Caption = FormatDescription(descCaption);
+                else _descriptionText.Caption = descCaption;
+
                 int numLines = _descriptionText.Caption.Split('\n').Length;
+
                 _descriptionRectangle.Size = new SizeF(431 + WidthOffset, (numLines * 25) + 15);
-
-                _descriptionBar.Draw();
-                _descriptionRectangle.Draw();
-                _descriptionText.Draw();
-            }
-
-            if (MenuItems.Count <= MaxItemsOnScreen + 1)
-            {
-                /*int count = 0;
-                foreach (var item in MenuItems) // foreach works slower with List
-                {
-                    item.Position(count * 38 - 37 + _extraYOffset);
-                    item.Draw();
-                    count++;
-                }*/
-
-                int count = MenuItems.Count;
-                for(int i = 0; i < count; i++)
-                {
-                    MenuItems[i].Position(i * 38 - 37 + _extraYOffset);
-                    MenuItems[i].Draw();
-                }
-            }
-            else
-            {
-                int count = 0;
-                for (int index = _minItem; index <= _maxItem; index++)
-                {
-                    //var item = MenuItems[index]; // No need to cache item every time
-                    MenuItems[index].Position(count * 38 - 37 + _extraYOffset);
-                    MenuItems[index].Draw();
-                    count++;
-                }
-                _extraRectangleUp.Size = new SizeF(431 + WidthOffset, 18);
-                _extraRectangleDown.Size = new SizeF(431 + WidthOffset, 18);
-                _upAndDownSprite.Position = new PointF(190 + _offset.X + (WidthOffset/2),
-                    147 + 37*(MaxItemsOnScreen + 1) + _offset.Y - 37 + _extraYOffset);
-
-                _extraRectangleUp.Draw();
-                _extraRectangleDown.Draw();
-                _upAndDownSprite.Draw();
-                //if (_counterText != null) // Why check for null if it can't be null? (It creates right in the ctor)
-                //{
-                    string cap = (CurrentSelection + 1) + " / " + Size;
-                    _counterText.Caption = CounterPretext + cap;
-                    _counterText.Draw();
-                //}
-            }
-
-            if (ScaleWithSafezone)
-                Function.Call((Hash)0xE3A3DB414A373DAB); // Safezone end
+            }         
         }
-
-        /// <summary>
-        /// Returns the 1080pixels-based screen resolution while maintaining current aspect ratio.
-        /// </summary>
-        /// <returns></returns>
-        public static SizeF GetScreenResolutionMaintainRatio()
-        {
-            int screenw = 1920; // Game.ScreenResolution.Width
-            int screenh = 1080; // Game.ScreenResolution.Height;
-            const float height = 1080f;
-            float ratio = (float)screenw / screenh;
-            var width = height * ratio;
-
-            return new SizeF(width, height);
-        }
-        
-        /// <summary>
-        /// Old GetScreenResolutionMantainRatio Method support old versions
-        /// </summary>
-        /// <returns></returns>
-        [Obsolete("Use GetScreenResolutionMaintainRatio")]
-        public static SizeF GetScreenResolutionMantainRatio()
-        {
-            return GetScreenResolutionMaintainRatio(); // There was no return keyword
-        }
-
-
-        /// <summary>
-        /// Chech whether the mouse is inside the specified rectangle.
-        /// </summary>
-        /// <param name="topLeft">top left point of your rectangle.</param>
-        /// <param name="boxSize">size of your rectangle.</param>
-        /// <returns></returns>
-        public static bool IsMouseInBounds(PointF topLeft, SizeF boxSize)
-        {
-            var res = GetScreenResolutionMaintainRatio();
-
-            int mouseX = Convert.ToInt32(Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)Control.CursorX) * res.Width));
-            int mouseY = Convert.ToInt32(Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)Control.CursorY) * res.Height));
-
-            return (mouseX >= topLeft.X && mouseX <= topLeft.X + boxSize.Width)
-                   && (mouseY > topLeft.Y && mouseY < topLeft.Y + boxSize.Height);
-        }
-
-
-        /// <summary>
-        /// Function to get whether the cursor is in an arrow space, or in label of an UIMenuListItem.
-        /// </summary>
-        /// <param name="item">What item to check</param>
-        /// <param name="topLeft">top left point of the item.</param>
-        /// <param name="safezone">safezone size.</param>
-        /// <returns>0 - Not in item at all, 1 - In label, 2 - In arrow space.</returns>
-        public int IsMouseInListItemArrows(UIMenuListItem item, PointF topLeft, PointF safezone) // TODO: Ability to scroll left and right
-        {
-            Function.Call((Hash)0x54CE8AC98E120CAB, "jamyfafi");
-            UIResText.AddLongString(item.Text);
-            var res = GetScreenResolutionMaintainRatio();
-            var screenw = res.Width;
-            var screenh = res.Height;
-            const float height = 1080f;
-            float ratio = screenw / screenh;
-            var width = height * ratio;
-            int labelSize = Convert.ToInt32(Function.Call<float>((Hash)0x85F061DA64ED2F67, 0) * width * 0.35f);
-
-            int labelSizeX = 5 + labelSize + 10;
-            int arrowSizeX = 431 - labelSizeX;
-            return IsMouseInBounds(topLeft, new SizeF(labelSizeX, 38))
-                ? 1
-                : IsMouseInBounds(new PointF(topLeft.X + labelSizeX, topLeft.Y), new SizeF(arrowSizeX, 38)) ? 2 : 0;
-
-        }
-
-
-        /// <summary>
-        /// Returns the safezone bounds in pixel, relative to the 1080pixel based system.
-        /// </summary>
-        /// <returns></returns>
-        public static PointF GetSafezoneBounds()
-        {
-            float t = Function.Call<float>(Hash.GET_SAFE_ZONE_SIZE); // Safezone size.
-            double g = Math.Round(Convert.ToDouble(t), 2);
-            g = (g * 100) - 90;
-            g = 10 - g;
-
-            const float hmp = 5.4f;
-            int screenw = 1920;// Game.ScreenResolution.Width;
-            int screenh = 1080;// Game.ScreenResolution.Height;
-            float ratio = (float)screenw / screenh;
-            float wmp = ratio*hmp;
-            
-            return new PointF(Convert.ToInt32(Math.Round(g*wmp)), Convert.ToInt32(Math.Round(g*hmp)));
-        }
-
 
         /// <summary>
         /// Go up the menu if the number of items is more than maximum items on screen.
@@ -1534,12 +1401,20 @@ namespace NativeUI
         /// </summary>
         public void GoLeft()
         {
-            if (!(MenuItems[CurrentSelection] is UIMenuListItem)) return;
-            var it = (UIMenuListItem)MenuItems[CurrentSelection];
-            it.Index = it.Index - 1;
-            Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
-            ListChange(it, it.Index);
-            it.ListChangedTrigger(it.Index);
+            if (MenuItems[CurrentSelection] is UIMenuListItem)
+            {
+                var it = (UIMenuListItem) MenuItems[CurrentSelection];
+                it.Index = it.Index - 1;
+                Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
+                ListChange(it, it.Index);
+                it.ListChangedTrigger(it.Index);
+            }
+            else if (MenuItems[CurrentSelection] is UIMenuDynamicListItem it)
+            {
+                string newItem = it.Callback(it, UIMenuDynamicListItem.ChangeDirection.Left);
+                it.CurrentListItem = newItem;
+                Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
+            }
         }
 
 
@@ -1548,12 +1423,21 @@ namespace NativeUI
         /// </summary>
         public void GoRight()
         {
-            if (!(MenuItems[CurrentSelection] is UIMenuListItem)) return;
-            var it = (UIMenuListItem)MenuItems[CurrentSelection];
-            it.Index++;
-            Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
-            ListChange(it, it.Index);
-            it.ListChangedTrigger(it.Index);
+            if (MenuItems[CurrentSelection] is UIMenuListItem)
+            {
+                var it = (UIMenuListItem) MenuItems[CurrentSelection];
+                it.Index++;
+                Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
+                ListChange(it, it.Index);
+                it.ListChangedTrigger(it.Index);
+            }
+            else if (MenuItems[CurrentSelection] is UIMenuDynamicListItem)
+            {
+                var it = (UIMenuDynamicListItem)MenuItems[CurrentSelection];
+                string newItem = it.Callback(it, UIMenuDynamicListItem.ChangeDirection.Right);
+                it.CurrentListItem = newItem;
+                Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
+            }
         }
 
 
@@ -1574,13 +1458,6 @@ namespace NativeUI
                 Game.PlaySound(AUDIO_SELECT, AUDIO_LIBRARY);
                 CheckboxChange(it, it.Checked);
                 it.CheckboxEventTrigger();
-            }
-            else if(MenuItems[CurrentSelection] is UIMenuListItem)
-            {
-                var it = (UIMenuListItem)MenuItems[CurrentSelection];
-                Game.PlaySound(AUDIO_SELECT, AUDIO_LIBRARY);
-                ListSelect(it, it.Index);
-                it.ListSelectedTrigger(it.Index);
             }
             else
             {
@@ -1604,12 +1481,12 @@ namespace NativeUI
             Visible = false;
             if (ParentMenu != null)
             {
-                /*
-                var tmp = Cursor.Position;
+                var tmp = new PointF(0.5f, 0.5f);
                 ParentMenu.Visible = true;
                 MenuChangeEv(ParentMenu, false);
-                if(ResetCursorOnOpen)
-                    Cursor.Position = tmp;*/
+                if (ResetCursorOnOpen)
+                    CitizenFX.Core.Native.API.SetCursorLocation(tmp.X, tmp.Y);
+                    //Cursor.Position = tmp;
             }
             MenuCloseEv();
         }
@@ -1643,131 +1520,6 @@ namespace NativeUI
             return true;
         }
 
-         
-        /// <summary>
-        /// Process the mouse's position and check if it's hovering over any UI element. Call this in OnTick
-        /// </summary>
-        public void ProcessMouse()
-        {
-            if (!Visible || _justOpened || MenuItems.Count == 0 || IsUsingController || !MouseControlsEnabled)
-            {
-                Function.Call(Hash.ENABLE_CONTROL_ACTION, (int)Control.LookUpDown);
-                Function.Call(Hash.ENABLE_CONTROL_ACTION, (int)Control.LookLeftRight);
-                Function.Call(Hash.ENABLE_CONTROL_ACTION, (int)Control.Aim);
-                Function.Call(Hash.ENABLE_CONTROL_ACTION, (int)Control.Attack);
-                MenuItems.Where(i => i.Hovered).ToList().ForEach(i => i.Hovered = false);
-                return;
-            }
-
-            PointF safezoneOffset = GetSafezoneBounds();
-            Function.Call(Hash._SHOW_CURSOR_THIS_FRAME);
-            int limit = MenuItems.Count - 1;
-            int counter = 0;
-            if (MenuItems.Count > MaxItemsOnScreen + 1)
-                limit = _maxItem;
-
-            if (IsMouseInBounds(new PointF(0, 0), new SizeF(30, 1080)) && MouseEdgeEnabled)
-            {
-                GameplayCamera.RelativeHeading += 5f;
-                Function.Call(Hash._SET_CURSOR_SPRITE, 6);
-            }
-            else if (IsMouseInBounds(new PointF(Convert.ToInt32(GetScreenResolutionMaintainRatio().Width - 30f), 0), new SizeF(30, 1080)) &&  MouseEdgeEnabled)
-            {
-                GameplayCamera.RelativeHeading -= 5f;
-                Function.Call(Hash._SET_CURSOR_SPRITE, 7);
-            }
-            else if(MouseEdgeEnabled)
-            {
-                Function.Call(Hash._SET_CURSOR_SPRITE, 1);
-            }
-
-            for (int i = _minItem; i <= limit; i++)
-            {
-                float xpos = _offset.X + safezoneOffset.X;
-                float ypos = _offset.Y + 144 - 37 + _extraYOffset + (counter*38) + safezoneOffset.Y;
-                int xsize = 431 + WidthOffset;
-                const int ysize = 38;
-                UIMenuItem uiMenuItem = MenuItems[i];
-                if (IsMouseInBounds(new PointF(xpos, ypos), new SizeF(xsize, ysize)))
-                {
-                    uiMenuItem.Hovered = true;
-                    if (Game.IsControlJustPressed(0, Control.Attack))
-                        if (uiMenuItem.Selected && uiMenuItem.Enabled)
-                        {
-                            if (MenuItems[i] is UIMenuListItem &&
-                                IsMouseInListItemArrows((UIMenuListItem) MenuItems[i], new PointF(xpos, ypos),
-                                    safezoneOffset) > 0)
-                            {
-                                int res = IsMouseInListItemArrows((UIMenuListItem) MenuItems[i], new PointF(xpos, ypos),
-                                    safezoneOffset);
-                                switch (res)
-                                {
-                                    case 1:
-                                        Game.PlaySound(AUDIO_SELECT, AUDIO_LIBRARY);
-                                        MenuItems[i].ItemActivate(this);
-                                        ItemSelect(MenuItems[i], i);
-                                        break;
-                                    case 2:
-                                        var it = (UIMenuListItem) MenuItems[i];
-                                        it.Index++;
-                                        Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
-                                        ListChange(it, it.Index);
-                                        it.ListChangedTrigger(it.Index);
-                                        break;
-                                }
-                            }
-                            else
-                                SelectItem();
-                        }
-                        else if(!uiMenuItem.Selected)
-                        {
-                            CurrentSelection = i;
-                            Game.PlaySound(AUDIO_UPDOWN, AUDIO_LIBRARY);
-                            IndexChange(CurrentSelection);
-                            UpdateScaleform();
-                        }
-                        else if (!uiMenuItem.Enabled && uiMenuItem.Selected)
-                        {
-                            Game.PlaySound(AUDIO_ERROR, AUDIO_LIBRARY);
-                        }
-                }
-                else
-                    uiMenuItem.Hovered = false;
-                counter++;
-            }
-            float extraY = 144 + 38*(MaxItemsOnScreen + 1) + _offset.Y - 37 + _extraYOffset + safezoneOffset.Y;
-            float extraX = safezoneOffset.X + _offset.X;
-            if(Size <= MaxItemsOnScreen + 1) return;
-            if (IsMouseInBounds(new PointF(extraX, extraY), new SizeF(431 + WidthOffset, 18)))
-            {
-                _extraRectangleUp.Color = Color.FromArgb(255, 30, 30, 30);
-                if (Game.IsControlJustPressed(0, Control.Attack))
-                {
-                    if(Size > MaxItemsOnScreen+1)
-                        GoUpOverflow();
-                    else
-                        GoUp();
-                }
-            }
-            else
-                _extraRectangleUp.Color = Color.FromArgb(200, 0, 0, 0);
-            
-            if (IsMouseInBounds(new PointF(extraX, extraY+18), new SizeF(431 + WidthOffset, 18)))
-            {
-                _extraRectangleDown.Color = Color.FromArgb(255, 30, 30, 30);
-                if (Game.IsControlJustPressed(0, Control.Attack))
-                {
-                    if (Size > MaxItemsOnScreen + 1)
-                        GoDownOverflow();
-                    else
-                        GoDown();
-                }
-            }
-            else
-                _extraRectangleDown.Color = Color.FromArgb(200, 0, 0, 0);
-        }
-
-
         /// <summary>
         /// Set a key to control a menu. Can be multiple keys for each control.
         /// </summary>
@@ -1787,7 +1539,7 @@ namespace NativeUI
 
 
         /// <summary>
-        /// Set a CitizenFX.Core.Control to control a menu. Can be multiple controls. This applies it to all indexes.
+        /// Set a GTA.Control to control a menu. Can be multiple controls. This applies it to all indexes.
         /// </summary>
         /// <param name="control"></param>
         /// <param name="gtaControl"></param>
@@ -1800,7 +1552,7 @@ namespace NativeUI
 
 
         /// <summary>
-        /// Set a CitizenFX.Core.Control to control a menu only on a specific index.
+        /// Set a GTA.Control to control a menu only on a specific index.
         /// </summary>
         /// <param name="control"></param>
         /// <param name="gtaControl"></param>
@@ -1843,8 +1595,8 @@ namespace NativeUI
 
             if (key != Keys.None)
             {
-                /*if (tmpKeys.Any(Game.IsKeyPressed))
-                    return true;*/
+                //if (tmpKeys.Any(Game.IsKeyPressed))
+                //    return true;
             }
             if (tmpControls.Any(tuple => Game.IsControlJustPressed(tuple.Item2, tuple.Item1)))
                 return true;
@@ -1865,8 +1617,8 @@ namespace NativeUI
 
             if (key != Keys.None)
             {
-                /*if (tmpKeys.Any(Game.IsKeyPressed))
-                    return true;*/
+                //if (tmpKeys.Any(Game.IsKeyPressed))
+                //    return true;
             }
             if (tmpControls.Any(tuple => Game.IsControlJustReleased(tuple.Item2, tuple.Item1)))
                 return true;
@@ -1894,11 +1646,11 @@ namespace NativeUI
             }
             if (key != Keys.None)
             {
-                /*if (tmpKeys.Any(Game.IsKeyPressed))
-                {
-                    _controlCounter = 1;
-                    return true;
-                }*/
+                //if (tmpKeys.Any(Game.IsKeyPressed))
+                //{
+                //    _controlCounter = 1;
+                //    return true;
+                //}
             }
             if (tmpControls.Any(tuple => Game.IsControlPressed(tuple.Item2, tuple.Item1)))
             {
@@ -1907,14 +1659,321 @@ namespace NativeUI
             }
             return false;
         }
-        
+
+        public void AddInstructionalButton(InstructionalButton button)
+        {
+            _instructionalButtons.Add(button);
+        }
+
+        public void RemoveInstructionalButton(InstructionalButton button)
+        {
+            _instructionalButtons.Remove(button);
+        }
+
+        #endregion
+
+        #region Private Methods
+        private void RecaulculateDescriptionPosition()
+        {
+            //_descriptionText.WordWrap = new SizeF(425 + WidthOffset, 0);
+
+            _descriptionBar.Position = new PointF(_offset.X, 149 - 37 + _extraYOffset + _offset.Y);
+            _descriptionRectangle.Position = new PointF(_offset.X, 149 - 37 + _extraYOffset + _offset.Y);
+            _descriptionText.Position = new PointF(_offset.X + 8, 155 - 37 + _extraYOffset + _offset.Y);
+
+            _descriptionBar.Size = new SizeF(431 + WidthOffset, 4);
+            _descriptionRectangle.Size = new SizeF(431 + WidthOffset, 30);
+
+            int count = Size;
+            if (count > MaxItemsOnScreen + 1)
+                count = MaxItemsOnScreen + 2;
+
+            _descriptionBar.Position = new PointF(_offset.X, 38 * count + _descriptionBar.Position.Y);
+            _descriptionRectangle.Position = new PointF(_offset.X, 38 * count + _descriptionRectangle.Position.Y);
+            _descriptionText.Position = new PointF(_offset.X + 8, 38 * count + _descriptionText.Position.Y);
+        }
+
+        /// <summary>
+        /// Function to get whether the cursor is in an arrow space, or in label of an UIMenuListItem.
+        /// </summary>
+        /// <param name="item">What item to check</param>
+        /// <param name="topLeft">top left point of the item.</param>
+        /// <param name="safezone">safezone size.</param>
+        /// <returns>0 - Not in item at all, 1 - In label, 2 - In arrow space.</returns>
+        private int IsMouseInListItemArrows(UIMenuItem item, PointF topLeft, PointF safezone) // TODO: Ability to scroll left and right
+        {
+            Function.Call((Hash)0x54CE8AC98E120CAB, "jamyfafi");
+            UIResText.AddLongString(item.Text);
+            var res = GetScreenResolutionMaintainRatio();
+            var screenw = res.Width;
+            var screenh = res.Height;
+            const float height = 1080f;
+            float ratio = screenw / screenh;
+            var width = height * ratio;
+            int labelSize = (int)(Function.Call<float>((Hash)0x85F061DA64ED2F67, 0) * width * 0.35f);
+
+            int labelSizeX = 5 + labelSize + 10;
+            int arrowSizeX = 431 - labelSizeX;
+            return IsMouseInBounds(topLeft, new SizeF(labelSizeX, 38))
+                ? 1
+                : IsMouseInBounds(new PointF(topLeft.X + labelSizeX, topLeft.Y), new SizeF(arrowSizeX, 38)) ? 2 : 0;
+
+        }
+
+        /// <summary>
+        /// Formats the input string so it doesn't go out of bounds of the description box.
+        /// </summary>
+        /// <param name="input">String to format.</param>
+        /// <returns></returns>
+        private string FormatDescription(string input)
+        {
+            int maxPixelsPerLine = 425 + WidthOffset;
+            int aggregatePixels = 0;
+            string output = "";
+            string[] words = input.Split(' ');
+            foreach (string word in words)
+            {
+                int offset = (int) StringMeasurer.MeasureString(word, (Font)0, 0.35f);
+                aggregatePixels += offset;
+                if (aggregatePixels > maxPixelsPerLine)
+                {
+                    output += "\n" + word + " ";
+                    aggregatePixels = offset + StringMeasurer.MeasureString(" ");
+                }
+                else
+                {
+                    output += word + " ";
+                    aggregatePixels += StringMeasurer.MeasureString(" ");
+                }
+            }
+            return output;
+        }
+
+        #endregion
+
+        #region Drawing & Processing
+        /// <summary>
+        /// Draw the menu and all of it's components.
+        /// </summary>
+        public void Draw()
+        {
+            if (!Visible) return;
+
+            if (ControlDisablingEnabled)
+                DisEnableControls(false);
+
+            if (_buttonsEnabled)
+                Function.Call(Hash.DRAW_SCALEFORM_MOVIE_FULLSCREEN, _instructionalButtonsScaleform.Handle, 255, 255, 255, 255, 0);
+            // _instructionalButtonsScaleform.Render2D(); // Bug #13
+
+            if (ScaleWithSafezone)
+            {
+                Function.Call((Hash)0xB8A850F20A067EB6, 76, 84); // Safezone
+                Function.Call((Hash)0xF5A2C681787E579D, 0f, 0f, 0f, 0f); // stuff
+            }
+
+            if (reDraw) DrawCalculations();
+
+            if (String.IsNullOrWhiteSpace(_customBanner))
+            {
+                if (_logo != null)
+                    _logo.Draw();
+                else
+                {
+                    _tmpRectangle?.Draw();
+                }
+            }
+            else
+            {
+                PointF start = ((ScaleWithSafezone) ? safe : new PointF(0, 0));
+
+                //Sprite.DrawTexture(_customBanner, new PointF(start.X + _offset.X, start.Y + _offset.Y), drawWidth);
+            }
+            _mainMenu.Draw();
+            if (MenuItems.Count == 0)
+            {
+                Function.Call((Hash)0xE3A3DB414A373DAB); // Safezone end
+                return;
+            }
+
+            _background.Size = backgroundSize;
+
+            _background.Draw();
+
+            MenuItems[_activeItem % (MenuItems.Count)].Selected = true;
+            if (!String.IsNullOrWhiteSpace(MenuItems[_activeItem % (MenuItems.Count)].Description))
+            {
+                _descriptionBar.Draw();
+                _descriptionRectangle.Draw();
+                _descriptionText.Draw();
+            }
+
+            if (MenuItems.Count <= MaxItemsOnScreen + 1)
+            {
+                int count = 0;
+
+                foreach (var item in MenuItems)
+                {
+                    item.Position(count * 38 - 37 + _extraYOffset);
+                    item.Draw();
+                    count++;
+                }
+            }
+            else
+            {
+                int count = 0;
+
+                for (int index = _minItem; index <= _maxItem; index++)
+                {
+                    var item = MenuItems[index];
+                    item.Position(count * 38 - 37 + _extraYOffset);
+                    item.Draw();
+                    count++;
+                }
+
+                _extraRectangleUp.Draw();
+                _extraRectangleDown.Draw();
+                _upAndDownSprite.Draw();
+
+                if (_counterText != null)
+                {
+                    string cap = (CurrentSelection + 1) + " / " + Size;
+                    _counterText.Caption = CounterPretext + cap;
+                    _counterText.Draw();
+                }
+            }
+
+            if (ScaleWithSafezone)
+                Function.Call((Hash)0xE3A3DB414A373DAB); // Safezone end
+        }
+
+        /// <summary>
+        /// Process the mouse's position and check if it's hovering over any UI element. Call this in OnTick
+        /// </summary>
+        public void ProcessMouse()
+        {
+            if (!Visible || _justOpened || MenuItems.Count == 0 || IsUsingController || !MouseControlsEnabled)
+            {
+                Function.Call(Hash.ENABLE_CONTROL_ACTION, (int)Control.LookUpDown);
+                Function.Call(Hash.ENABLE_CONTROL_ACTION, (int)Control.LookLeftRight);
+                Function.Call(Hash.ENABLE_CONTROL_ACTION, (int)Control.Aim);
+                Function.Call(Hash.ENABLE_CONTROL_ACTION, (int)Control.Attack);
+                if (_itemsDirty)
+                {
+                    MenuItems.Where(i => i.Hovered).ToList().ForEach(i => i.Hovered = false);
+                    _itemsDirty = false;
+                }
+                return;
+            }
+
+            PointF safezoneOffset = GetSafezoneBounds();
+            Function.Call(Hash._SHOW_CURSOR_THIS_FRAME);
+            int limit = MenuItems.Count - 1;
+            int counter = 0;
+            if (MenuItems.Count > MaxItemsOnScreen + 1)
+                limit = _maxItem;
+
+            if (IsMouseInBounds(new PointF(0, 0), new SizeF(30, 1080)) && MouseEdgeEnabled)
+            {
+                GameplayCamera.RelativeHeading += 5f;
+                Function.Call(Hash._SET_CURSOR_SPRITE, 6);
+            }
+            else if (IsMouseInBounds(new PointF(Convert.ToInt32(GetScreenResolutionMaintainRatio().Width - 30f), 0), new SizeF(30, 1080)) && MouseEdgeEnabled)
+            {
+                GameplayCamera.RelativeHeading -= 5f;
+                Function.Call(Hash._SET_CURSOR_SPRITE, 7);
+            }
+            else if (MouseEdgeEnabled)
+            {
+                Function.Call(Hash._SET_CURSOR_SPRITE, 1);
+            }
+
+            for (int i = _minItem; i <= limit; i++)
+            {
+                float xpos = _offset.X + safezoneOffset.X;
+                float ypos = _offset.Y + 144 - 37 + _extraYOffset + (counter * 38) + safezoneOffset.Y;
+                int xsize = 431 + WidthOffset;
+                const int ysize = 38;
+                UIMenuItem uiMenuItem = MenuItems[i];
+                if (IsMouseInBounds(new PointF(xpos, ypos), new SizeF(xsize, ysize)))
+                {
+                    uiMenuItem.Hovered = true;
+                    if (Game.IsControlJustPressed(0, Control.Attack))
+                        if (uiMenuItem.Selected && uiMenuItem.Enabled)
+                        {
+                            if (MenuItems[i] is IListItem &&
+                                IsMouseInListItemArrows(MenuItems[i], new PointF(xpos, ypos),
+                                    safezoneOffset) > 0)
+                            {
+                                int res = IsMouseInListItemArrows(MenuItems[i], new PointF(xpos, ypos),
+                                    safezoneOffset);
+                                switch (res)
+                                {
+                                    case 1:
+                                        SelectItem();
+                                        break;
+                                    case 2:
+                                        GoRight();
+                                        break;
+                                }
+                            }
+                            else
+                                SelectItem();
+                        }
+                        else if (!uiMenuItem.Selected)
+                        {
+                            CurrentSelection = i;
+                            Game.PlaySound(AUDIO_UPDOWN, AUDIO_LIBRARY);
+                            IndexChange(CurrentSelection);
+                            UpdateScaleform();
+                        }
+                        else if (!uiMenuItem.Enabled && uiMenuItem.Selected)
+                        {
+                            Game.PlaySound(AUDIO_ERROR, AUDIO_LIBRARY);
+                        }
+                }
+                else
+                    uiMenuItem.Hovered = false;
+                counter++;
+            }
+            float extraY = 144 + 38 * (MaxItemsOnScreen + 1) + _offset.Y - 37 + _extraYOffset + safezoneOffset.Y;
+            float extraX = safezoneOffset.X + _offset.X;
+            if (Size <= MaxItemsOnScreen + 1) return;
+            if (IsMouseInBounds(new PointF(extraX, extraY), new SizeF(431 + WidthOffset, 18)))
+            {
+                _extraRectangleUp.Color = Color.FromArgb(255, 30, 30, 30);
+                if (Game.IsControlJustPressed(0, Control.Attack))
+                {
+                    if (Size > MaxItemsOnScreen + 1)
+                        GoUpOverflow();
+                    else
+                        GoUp();
+                }
+            }
+            else
+                _extraRectangleUp.Color = Color.FromArgb(200, 0, 0, 0);
+
+            if (IsMouseInBounds(new PointF(extraX, extraY + 18), new SizeF(431 + WidthOffset, 18)))
+            {
+                _extraRectangleDown.Color = Color.FromArgb(255, 30, 30, 30);
+                if (Game.IsControlJustPressed(0, Control.Attack))
+                {
+                    if (Size > MaxItemsOnScreen + 1)
+                        GoDownOverflow();
+                    else
+                        GoDown();
+                }
+            }
+            else
+                _extraRectangleDown.Color = Color.FromArgb(200, 0, 0, 0);
+        }
 
         /// <summary>
         /// Process control-stroke. Call this in the OnTick event.
         /// </summary>
         public void ProcessControl(Keys key = Keys.None)
         {
-            if(!Visible) return;
+            if (!Visible) return;
             if (_justOpened)
             {
                 _justOpened = false;
@@ -1961,75 +2020,33 @@ namespace NativeUI
 
         }
 
-
         /// <summary>
         /// Process keystroke. Call this in the OnKeyDown event.
         /// </summary>
         /// <param name="key"></param>
         public void ProcessKey(Keys key)
         {
-            if ((from object menuControl in Enum.GetValues(typeof(MenuControls)) select new List<Keys>(_keyDictionary[(MenuControls)menuControl].Item1)).Any(tmpKeys => tmpKeys.Any(k => k == key)))
+            if ((from MenuControls menuControl in _menuControls
+                 select new List<Keys>(_keyDictionary[menuControl].Item1))
+                .Any(tmpKeys => tmpKeys.Any(k => k == key)))
             {
                 ProcessControl(key);
             }
         }
 
-
-        /// <summary>
-        /// Formats the input string so it doesn't go out of bounds of the description box.
-        /// </summary>
-        /// <param name="input">String to format.</param>
-        /// <returns></returns>
-        private string FormatDescription(string input)
-        {
-            int maxPixelsPerLine = 425 + WidthOffset;
-            int aggregatePixels = 0;
-            string output = "";
-            string[] words = input.Split(' ');
-            foreach (string word in words)
-            {
-                int offset = StringMeasurer.MeasureString(word);
-                aggregatePixels += offset;
-                if (aggregatePixels > maxPixelsPerLine)
-                {
-                    output += "\n" + word + " ";
-                    aggregatePixels = offset + StringMeasurer.MeasureString(" ");
-                }
-                else
-                {
-                    output += word + " ";
-                    aggregatePixels += StringMeasurer.MeasureString(" ");
-                }
-            }
-            return output;
-        }
-
-        private readonly List<InstructionalButton> _instructionalButtons = new List<InstructionalButton>();
-
-        public void AddInstructionalButton(InstructionalButton button)
-        {
-            _instructionalButtons.Add(button);
-        }
-
-        public void RemoveInstructionalButton(InstructionalButton button)
-        {
-            _instructionalButtons.Remove(button);
-        }
-
-        private readonly Scaleform _instructionalButtonsScaleform;
         /// <summary>
         /// Manually update the instructional buttons scaleform.
         /// </summary>
         public void UpdateScaleform()
-        {   
+        {
             if (!Visible || !_buttonsEnabled) return;
             _instructionalButtonsScaleform.CallFunction("CLEAR_ALL");
             _instructionalButtonsScaleform.CallFunction("TOGGLE_MOUSE_BUTTONS", 0);
             _instructionalButtonsScaleform.CallFunction("CREATE_CONTAINER");
-            
 
-            _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 0, Function.Call<string>(Hash._GET_CONTROL_ACTION_NAME, 2, (int)Control.PhoneSelect, 0), "Select");
-            _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 1, Function.Call<string>(Hash._GET_CONTROL_ACTION_NAME, 2, (int)Control.PhoneCancel, 0), "Back");
+
+            _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 0, Function.Call<string>(Hash.GET_CONTROL_INSTRUCTIONAL_BUTTON, 2, (int)Control.PhoneSelect, 0), _selectTextLocalized);
+            _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 1, Function.Call<string>(Hash.GET_CONTROL_INSTRUCTIONAL_BUTTON, 2, (int)Control.PhoneCancel, 0), _backTextLocalized);
             int count = 2;
             foreach (var button in _instructionalButtons.Where(button => button.ItemBind == null || MenuItems[CurrentSelection] == button.ItemBind))
             {
@@ -2039,6 +2056,9 @@ namespace NativeUI
             _instructionalButtonsScaleform.CallFunction("DRAW_INSTRUCTIONAL_BUTTONS", -1);
         }
 
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// Change whether this menu is visible to the user.
@@ -2047,14 +2067,15 @@ namespace NativeUI
         {
             get { return _visible; }
             set
-            {   
+            {
                 _visible = value;
                 _justOpened = value;
+                _itemsDirty = value;
                 UpdateScaleform();
                 if (ParentMenu != null || !value) return;
                 if (!ResetCursorOnOpen) return;
-                //Cursor.Position = new PointF(1920/2, 1080/2);
-                //Function.Call(Hash._SET_CURSOR_SPRITE, 1);
+                CitizenFX.Core.Native.API.SetCursorLocation(float.Parse(Screen.Resolution.Width.ToString()) / 2f, float.Parse(Screen.Resolution.Height.ToString()) / 2f);
+                Screen.Hud.CursorSprite = CursorSprite.Normal;
             }
         }
 
@@ -2065,11 +2086,12 @@ namespace NativeUI
         /// </summary>
         public int CurrentSelection
         {
-            get { return _activeItem % MenuItems.Count; }
+            get { return MenuItems.Count == 0 ? 0 : _activeItem % MenuItems.Count; }
             set
             {
-                MenuItems[_activeItem%(MenuItems.Count)].Selected = false;
-                _activeItem = 1000 - (1000 % MenuItems.Count) + value;
+                if (MenuItems.Count == 0) _activeItem = 0;
+                MenuItems[_activeItem % (MenuItems.Count)].Selected = false;
+                _activeItem = 1000000 - (1000000 % MenuItems.Count) + value;
                 if (CurrentSelection > _maxItem)
                 {
                     _maxItem = CurrentSelection;
@@ -2086,7 +2108,7 @@ namespace NativeUI
         /// <summary>
         /// Returns false if last input was made with mouse and keyboard, true if it was made with a controller.
         /// </summary>
-        public static bool IsUsingController => !Function.Call<bool>(Hash._IS_INPUT_DISABLED, 2);
+        public static bool IsUsingController => !Function.Call<bool>(Hash._GET_LAST_INPUT_METHOD, 2);
 
 
         /// <summary>
@@ -2118,15 +2140,27 @@ namespace NativeUI
         /// </summary>
         public UIMenu ParentMenu { get; set; }
 
-        
+
         /// <summary>
-        /// If this is a nested menu, returns the item it was binded to.
+        /// If this is a nested menu, returns the item it was bound to.
         /// </summary>
         public UIMenuItem ParentItem { get; set; }
 
+        //Tree structure
+        public Dictionary<UIMenuItem, UIMenu> Children { get; }
 
+        /// <summary>
+        /// Returns the current width offset.
+        /// </summary>
+        public int WidthOffset { get; private set; }
+
+        #endregion
+
+        #region Event Invokers
         protected virtual void IndexChange(int newindex)
         {
+            reDraw = true;
+
             OnIndexChange?.Invoke(this, newindex);
         }
 
@@ -2136,10 +2170,6 @@ namespace NativeUI
             OnListChange?.Invoke(this, sender, newindex);
         }
 
-        protected virtual void ListSelect(UIMenuListItem sender, int newindex)
-        {
-            OnListSelect?.Invoke(this, sender, newindex);
-        }
 
         protected virtual void ItemSelect(UIMenuItem selecteditem, int index)
         {
@@ -2151,7 +2181,7 @@ namespace NativeUI
         {
             OnCheckboxChange?.Invoke(this, sender, Checked);
         }
-        
+
         protected virtual void MenuCloseEv()
         {
             OnMenuClose?.Invoke(this);
@@ -2161,6 +2191,8 @@ namespace NativeUI
         {
             OnMenuChange?.Invoke(this, newmenu, forward);
         }
+
+        #endregion
 
         public enum MenuControls
         {

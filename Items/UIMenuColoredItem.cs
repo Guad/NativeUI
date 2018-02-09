@@ -1,6 +1,4 @@
-﻿
-
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace NativeUI
 {
@@ -73,7 +71,7 @@ namespace NativeUI
 
             if (LeftBadge != BadgeStyle.None)
             {
-                _text.Position = new PointF(35 + Offset.X, (int)_text.Position.Y);
+                _text.Position = new PointF(35 + Offset.X, _text.Position.Y);
                 _badgeLeft.TextureDict = BadgeToSpriteLib(LeftBadge);
                 _badgeLeft.TextureName = BadgeToSpriteName(LeftBadge, Selected);
                 _badgeLeft.Color = BadgeToColor(LeftBadge, Selected);
@@ -81,7 +79,7 @@ namespace NativeUI
             }
             else
             {
-                _text.Position = new PointF(8 + Offset.X, (int)_text.Position.Y);
+                _text.Position = new PointF(8 + Offset.X, _text.Position.Y);
             }
 
             if (RightBadge != BadgeStyle.None)
@@ -95,7 +93,7 @@ namespace NativeUI
 
             if (!string.IsNullOrWhiteSpace(RightLabel))
             {
-                _labelText.Position = new PointF(420 + Offset.X + Parent.WidthOffset, (int)_labelText.Position.Y);
+                _labelText.Position = new PointF(420 + Offset.X + Parent.WidthOffset, _labelText.Position.Y);
                 _labelText.Caption = RightLabel;
                 _labelText.Color = _text.Color = Enabled ? Selected ? HighlightedTextColor : TextColor : Color.FromArgb(163, 159, 148);
                 _labelText.Draw();

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Drawing;
 using Font = CitizenFX.Core.UI.Font;
 using CitizenFX.Core;
 using CitizenFX.Core.Native;
-using System.Drawing;
 
 namespace NativeUI.PauseMenu
 {
@@ -26,6 +25,7 @@ namespace NativeUI.PauseMenu
         protected const int MaxItemsPerView = 15;
         protected int _minItem;
         protected int _maxItem;
+        //private bool _focused;
 
         public void MoveDown()
         {
@@ -90,19 +90,13 @@ namespace NativeUI.PauseMenu
             if (Game.IsControlJustPressed(0, Control.FrontendAccept) && Focused && Items[Index] is UIMenuCheckboxItem)
             {
                 Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
-                ((UIMenuCheckboxItem) Items[Index]).Checked = !((UIMenuCheckboxItem) Items[Index]).Checked;
+                ((UIMenuCheckboxItem)Items[Index]).Checked = !((UIMenuCheckboxItem)Items[Index]).Checked;
                 ((UIMenuCheckboxItem)Items[Index]).CheckboxEventTrigger();
             }
             else if (Game.IsControlJustPressed(0, Control.FrontendAccept) && Focused)
             {
                 Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
                 Items[Index].ItemActivate(null);
-            }
-            else if (Game.IsControlJustPressed(0, Control.FrontendAccept) && Focused && Items[Index] is UIMenuListItem)
-            {
-                var it = (UIMenuListItem)Items[Index];
-                Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
-                it.ListSelectedTrigger(it.Index);
             }
 
             if (Game.IsControlJustPressed(0, Control.FrontendLeft) && Focused && Items[Index] is UIMenuListItem)
@@ -151,7 +145,7 @@ namespace NativeUI.PauseMenu
             int i = 0;
             for (int c = _minItem; c < Math.Min(Items.Count, _maxItem); c++)
             {
-                var hovering = UIMenu.IsMouseInBounds(SafeSize.AddPoints(new PointF(0, (itemSize.Height + 3)*i)),
+                var hovering = UIMenu.IsMouseInBounds(SafeSize.AddPoints(new PointF(0, (itemSize.Height + 3) * i)),
                     itemSize);
 
                 var hasLeftBadge = Items[c].LeftBadge != UIMenuItem.BadgeStyle.None;
@@ -160,7 +154,7 @@ namespace NativeUI.PauseMenu
                 var hasBothBadges = hasRightBadge && hasLeftBadge;
                 var hasAnyBadge = hasRightBadge || hasLeftBadge;
 
-                new UIResRectangle(SafeSize.AddPoints(new PointF(0, (itemSize.Height + 3) * i)), itemSize, (Index == c && Focused) ? Color.FromArgb(fullAlpha, UnknownColors.White) : Focused && hovering ? Color.FromArgb(100, 50, 50,50) : Color.FromArgb(blackAlpha, UnknownColors.Black)).Draw();
+                new UIResRectangle(SafeSize.AddPoints(new PointF(0, (itemSize.Height + 3) * i)), itemSize, (Index == c && Focused) ? Color.FromArgb(fullAlpha, UnknownColors.White) : Focused && hovering ? Color.FromArgb(100, 50, 50, 50) : Color.FromArgb(blackAlpha, UnknownColors.Black)).Draw();
                 new UIResText(Items[c].Text, SafeSize.AddPoints(new PointF((hasBothBadges ? 60 : hasAnyBadge ? 30 : 6), 5 + (itemSize.Height + 3) * i)), 0.35f, Color.FromArgb(fullAlpha, (Index == c && Focused) ? UnknownColors.Black : UnknownColors.White)).Draw();
 
                 if (hasLeftBadge && !hasRightBadge)
@@ -191,7 +185,7 @@ namespace NativeUI.PauseMenu
                 if (!string.IsNullOrEmpty(Items[c].RightLabel))
                 {
                     new UIResText(Items[c].RightLabel,
-                        SafeSize.AddPoints(new PointF(BottomRight.X - SafeSize.X - 5, 5 + (itemSize.Height + 3)*i)),
+                        SafeSize.AddPoints(new PointF(BottomRight.X - SafeSize.X - 5, 5 + (itemSize.Height + 3) * i)),
                         0.35f, Color.FromArgb(fullAlpha, (Index == c && Focused) ? UnknownColors.Black : UnknownColors.White),
                         Font.ChaletLondon, UIResText.Alignment.Right).Draw();
                 }
@@ -209,21 +203,20 @@ namespace NativeUI.PauseMenu
                     }
                     new Sprite("commonmenu", textureName, SafeSize.AddPoints(new PointF(BottomRight.X - SafeSize.X - 60, -5 + (itemSize.Height + 3) * i)), new SizeF(50, 50)).Draw();
                 }
-                else if (Items[c] is UIMenuListItem)
+                else if (Items[c] is UIMenuListItem convItem)
                 {
-                    var convItem = (UIMenuListItem) Items[c];
-
                     var yoffset = 5;
                     var basePos =
-                        SafeSize.AddPoints(new PointF(BottomRight.X - SafeSize.X - 30, yoffset + (itemSize.Height + 3)*i));
+                        SafeSize.AddPoints(new PointF(BottomRight.X - SafeSize.X - 30, yoffset + (itemSize.Height + 3) * i));
 
                     var arrowLeft = new Sprite("commonmenu", "arrowleft", basePos, new SizeF(30, 30));
                     var arrowRight = new Sprite("commonmenu", "arrowright", basePos, new SizeF(30, 30));
                     var itemText = new UIResText("", basePos, 0.35f, UnknownColors.White, Font.ChaletLondon,
-                        UIResText.Alignment.Left) { TextAlignment = UIResText.Alignment.Right };
+                        UIResText.Alignment.Left)
+                    { TextAlignment = UIResText.Alignment.Right };
 
                     string caption = convItem.IndexToItem(convItem.Index).ToString();
-                    int offset = StringMeasurer.MeasureString(caption);
+                    float offset = StringMeasurer.MeasureString(caption);
 
                     var selected = c == Index && Focused;
 
@@ -235,7 +228,7 @@ namespace NativeUI.PauseMenu
                     arrowRight.Color = convItem.Enabled ? selected ? UnknownColors.Black : UnknownColors.WhiteSmoke : Color.FromArgb(163, 159, 148);
 
                     arrowLeft.Position =
-                        SafeSize.AddPoints(new PointF(BottomRight.X - SafeSize.X - 60 - offset, yoffset + (itemSize.Height + 3)*i));
+                        SafeSize.AddPoints(new PointF(BottomRight.X - SafeSize.X - 60 - (int)offset, yoffset + (itemSize.Height + 3) * i));
                     if (selected)
                     {
                         arrowLeft.Draw();
@@ -261,8 +254,8 @@ namespace NativeUI.PauseMenu
                         if (Items[Index] is UIMenuCheckboxItem)
                         {
                             Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
-                            ((UIMenuCheckboxItem) Items[Index]).Checked = !((UIMenuCheckboxItem) Items[Index]).Checked;
-                            ((UIMenuCheckboxItem) Items[Index]).CheckboxEventTrigger();
+                            ((UIMenuCheckboxItem)Items[Index]).Checked = !((UIMenuCheckboxItem)Items[Index]).Checked;
+                            ((UIMenuCheckboxItem)Items[Index]).CheckboxEventTrigger();
                         }
                         else
                         {

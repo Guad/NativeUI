@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-
-
-using Font = CitizenFX.Core.UI.Font;
 using System.Drawing;
+using CitizenFX.Core.UI;
 
 namespace NativeUI
 {
-    public class UIMenuListItem : UIMenuItem
+    public class UIMenuListItem : UIMenuItem, IListItem
     {
         protected UIResText _itemText;
-
         protected Sprite _arrowLeft;
         protected Sprite _arrowRight;
 
-        protected List<dynamic> _items;
+        protected int _index;
+        protected List<object> _items;
 
 
         /// <summary>
@@ -22,12 +20,6 @@ namespace NativeUI
         /// </summary>
         public event ItemListEvent OnListChanged;
 
-        /// <summary>
-        /// Triggered when a list item is selected.
-        /// </summary>
-        public event ItemListEvent OnListSelected;
-
-        protected int _index;
         
         /// <summary>
         /// Returns the current selected index.
@@ -45,7 +37,7 @@ namespace NativeUI
         /// <param name="text">Item label.</param>
         /// <param name="items">List that contains your items.</param>
         /// <param name="index">Index in the list. If unsure user 0.</param>
-        public UIMenuListItem(string text, List<dynamic> items, int index)
+        public UIMenuListItem(string text, List<object> items, int index)
             : this(text, items, index, "")
         {
         }
@@ -57,11 +49,11 @@ namespace NativeUI
         /// <param name="items">List that contains your items.</param>
         /// <param name="index">Index in the list. If unsure user 0.</param>
         /// <param name="description">Description for this item.</param>
-        public UIMenuListItem(string text, List<dynamic> items, int index, string description)
+        public UIMenuListItem(string text, List<object> items, int index, string description)
             : base(text, description)
         {
             const int y = 0;
-            _items = new List<dynamic>(items);
+            _items = items;
             _arrowLeft = new Sprite("commonmenu", "arrowleft", new PointF(110, 105 + y), new SizeF(30, 30));
             _arrowRight = new Sprite("commonmenu", "arrowright", new PointF(280, 105 + y), new SizeF(30, 30));
             _itemText = new UIResText("", new PointF(290, y + 104), 0.35f, UnknownColors.White, Font.ChaletLondon,
@@ -88,9 +80,9 @@ namespace NativeUI
         /// </summary>
         /// <param name="item">Item to search for.</param>
         /// <returns>Item index.</returns>
-        public virtual int ItemToIndex(dynamic item)
+        public virtual int ItemToIndex(object item)
         {
-            return _items.FindIndex(item);
+            return _items.FindIndex(p => ReferenceEquals(p, item));
         }
 
 
@@ -99,7 +91,7 @@ namespace NativeUI
         /// </summary>
         /// <param name="index">Item's index.</param>
         /// <returns>Item</returns>
-        public virtual dynamic IndexToItem(int index)
+        public virtual object IndexToItem(int index)
         {
             return _items[index];
         }
@@ -113,7 +105,7 @@ namespace NativeUI
             base.Draw();
 
             string caption = _items[Index].ToString();
-            int offset = StringMeasurer.MeasureString(caption);
+            float offset = StringMeasurer.MeasureString(caption);
 
             _itemText.Color = Enabled ? Selected ? UnknownColors.Black : UnknownColors.WhiteSmoke : Color.FromArgb(163, 159, 148);
             
@@ -122,16 +114,16 @@ namespace NativeUI
             _arrowLeft.Color = Enabled ? Selected ? UnknownColors.Black : UnknownColors.WhiteSmoke : Color.FromArgb(163, 159, 148);
             _arrowRight.Color = Enabled ? Selected ? UnknownColors.Black : UnknownColors.WhiteSmoke : Color.FromArgb(163, 159, 148);
 
-            _arrowLeft.Position = new PointF(375 - offset + Offset.X + Parent.WidthOffset, _arrowLeft.Position.Y);
+            _arrowLeft.Position = new PointF(375 - (int)offset + Offset.X + Parent.WidthOffset, _arrowLeft.Position.Y);
             if (Selected)
             {
                 _arrowLeft.Draw();
                 _arrowRight.Draw();
-                _itemText.Position = new PointF(405 + Offset.X + Parent.WidthOffset, (int)_itemText.Position.Y);
+                _itemText.Position = new PointF(403 + Offset.X + Parent.WidthOffset, _itemText.Position.Y);
             }
             else
             {
-                _itemText.Position = new PointF(420 + Offset.X + Parent.WidthOffset, (int)_itemText.Position.Y);
+                _itemText.Position = new PointF(418 + Offset.X + Parent.WidthOffset, _itemText.Position.Y);
             }
             _itemText.Draw();
         }
@@ -139,11 +131,6 @@ namespace NativeUI
         internal virtual void ListChangedTrigger(int newindex)
         {
             OnListChanged?.Invoke(this, newindex);
-        }
-
-        internal virtual void ListSelectedTrigger(int newindex)
-        {
-            OnListSelected?.Invoke(this, newindex);
         }
 
         public override void SetRightBadge(BadgeStyle badge)
@@ -154,6 +141,11 @@ namespace NativeUI
         public override void SetRightLabel(string text)
         {
             throw new Exception("UIMenuListItem cannot have a right label.");
+        }
+
+        public string CurrentItem()
+        {
+            return _items[Index].ToString();
         }
     }
 }
