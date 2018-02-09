@@ -2,11 +2,11 @@
 using System.Drawing;
 
 namespace NativeUI
-{          
+{
     public class UIMenuCheckboxItem : UIMenuItem
     {
         protected Sprite _checkedSprite;
-        
+
         /// <summary>
         /// Triggered when the checkbox state is changed.
         /// </summary>
@@ -52,7 +52,7 @@ namespace NativeUI
             base.Position(y);
             _checkedSprite.Position = new PointF(380 + Offset.X + Parent.WidthOffset, y + 138 + Offset.Y);
         }
-        
+
 
         /// <summary>
         /// Draw item.

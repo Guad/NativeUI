@@ -30,7 +30,7 @@ namespace NativeUI
         public int WidthOffset { set { _menuList.ForEach(m => m.SetMenuWidthOffset(value)); } }
 
         public string CounterPretext { set { _menuList.ForEach(m => m.CounterPretext = value); } }
-        
+
         public bool DisableInstructionalButtons { set { _menuList.ForEach(m => m.DisableInstructionalButtons(value)); } }
 
         private readonly List<UIMenu> _menuList = new List<UIMenu>();
@@ -62,7 +62,7 @@ namespace NativeUI
             menu.BindMenuToItem(submenu, item);
             return submenu;
         }
-        
+
         /// <summary>
         /// Create and add a submenu to the menu pool.
         /// Adds an item with the given text and description to the menu, creates a corresponding submenu, and binds the submenu to the item.
@@ -156,7 +156,7 @@ namespace NativeUI
                     _menuList[i].ProcessMouse();
             }
         }
-        
+
 
         /// <summary>
         /// Draws all visible menus.
@@ -244,6 +244,6 @@ namespace NativeUI
             _menuList.ForEach(m => m.ResetKey(menuControl));
         }
 
-        
+
     }
 }

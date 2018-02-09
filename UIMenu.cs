@@ -1299,7 +1299,7 @@ namespace NativeUI
                 int numLines = _descriptionText.Caption.Split('\n').Length;
 
                 _descriptionRectangle.Size = new SizeF(431 + WidthOffset, (numLines * 25) + 15);
-            }         
+            }
         }
 
         /// <summary>
@@ -1410,7 +1410,7 @@ namespace NativeUI
         {
             if (MenuItems[CurrentSelection] is UIMenuListItem)
             {
-                var it = (UIMenuListItem) MenuItems[CurrentSelection];
+                var it = (UIMenuListItem)MenuItems[CurrentSelection];
                 it.Index = it.Index - 1;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
                 ListChange(it, it.Index);
@@ -1432,7 +1432,7 @@ namespace NativeUI
         {
             if (MenuItems[CurrentSelection] is UIMenuListItem)
             {
-                var it = (UIMenuListItem) MenuItems[CurrentSelection];
+                var it = (UIMenuListItem)MenuItems[CurrentSelection];
                 it.Index++;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
                 ListChange(it, it.Index);
@@ -1500,7 +1500,7 @@ namespace NativeUI
                 MenuChangeEv(ParentMenu, false);
                 if (ResetCursorOnOpen)
                     CitizenFX.Core.Native.API.SetCursorLocation(tmp.X, tmp.Y);
-                    //Cursor.Position = tmp;
+                //Cursor.Position = tmp;
             }
             MenuCloseEv();
         }
@@ -1747,7 +1747,7 @@ namespace NativeUI
             string[] words = input.Split(' ');
             foreach (string word in words)
             {
-                int offset = (int) StringMeasurer.MeasureString(word, (Font)0, 0.35f);
+                int offset = (int)StringMeasurer.MeasureString(word, (Font)0, 0.35f);
                 aggregatePixels += offset;
                 if (aggregatePixels > maxPixelsPerLine)
                 {
@@ -2186,8 +2186,8 @@ namespace NativeUI
 
 
         protected virtual void ListSelect(UIMenuListItem sender, int newindex)
-        {		
-            OnListSelect?.Invoke(this, sender, newindex);		
+        {
+            OnListSelect?.Invoke(this, sender, newindex);
         }
 
 

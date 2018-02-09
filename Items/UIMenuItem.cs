@@ -2,7 +2,7 @@
 using System.Drawing;
 
 namespace NativeUI
-{                
+{
     /// <summary>
     /// Simple item with a label.
     /// </summary>
@@ -24,7 +24,7 @@ namespace NativeUI
         /// </summary>
         public event ItemActivatedEvent Activated;
 
-        
+
         /// <summary>
         /// Basic menu button.
         /// </summary>
@@ -50,7 +50,7 @@ namespace NativeUI
             _badgeLeft = new Sprite("commonmenu", "", new PointF(0, 0), new SizeF(40, 40));
             _badgeRight = new Sprite("commonmenu", "", new PointF(0, 0), new SizeF(40, 40));
 
-            _labelText = new UIResText("", new PointF(0, 0), 0.35f) {TextAlignment = UIResText.Alignment.Right};
+            _labelText = new UIResText("", new PointF(0, 0), 0.35f) { TextAlignment = UIResText.Alignment.Right };
         }
 
 
@@ -81,7 +81,7 @@ namespace NativeUI
         {
             Activated?.Invoke(sender, this);
         }
-        
+
 
         /// <summary>
         /// Set item's position.
@@ -195,7 +195,7 @@ namespace NativeUI
         {
             RightLabel = text;
         }
-        
+
         /// <summary>
         /// Returns the current right label.
         /// </summary>
@@ -246,7 +246,7 @@ namespace NativeUI
             {
                 default:
                     return "commonmenu";
-            }   
+            }
         }
 
         internal static string BadgeToSpriteName(BadgeStyle badge, bool selected)

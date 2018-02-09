@@ -61,7 +61,8 @@ namespace NativeUI
             _arrowLeft = new Sprite("commonmenu", "arrowleft", new PointF(110, 105 + y), new SizeF(30, 30));
             _arrowRight = new Sprite("commonmenu", "arrowright", new PointF(280, 105 + y), new SizeF(30, 30));
             _itemText = new UIResText("", new PointF(290, y + 104), 0.35f, UnknownColors.White, Font.ChaletLondon,
-                UIResText.Alignment.Left) {TextAlignment = UIResText.Alignment.Right};
+                UIResText.Alignment.Left)
+            { TextAlignment = UIResText.Alignment.Right };
             Index = index;
         }
 
@@ -112,7 +113,7 @@ namespace NativeUI
             float offset = StringMeasurer.MeasureString(caption);
 
             _itemText.Color = Enabled ? Selected ? UnknownColors.Black : UnknownColors.WhiteSmoke : Color.FromArgb(163, 159, 148);
-            
+
             _itemText.Caption = caption;
 
             _arrowLeft.Color = Enabled ? Selected ? UnknownColors.Black : UnknownColors.WhiteSmoke : Color.FromArgb(163, 159, 148);
@@ -132,17 +133,17 @@ namespace NativeUI
             _itemText.Draw();
         }
 
-    internal virtual void ListChangedTrigger(int newindex)
-    {
-        OnListChanged?.Invoke(this, newindex);
-    }
+        internal virtual void ListChangedTrigger(int newindex)
+        {
+            OnListChanged?.Invoke(this, newindex);
+        }
 
-    internal virtual void ListSelectedTrigger(int newindex)
-    {		
-        OnListSelected?.Invoke(this, newindex);
-    }
+        internal virtual void ListSelectedTrigger(int newindex)
+        {
+            OnListSelected?.Invoke(this, newindex);
+        }
 
-    public override void SetRightBadge(BadgeStyle badge)
+        public override void SetRightBadge(BadgeStyle badge)
         {
             throw new Exception("UIMenuListItem cannot have a right badge.");
         }

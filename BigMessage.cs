@@ -14,7 +14,7 @@ namespace NativeUI
 
         public BigMessageHandler()
         {
-            
+
         }
 
         public async Task Load()
@@ -105,7 +105,7 @@ namespace NativeUI
                 _start = 0;
                 Dispose();
             }
-            
+
         }
     }
 

@@ -9,7 +9,7 @@ namespace NativeUI
 
         public Color TextColor { get; set; }
         public Color HighlightedTextColor { get; set; }
-        
+
         public UIMenuColoredItem(string label, Color color, Color highlightColor) : base(label)
         {
             MainColor = color;
@@ -44,8 +44,8 @@ namespace NativeUI
 
             _labelText = new UIResText("", new PointF(0, 0), 0.35f) { TextAlignment = UIResText.Alignment.Right };
         }
-        
-        
+
+
         public override void Draw()
         {
             _rectangle.Size = new SizeF(431 + Parent.WidthOffset, 38);

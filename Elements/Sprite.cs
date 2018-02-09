@@ -24,7 +24,7 @@ namespace NativeUI
             {
                 _textureDict = value;
                 //if(_autoload && !Function.Call<bool>(Hash.HAS_STREAMED_TEXTURE_DICT_LOADED, value))
-                    //Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, value, true);
+                //Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, value, true);
             }
         }
 
@@ -43,7 +43,7 @@ namespace NativeUI
         public Sprite(string textureDict, string textureName, PointF position, SizeF size, float heading, Color color) //BASE
         {
             //if (!Function.Call<bool>(Hash.HAS_STREAMED_TEXTURE_DICT_LOADED, textureDict))
-                //Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, textureDict, true);
+            //Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, textureDict, true);
             TextureDict = textureDict;
             TextureName = textureName;
 
@@ -75,18 +75,18 @@ namespace NativeUI
             if (!Function.Call<bool>(Hash.HAS_STREAMED_TEXTURE_DICT_LOADED, TextureDict))
                 Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, TextureDict, true);
 
-                int screenw = Screen.Resolution.Width;
+            int screenw = Screen.Resolution.Width;
             int screenh = Screen.Resolution.Height;
             const float height = 1080f;
-            float ratio = (float)screenw/screenh;
-            var width = height*ratio;
+            float ratio = (float)screenw / screenh;
+            var width = height * ratio;
 
 
             float w = (Size.Width / width);
             float h = (Size.Height / height);
             float x = (Position.X / width) + w * 0.5f;
             float y = (Position.Y / height) + h * 0.5f;
-            
+
             Function.Call(Hash.DRAW_SPRITE, TextureDict, TextureName, x, y, w, h, Heading, Color.R, Color.G, Color.B, Color.A);
         }
 

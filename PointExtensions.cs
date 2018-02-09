@@ -19,17 +19,17 @@ namespace NativeUI
             return new Point(left.X - right.X, left.Y - right.Y);
         }
 
-		public static PointF AddPoints(this PointF left, PointF right)
-		{
-			return new PointF(left.X + right.X, left.Y + right.Y);
-		}
+        public static PointF AddPoints(this PointF left, PointF right)
+        {
+            return new PointF(left.X + right.X, left.Y + right.Y);
+        }
 
-		public static PointF SubtractPoints(this PointF left, PointF right)
-		{
-			return new PointF(left.X - right.X, left.Y - right.Y);
-		}
+        public static PointF SubtractPoints(this PointF left, PointF right)
+        {
+            return new PointF(left.X - right.X, left.Y - right.Y);
+        }
 
-		public static float Clamp(this float val, float min, float max)
+        public static float Clamp(this float val, float min, float max)
         {
             if (val > max)
                 return max;
