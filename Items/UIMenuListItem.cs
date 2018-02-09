@@ -12,7 +12,7 @@ namespace NativeUI
         protected Sprite _arrowRight;
 
         protected int _index;
-        protected List<object> _items;
+        protected List<dynamic> _items;
 
 
         /// <summary>
@@ -20,7 +20,11 @@ namespace NativeUI
         /// </summary>
         public event ItemListEvent OnListChanged;
 
-        
+        /// <summary>		
+        /// Triggered when a list item is selected.		
+        /// </summary>		
+        public event ItemListEvent OnListSelected;
+
         /// <summary>
         /// Returns the current selected index.
         /// </summary>
@@ -37,7 +41,7 @@ namespace NativeUI
         /// <param name="text">Item label.</param>
         /// <param name="items">List that contains your items.</param>
         /// <param name="index">Index in the list. If unsure user 0.</param>
-        public UIMenuListItem(string text, List<object> items, int index)
+        public UIMenuListItem(string text, List<dynamic> items, int index)
             : this(text, items, index, "")
         {
         }
@@ -49,7 +53,7 @@ namespace NativeUI
         /// <param name="items">List that contains your items.</param>
         /// <param name="index">Index in the list. If unsure user 0.</param>
         /// <param name="description">Description for this item.</param>
-        public UIMenuListItem(string text, List<object> items, int index, string description)
+        public UIMenuListItem(string text, List<dynamic> items, int index, string description)
             : base(text, description)
         {
             const int y = 0;
@@ -80,7 +84,7 @@ namespace NativeUI
         /// </summary>
         /// <param name="item">Item to search for.</param>
         /// <returns>Item index.</returns>
-        public virtual int ItemToIndex(object item)
+        public virtual int ItemToIndex(dynamic item)
         {
             return _items.FindIndex(p => ReferenceEquals(p, item));
         }
@@ -91,7 +95,7 @@ namespace NativeUI
         /// </summary>
         /// <param name="index">Item's index.</param>
         /// <returns>Item</returns>
-        public virtual object IndexToItem(int index)
+        public virtual dynamic IndexToItem(int index)
         {
             return _items[index];
         }
@@ -128,12 +132,17 @@ namespace NativeUI
             _itemText.Draw();
         }
 
-        internal virtual void ListChangedTrigger(int newindex)
-        {
-            OnListChanged?.Invoke(this, newindex);
-        }
+    internal virtual void ListChangedTrigger(int newindex)
+    {
+        OnListChanged?.Invoke(this, newindex);
+    }
 
-        public override void SetRightBadge(BadgeStyle badge)
+    internal virtual void ListSelectedTrigger(int newindex)
+    {		
+        OnListSelected?.Invoke(this, newindex);
+    }
+
+    public override void SetRightBadge(BadgeStyle badge)
         {
             throw new Exception("UIMenuListItem cannot have a right badge.");
         }

@@ -30,12 +30,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CitizenFX.Core.Client">
-      <HintPath>..\..\..\..\Documents\FiveM\_c#\assets\CitizenFX.Core.Client.dll</HintPath>
+    <Reference Include="CitizenFX.Core">
+      <HintPath>..\..\..\..\Program Files\FiveM\FiveM.app\citizen\clr2\lib\mono\4.5\CitizenFX.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="NativeUI">
-      <HintPath>..\..\..\..\Documents\FiveM\_c#\assets\NativeUI.dll</HintPath>
+    <Reference Include="NativeUI, Version=1.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\NativeUI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

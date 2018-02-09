@@ -16,7 +16,7 @@ namespace NativeUI
         /// Add a dynamic button to the instructional buttons array.
         /// Changes whether the controller is being used and changes depending on keybinds.
         /// </summary>
-        /// <param name="control">GTA.Control that gets converted into a button.</param>
+        /// <param name="control">CitizenFX.Core.Control that gets converted into a button.</param>
         /// <param name="text">Help text that goes with the button.</param>
         public InstructionalButton(CitizenFX.Core.Control control, string text)
         {

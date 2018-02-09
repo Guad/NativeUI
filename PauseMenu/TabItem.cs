@@ -58,24 +58,24 @@ namespace NativeUI.PauseMenu
                 BottomRight = new PointF((int)res.Width - SafeSize.X, (int)res.Height - SafeSize.Y);
             }
 
-            var rectSizeF = new SizeF(BottomRight.SubtractPoints(TopLeft));
+            var rectSize = new SizeF(BottomRight.SubtractPoints(TopLeft));
 
             DrawInstructionalButtons?.Invoke(this, EventArgs.Empty);
 
             if (DrawBg)
             {
-                new UIResRectangle(TopLeft, rectSizeF,
+                new UIResRectangle(TopLeft, rectSize,
                     Color.FromArgb((Focused || !FadeInWhenFocused) ? 200 : 120, 0, 0, 0)).Draw();
 
-                var tileSizeF = 100;
-                RockstarTile.Size = new SizeF(tileSizeF, tileSizeF);
+                var titleSize = 100;
+                RockstarTile.Size = new SizeF(titleSize, titleSize);
 
-                var cols = rectSizeF.Width / tileSizeF;
+                var cols = rectSize.Width / titleSize;
                 var fils = 4;
 
                 for (int i = 0; i < cols * fils; i++)
                 {
-                    RockstarTile.Position = TopLeft.AddPoints(new PointF(tileSizeF * (i % cols), tileSizeF * (i / cols)));
+                    RockstarTile.Position = TopLeft.AddPoints(new PointF(titleSize * (i % cols), titleSize * (i / cols)));
                     RockstarTile.Color = Color.FromArgb((int)MiscExtensions.LinearFloatLerp(40, 0, i / (int)cols, fils), 255, 255, 255);
                     RockstarTile.Draw();
                 }

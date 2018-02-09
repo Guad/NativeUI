@@ -43,7 +43,6 @@ public class MenuExample : BaseScript
                 dish = item.IndexToItem(index).ToString();
                 CitizenFX.Core.UI.Screen.ShowNotification("Preparing ~b~" + dish + "~w~...");
             }
-
         };
     }
 

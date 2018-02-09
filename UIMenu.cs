@@ -796,6 +796,8 @@ namespace NativeUI
 
     public delegate void ListChangedEvent(UIMenu sender, UIMenuListItem listItem, int newIndex);
 
+    public delegate void ListSelectedEvent(UIMenu sender, UIMenuListItem listItem, int newIndex);
+
     public delegate void CheckboxChangeEvent(UIMenu sender, UIMenuCheckboxItem checkboxItem, bool Checked);
 
     public delegate void ItemSelectEvent(UIMenu sender, UIMenuItem selectedItem, int index);
@@ -939,6 +941,11 @@ namespace NativeUI
         /// Called when user presses left or right, changing a list position.
         /// </summary>
         public event ListChangedEvent OnListChange;
+
+        /// <summary>		
+        /// Called when user selects a list item.		
+        /// </summary>		
+        public event ListSelectedEvent OnListSelect;
 
         /// <summary>
         /// Called when user presses enter on a checkbox item.
@@ -1458,6 +1465,13 @@ namespace NativeUI
                 Game.PlaySound(AUDIO_SELECT, AUDIO_LIBRARY);
                 CheckboxChange(it, it.Checked);
                 it.CheckboxEventTrigger();
+            }
+            else if (MenuItems[CurrentSelection] is UIMenuListItem)
+            {
+                var it = (UIMenuListItem)MenuItems[CurrentSelection];
+                Game.PlaySound(AUDIO_SELECT, AUDIO_LIBRARY);
+                ListSelect(it, it.Index);
+                it.ListSelectedTrigger(it.Index);
             }
             else
             {
@@ -2108,7 +2122,7 @@ namespace NativeUI
         /// <summary>
         /// Returns false if last input was made with mouse and keyboard, true if it was made with a controller.
         /// </summary>
-        public static bool IsUsingController => !Function.Call<bool>(Hash._GET_LAST_INPUT_METHOD, 2);
+        public static bool IsUsingController => !Function.Call<bool>(Hash._IS_INPUT_DISABLED, 2);
 
 
         /// <summary>
@@ -2168,6 +2182,12 @@ namespace NativeUI
         protected virtual void ListChange(UIMenuListItem sender, int newindex)
         {
             OnListChange?.Invoke(this, sender, newindex);
+        }
+
+
+        protected virtual void ListSelect(UIMenuListItem sender, int newindex)
+        {		
+            OnListSelect?.Invoke(this, sender, newindex);		
         }
 
 

@@ -25,12 +25,12 @@ namespace NativeUI.PauseMenu
             var blackAlpha = (Focused || !CanBeFocused) ? 200 : 90;
             var fullAlpha = (Focused || !CanBeFocused) ? 255 : 150;
 
-            var rectSizeF = (int)(BottomRight.X - TopLeft.X);
+            var rectSize = (int)(BottomRight.X - TopLeft.X);
 
             for (int i = 0; i < Dictionary.Count; i++)
             {
                 new UIResRectangle(new PointF(TopLeft.X, TopLeft.Y + (40 * i)),
-                    new SizeF(rectSizeF, 40), i % 2 == 0 ? Color.FromArgb(alpha, 0, 0, 0) : Color.FromArgb(blackAlpha, 0, 0, 0)).Draw();
+                    new SizeF(rectSize, 40), i % 2 == 0 ? Color.FromArgb(alpha, 0, 0, 0) : Color.FromArgb(blackAlpha, 0, 0, 0)).Draw();
 
                 var item = Dictionary.ElementAt(i);
 

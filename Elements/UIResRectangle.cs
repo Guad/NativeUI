@@ -1,8 +1,6 @@
 ﻿using System.Drawing;
-using CitizenFX.Core;
 using CitizenFX.Core.Native;
 using CitizenFX.Core.UI;
-using static CitizenFX.Core.Native.API;
 
 namespace NativeUI
 {
@@ -30,7 +28,7 @@ namespace NativeUI
             var width = height * ratio;
 
             float w = Size.Width / width;
-            float h = Size.Height/ height;
+            float h = Size.Height / height;
             float x = ((Position.X + offset.Width)/width) + w*0.5f;
             float y = ((Position.Y + offset.Height)/height) + h*0.5f;
 

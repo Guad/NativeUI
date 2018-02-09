@@ -74,8 +74,8 @@ namespace NativeUI
 
             var start = new PointF((int)res.Width - safe.X - 160, (int)res.Height - safe.Y - (28 + (4 * interval)));
 
-            UIResRectangle.Draw(start.X, start.Y, 150, 15, BackgroundColor);
-            UIResRectangle.Draw(start.X, start.Y, (int)(150 * Percentage), 15, ForegroundColor);
+            new UIResRectangle(start, new SizeF(150, 15), BackgroundColor).Draw();
+            new UIResRectangle(start, new SizeF((int)(150 * Percentage), 15), ForegroundColor).Draw();
         }
     }
 

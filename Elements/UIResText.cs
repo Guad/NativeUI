@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using CitizenFX.Core;
 using CitizenFX.Core.Native;
 using CitizenFX.Core.UI;
 using Font = CitizenFX.Core.UI.Font;
