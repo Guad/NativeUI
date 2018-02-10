@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using CitizenFX.Core.Native;
 using CitizenFX.Core;
-using System.Drawing;
 
 namespace NativeUI.PauseMenu
 {
@@ -108,7 +108,7 @@ namespace NativeUI.PauseMenu
 
             for (int i = 0; i < Items.Count; i++)
             {
-                var hovering = UIMenu.IsMouseInBounds(SafeSize.AddPoints(new PointF(0, (itemSize.Height + 3)*i)),
+                var hovering = UIMenu.IsMouseInBounds(SafeSize.AddPoints(new PointF(0, (itemSize.Height + 3) * i)),
                     itemSize);
 
                 new UIResRectangle(SafeSize.AddPoints(new PointF(0, (itemSize.Height + 3) * i)), itemSize, (Index == i && Focused) ? Color.FromArgb(fullAlpha, UnknownColors.White) : hovering && Focused ? Color.FromArgb(100, 50, 50, 50) : Color.FromArgb(blackAlpha, UnknownColors.Black)).Draw();

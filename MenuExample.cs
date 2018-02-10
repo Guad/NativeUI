@@ -43,7 +43,6 @@ public class MenuExample : BaseScript
                 dish = item.IndexToItem(index).ToString();
                 CitizenFX.Core.UI.Screen.ShowNotification("Preparing ~b~" + dish + "~w~...");
             }
-
         };
     }
 
@@ -58,7 +57,7 @@ public class MenuExample : BaseScript
             if (item == newitem)
             {
                 string output = ketchup ? "You have ordered ~b~{0}~w~ ~r~with~w~ ketchup." : "You have ordered ~b~{0}~w~ ~r~without~w~ ketchup.";
-				CitizenFX.Core.UI.Screen.ShowSubtitle(String.Format(output, dish));
+                CitizenFX.Core.UI.Screen.ShowSubtitle(String.Format(output, dish));
             }
         };
         menu.OnIndexChange += (sender, index) =>
@@ -86,13 +85,13 @@ public class MenuExample : BaseScript
         AddMenuAnotherMenu(mainMenu);
         _menuPool.RefreshIndex();
 
-		Tick += new Func<Task>(async delegate
-		{
-			_menuPool.ProcessMenus();
-			if (Game.IsControlJustReleased(1, CitizenFX.Core.Control.MultiplayerInfo)) // Our menu on/off switch
-			{
-				mainMenu.Visible = !mainMenu.Visible;
-			}
-		});
-	}
+        Tick += new Func<Task>(async delegate
+        {
+            _menuPool.ProcessMenus();
+            if (Game.IsControlJustReleased(1, CitizenFX.Core.Control.MultiplayerInfo)) // Our menu on/off switch
+            {
+                mainMenu.Visible = !mainMenu.Visible;
+            }
+        });
+    }
 }

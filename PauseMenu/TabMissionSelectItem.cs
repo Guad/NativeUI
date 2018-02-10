@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Drawing;
 using Font = CitizenFX.Core.UI.Font;
 using CitizenFX.Core;
-using System.Drawing;
 using CitizenFX.Core.Native;
 
 namespace NativeUI.PauseMenu
@@ -179,9 +178,11 @@ namespace NativeUI.PauseMenu
             else if (Heists[Index].Logo != null && Heists[Index].Logo.FileName != null &&
                      Heists[Index].Logo.IsGameTexture)
             {
-                var newLogo = new Sprite(Heists[Index].Logo.DictionaryName, Heists[Index].Logo.FileName, new PointF(), new SizeF(512, 256));
-                newLogo.Position = new PointF((int)res.Width - SafeSize.X - 512, SafeSize.Y);
-                newLogo.Color = Color.FromArgb(blackAlpha, 0, 0, 0);
+                var newLogo = new Sprite(Heists[Index].Logo.DictionaryName, Heists[Index].Logo.FileName, new PointF(), new SizeF(512, 256))
+                {
+                    Position = new PointF((int)res.Width - SafeSize.X - 512, SafeSize.Y),
+                    Color = Color.FromArgb(blackAlpha, 0, 0, 0)
+                };
                 newLogo.Draw();
             }
 
@@ -204,17 +205,17 @@ namespace NativeUI.PauseMenu
             if (!string.IsNullOrEmpty(Heists[Index].Description))
             {
                 var propLen = Heists[Index].ValueList.Count;
-                new UIResRectangle(new PointF((int) res.Width - SafeSize.X - 512, SafeSize.Y + 256 + 42 + 40*propLen),
+                new UIResRectangle(new PointF((int)res.Width - SafeSize.X - 512, SafeSize.Y + 256 + 42 + 40 * propLen),
                     new SizeF(512, 2), Color.FromArgb(fullAlpha, UnknownColors.White)).Draw();
                 new UIResText(Heists[Index].Description,
-                    new PointF((int) res.Width - SafeSize.X - 508, SafeSize.Y + 256 + 45 + 40*propLen + 4), 0.35f,
+                    new PointF((int)res.Width - SafeSize.X - 508, SafeSize.Y + 256 + 45 + 40 * propLen + 4), 0.35f,
                     Color.FromArgb(fullAlpha, UnknownColors.White))
                 {
                     WordWrap = new SizeF(508, 0),
                 }.Draw();
 
-                new UIResRectangle(new PointF((int) res.Width - SafeSize.X - 512, SafeSize.Y + 256 + 44 + 40*propLen),
-                    new SizeF(512, 45*(StringMeasurer.MeasureString(Heists[Index].Description)/500)),
+                new UIResRectangle(new PointF((int)res.Width - SafeSize.X - 512, SafeSize.Y + 256 + 44 + 40 * propLen),
+                    new SizeF(512, 45 * (int)(StringMeasurer.MeasureString(Heists[Index].Description) / 500)),
                     Color.FromArgb(blackAlpha, 0, 0, 0)).Draw();
             }
         }

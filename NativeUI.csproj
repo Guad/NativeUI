@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CitizenFX.Core, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\C#\fivem-scripts\packages\CitizenFX.Core.1.3.0\lib\net45\CitizenFX.Core.dll</HintPath>
+      <HintPath>..\..\..\..\Program Files\FiveM\FiveM.app\citizen\clr2\lib\mono\4.5\CitizenFX.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
@@ -42,7 +42,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BigMessage.cs" />
+    <Compile Include="Elements\Sprite.cs" />
+    <Compile Include="Elements\TimerBars.cs" />
+    <Compile Include="Elements\UIResRectangle.cs" />
+    <Compile Include="Elements\UIResText.cs" />
+    <Compile Include="Items\UIMenuSliderItem.cs" />
+    <Compile Include="UnknownColors.cs" />
     <Compile Include="InstructionalButton.cs" />
+    <Compile Include="Items\IListItem.cs" />
+    <Compile Include="Items\UIMenuCheckboxItem.cs" />
+    <Compile Include="Items\UIMenuColoredItem.cs" />
+    <Compile Include="Items\UIMenuDynamicListItem.cs" />
+    <Compile Include="Items\UIMenuItem.cs" />
+    <Compile Include="Items\UIMenuListItem.cs" />
     <Compile Include="MenuPool.cs" />
     <Compile Include="PauseMenu\TabItem.cs" />
     <Compile Include="PauseMenu\TabItemSimpleList.cs" />
@@ -53,25 +65,10 @@
     <Compile Include="PauseMenu\TabView.cs" />
     <Compile Include="PointExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sprite.cs" />
     <Compile Include="StringMeasurer.cs" />
-    <Compile Include="TimerBars.cs" />
     <Compile Include="UIMenu.cs" />
-    <Compile Include="UIMenuCheckboxItem.cs" />
-    <Compile Include="UIMenuColoredItem.cs" />
-    <Compile Include="UIMenuItem.cs" />
-    <Compile Include="UIMenuListItem.cs" />
-    <Compile Include="UIMenuSliderItem.cs" />
-    <Compile Include="UIResRectangle.cs" />
-    <Compile Include="UIResText.cs" />
-    <Compile Include="UnknownColors.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

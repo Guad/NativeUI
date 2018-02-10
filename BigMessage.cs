@@ -14,7 +14,7 @@ namespace NativeUI
 
         public BigMessageHandler()
         {
-            
+
         }
 
         public async Task Load()
@@ -105,7 +105,7 @@ namespace NativeUI
                 _start = 0;
                 Dispose();
             }
-            
+
         }
     }
 
@@ -119,7 +119,7 @@ namespace NativeUI
             Tick += BigMessageThread_Tick;
         }
 
-        private async System.Threading.Tasks.Task BigMessageThread_Tick()
+        private async Task BigMessageThread_Tick()
         {
             MessageInstance.Update();
         }

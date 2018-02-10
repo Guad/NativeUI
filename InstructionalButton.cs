@@ -1,6 +1,5 @@
 ﻿using CitizenFX.Core.Native;
 
-
 namespace NativeUI
 {
     public class InstructionalButton
@@ -51,7 +50,7 @@ namespace NativeUI
 
         public string GetButtonId()
         {
-            return _usingControls ? Function.Call<string>(Hash.GET_CONTROL_INSTRUCTIONAL_BUTTON, 2, (int) _buttonControl, 0) : "t_" + _buttonString;
+            return _usingControls ? Function.Call<string>(Hash.GET_CONTROL_INSTRUCTIONAL_BUTTON, 2, (int)_buttonControl, 0) : "t_" + _buttonString;
         }
     }
 }

@@ -67,16 +67,16 @@ namespace NativeUI.PauseMenu
                 new UIResRectangle(TopLeft, rectSize,
                     Color.FromArgb((Focused || !FadeInWhenFocused) ? 200 : 120, 0, 0, 0)).Draw();
 
-                var tileSize = 100;
-                RockstarTile.Size = new SizeF(tileSize, tileSize);
+                var titleSize = 100;
+                RockstarTile.Size = new SizeF(titleSize, titleSize);
 
-                var cols = (int)rectSize.Width / tileSize;
+                var cols = rectSize.Width / titleSize;
                 var fils = 4;
 
                 for (int i = 0; i < cols * fils; i++)
                 {
-                    RockstarTile.Position = TopLeft.AddPoints(new PointF(tileSize * (i % cols), tileSize * (i / cols)));
-                    RockstarTile.Color = Color.FromArgb((int)MiscExtensions.LinearFloatLerp(40, 0, i / cols, fils), 255, 255, 255);
+                    RockstarTile.Position = TopLeft.AddPoints(new PointF(titleSize * (i % cols), titleSize * (i / cols)));
+                    RockstarTile.Color = Color.FromArgb((int)MiscExtensions.LinearFloatLerp(40, 0, i / (int)cols, fils), 255, 255, 255);
                     RockstarTile.Draw();
                 }
             }
