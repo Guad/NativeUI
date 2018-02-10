@@ -1425,7 +1425,8 @@ namespace NativeUI
         public void GoLeft()
         {
             if (!(MenuItems[CurrentSelection] is UIMenuListItem) && !(MenuItems[CurrentSelection] is UIMenuSliderItem)) return;
-          
+            
+            
             if (MenuItems[CurrentSelection] is UIMenuListItem)
             {
                 var it = (UIMenuListItem)MenuItems[CurrentSelection];
@@ -1434,12 +1435,14 @@ namespace NativeUI
                 ListChange(it, it.Index);
                 it.ListChangedTrigger(it.Index);
             }
-            else if (MenuItems[CurrentSelection] is UIMenuDynamicListItem it)
+            else if (MenuItems[CurrentSelection] is UIMenuDynamicListItem)
             {
+                var it = (UIMenuDynamicListItem)MenuItems[CurrentSelection];
                 string newItem = it.Callback(it, UIMenuDynamicListItem.ChangeDirection.Left);
                 it.CurrentListItem = newItem;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
             }
+
             else
             {
                 var it = (UIMenuSliderItem)MenuItems[CurrentSelection];
