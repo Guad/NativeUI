@@ -796,7 +796,11 @@ namespace NativeUI
 
     public delegate void ListChangedEvent(UIMenu sender, UIMenuListItem listItem, int newIndex);
 
+    public delegate void SliderChangedEvent(UIMenu sender, UIMenuSliderItem listItem, int newIndex);
+
     public delegate void ListSelectedEvent(UIMenu sender, UIMenuListItem listItem, int newIndex);
+
+    public delegate void SliderSelectedEvent(UIMenu sender, UIMenuSliderItem listItem, int newIndex);
 
     public delegate void CheckboxChangeEvent(UIMenu sender, UIMenuCheckboxItem checkboxItem, bool Checked);
 
@@ -812,8 +816,10 @@ namespace NativeUI
 
     public delegate void ItemListEvent(UIMenuListItem sender, int newIndex);
 
+    public delegate void ItemSliderEvent(UIMenuSliderItem sender, int newIndex);
+  
     #endregion
-
+    
     /// <summary>
     /// Base class for NativeUI. Calls the next events: OnIndexChange, OnListChanged, OnCheckboxChange, OnItemSelect, OnMenuClose, OnMenuchange.
     /// </summary>
@@ -942,10 +948,20 @@ namespace NativeUI
         /// </summary>
         public event ListChangedEvent OnListChange;
 
-        /// <summary>		
-        /// Called when user selects a list item.		
-        /// </summary>		
+        /// <summary>
+        /// Called when user selects a list item.
+        /// </summary>
         public event ListSelectedEvent OnListSelect;
+      
+        /// <summary>
+        /// Called when user presses left or right, changing a slider position.
+        /// </summary>
+        public event SliderChangedEvent OnSliderChange;
+
+        /// <summary>
+        /// Called when user selects a slider item.
+        /// </summary>
+        public event SliderSelectedEvent OnSliderSelect;
 
         /// <summary>
         /// Called when user presses enter on a checkbox item.
@@ -1404,10 +1420,12 @@ namespace NativeUI
 
 
         /// <summary>
-        /// Go left on a UIMenuListItem.
+        /// Go left on a UIMenuListItem & UIMenuSliderItem.
         /// </summary>
         public void GoLeft()
         {
+            if (!(MenuItems[CurrentSelection] is UIMenuListItem) && !(MenuItems[CurrentSelection] is UIMenuSliderItem)) return;
+          
             if (MenuItems[CurrentSelection] is UIMenuListItem)
             {
                 var it = (UIMenuListItem)MenuItems[CurrentSelection];
@@ -1422,14 +1440,24 @@ namespace NativeUI
                 it.CurrentListItem = newItem;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
             }
+            else
+            {
+                var it = (UIMenuSliderItem)MenuItems[CurrentSelection];
+                it.Index = it.Index - 1;
+                Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
+                SliderChange(it, it.Index);
+                it.SliderChangedTrigger(it.Index);
+            }
         }
 
 
         /// <summary>
-        /// Go right on a UIMenuListItem.
+        /// Go right on a UIMenuListItem & UIMenuSliderItem.
         /// </summary>
         public void GoRight()
         {
+            if (!(MenuItems[CurrentSelection] is UIMenuListItem) && !(MenuItems[CurrentSelection] is UIMenuSliderItem)) return;
+
             if (MenuItems[CurrentSelection] is UIMenuListItem)
             {
                 var it = (UIMenuListItem)MenuItems[CurrentSelection];
@@ -1438,12 +1466,22 @@ namespace NativeUI
                 ListChange(it, it.Index);
                 it.ListChangedTrigger(it.Index);
             }
+
             else if (MenuItems[CurrentSelection] is UIMenuDynamicListItem)
             {
                 var it = (UIMenuDynamicListItem)MenuItems[CurrentSelection];
                 string newItem = it.Callback(it, UIMenuDynamicListItem.ChangeDirection.Right);
                 it.CurrentListItem = newItem;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
+            }
+
+            else
+            {
+                var it = (UIMenuSliderItem)MenuItems[CurrentSelection];
+                it.Index++;
+                Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
+                SliderChange(it, it.Index);
+                it.SliderChangedTrigger(it.Index);
             }
         }
 
@@ -2058,9 +2096,9 @@ namespace NativeUI
             _instructionalButtonsScaleform.CallFunction("TOGGLE_MOUSE_BUTTONS", 0);
             _instructionalButtonsScaleform.CallFunction("CREATE_CONTAINER");
 
-
             _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 0, Function.Call<string>(Hash.GET_CONTROL_INSTRUCTIONAL_BUTTON, 2, (int)Control.PhoneSelect, 0), _selectTextLocalized);
             _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 1, Function.Call<string>(Hash.GET_CONTROL_INSTRUCTIONAL_BUTTON, 2, (int)Control.PhoneCancel, 0), _backTextLocalized);
+
             int count = 2;
             foreach (var button in _instructionalButtons.Where(button => button.ItemBind == null || MenuItems[CurrentSelection] == button.ItemBind))
             {
@@ -2190,12 +2228,20 @@ namespace NativeUI
             OnListSelect?.Invoke(this, sender, newindex);
         }
 
+        protected virtual void SliderChange(UIMenuSliderItem sender, int newindex)
+        {
+            OnSliderChange?.Invoke(this, sender, newindex);
+        }
 
         protected virtual void ItemSelect(UIMenuItem selecteditem, int index)
         {
             OnItemSelect?.Invoke(this, selecteditem, index);
         }
 
+        protected virtual void SliderSelect(UIMenuSliderItem sender, int newindex)
+        {
+            OnSliderSelect?.Invoke(this, sender, newindex);
+        }
 
         protected virtual void CheckboxChange(UIMenuCheckboxItem sender, bool Checked)
         {

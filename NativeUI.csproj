@@ -34,9 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CitizenFX.Core, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Program Files\FiveM\FiveM.app\citizen\clr2\lib\mono\4.5\CitizenFX.Core.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\C#\fivem-scripts\packages\CitizenFX.Core.1.3.0\lib\net45\CitizenFX.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
