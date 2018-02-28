@@ -8,8 +8,8 @@ namespace NativeUI
     /// <summary>
     /// A rectangle in 1080 pixels height system.
     /// </summary>
-    public class UIResRectangle : GTA.UI.Rectangle
-    {
+    public class UIResRectangle : GTA.UI.ContainerElement
+	{
         public UIResRectangle()
         { }
 
