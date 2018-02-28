@@ -23,7 +23,7 @@ public class MenuExample : Script
             if (item == newitem)
             {
                 ketchup = checked_;
-				Screen.ShowNotification("~r~Ketchup status: ~b~" + ketchup);
+				Notification.Show("~r~Ketchup status: ~b~" + ketchup);
             }
         };
     }
@@ -45,7 +45,7 @@ public class MenuExample : Script
             if (item == newitem)
             {
                 dish = item.IndexToItem(index).ToString();
-				Screen.ShowNotification("Preparing ~b~" + dish + "~w~...");
+				Notification.Show("Preparing ~b~" + dish + "~w~...");
             }
 
         };
@@ -74,7 +74,7 @@ public class MenuExample : Script
 
     public void AddMenuAnotherMenu(UIMenu menu)
     {
-        var submenu = _menuPool.AddSubMenu(menu, "Another Menu");
+        var submenu = _menuPool.AddSubMenu(menu, new UIMenuItem("Another Menu"));
         for (int i = 0; i < 20; i++)
             submenu.AddItem(new UIMenuItem("PageFiller", "Sample description that takes more than one line. Moreso, it takes way more than two lines since it's so long. Wow, check out this length!"));
     }

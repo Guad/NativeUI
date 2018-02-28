@@ -10,8 +10,8 @@ namespace NativeUI
     /// <summary>
     /// A Text object in the 1080 pixels height base system.
     /// </summary>
-    public class UIResText : GTA.UI.Text
-    {
+    public class UIResText : GTA.UI.TextElement
+	{
         public UIResText(string caption, Point position, float scale) : base(caption, position, scale)
         {
             TextAlignment = Alignment.Left;

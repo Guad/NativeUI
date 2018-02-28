@@ -34,7 +34,7 @@ namespace NativeUI
     /// </summary>
     public class UIMenu
     {
-        private readonly GTA.UI.Container _mainMenu;
+        private readonly GTA.UI.ContainerElement _mainMenu;
         private Sprite _logo;
         private readonly Sprite _background;
 
@@ -171,7 +171,7 @@ namespace NativeUI
             
             UpdateScaleform();
 
-            _mainMenu = new GTA.UI.Container(new Point(0, 0), new Size(700, 500), Color.FromArgb(0, 0, 0, 0));
+            _mainMenu = new GTA.UI.ContainerElement(new Point(0, 0), new Size(700, 500), Color.FromArgb(0, 0, 0, 0));
             _logo = new Sprite(spriteLibrary, spriteName, new Point(0 + _offset.X, 0 + _offset.Y), new Size(431, 107));
             _mainMenu.Items.Add(Title = new UIResText(title, new Point(215 + _offset.X, 20 + _offset.Y), 1.15f, Color.White, Font.HouseScript, UIResText.Alignment.Centered));
             if (!String.IsNullOrWhiteSpace(subtitle))

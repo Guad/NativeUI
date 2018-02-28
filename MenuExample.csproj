@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MenuExample</RootNamespace>
     <AssemblyName>MenuExample</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,11 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NativeUI">
-      <HintPath>..\..\NativeUI.dll</HintPath>
-    </Reference>
-    <Reference Include="ScriptHookVDotNet">
-      <HintPath>..\..\ScriptHookVDotNet.dll</HintPath>
+    <Reference Include="ScriptHookVDotNet3">
+      <HintPath>D:\Steam\steamapps\common\Grand Theft Auto V\ScriptHookVDotNet3.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -48,6 +46,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MenuExample.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="NativeUI.csproj">
+      <Project>{f3e16ed9-dbf7-4e7b-b04b-9b24b11891d3}</Project>
+      <Name>NativeUI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
