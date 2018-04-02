@@ -103,8 +103,9 @@ namespace NativeUI
 
         public static float MeasureStringWidth(string str, Font font, float scale)
         {
-            int screenw = 2560;// Game.ScreenResolution.Width;
-            int screenh = 1440;// Game.ScreenResolution.Height;
+            int screenw = Screen.Resolution.Width;
+            int screenh = Screen.Resolution.Height;
+
             const float height = 1080f;
             float ratio = (float)screenw / screenh;
             float width = height * ratio;
