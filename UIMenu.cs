@@ -231,8 +231,7 @@ namespace NativeUI
             Children = new Dictionary<UIMenuItem, UIMenu>();
             WidthOffset = 0;
 
-            _instructionalButtonsScaleform = new Scaleform(0);
-            _instructionalButtonsScaleform.Load("instructional_buttons");
+            _instructionalButtonsScaleform = new Scaleform("instructional_buttons");
             UpdateScaleform();
 
             _mainMenu = new UIContainer(new Point(0, 0), new Size(700, 500), Color.FromArgb(0, 0, 0, 0));
