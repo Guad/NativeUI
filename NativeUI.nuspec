@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>NativeUI</id>
+    <version>1.7</version>
+    <authors>Guad</authors>
+    <licenseUrl>https://github.com/Guad/NativeUI/blob/master/LICENSE.md</licenseUrl>
+    <projectUrl>https://github.com/Guad/NativeUI</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>NativeUI is a ScriptHookDotNet based library that helps you quickly and easily build Rockstar-like menus.</description>
+    <tags>gta gtav shvdn</tags>
+    <dependencies>
+      <dependency id="ScriptHookVDotNet2" version="2.10.7" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\x64\Release\NativeUI.dll" target="lib\net452" />
+  </files>
+</package>
