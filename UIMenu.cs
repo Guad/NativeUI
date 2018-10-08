@@ -1200,7 +1200,7 @@ namespace NativeUI
                 return;
             }
 
-            if (HasControlJustBeenReleaseed(MenuControls.Back, key))
+            if (CanGoBack && HasControlJustBeenReleaseed(MenuControls.Back, key))
             {
                 GoBack();
             }
@@ -1368,6 +1368,11 @@ namespace NativeUI
 
         //Tree structure
         public Dictionary<UIMenuItem, UIMenu> Children { get; }
+
+        /// <summary>
+        /// Defines if you can go back automatically using Back key.
+        /// </summary>
+        public bool CanGoBack { get; set; }
 
         /// <summary>
         /// Returns the current width offset.
