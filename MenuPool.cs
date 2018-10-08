@@ -63,7 +63,28 @@ namespace NativeUI
             menu.BindMenuToItem(submenu, item);
             return submenu;
         }
-        
+
+        /// <summary>
+        /// Create and add a submenu to the menu pool with a custom offset.
+        /// Adds an item with the given text to the menu, creates a corresponding submenu, and binds the submenu to the item.
+        /// The submenu inherits its title from the menu, and its subtitle from the item text.
+        /// </summary>
+        /// <param name="menu">The parent menu to which the submenu must be added.</param>
+        /// <param name="text">The name of the submenu</param>
+        /// <param name="offset">The offset of the menu</param>
+        /// <returns>The newly created submenu.</returns>
+        public UIMenu AddSubMenu(UIMenu menu, string text, System.Drawing.Point offset)
+        {
+            var item = new UIMenuItem(text);
+            menu.AddItem(item);
+            var submenu = new UIMenu(menu.Title.Caption, text, offset);
+            
+            this.Add(submenu);
+            menu.BindMenuToItem(submenu, item);
+
+            return submenu;
+        }
+
         /// <summary>
         /// Create and add a submenu to the menu pool.
         /// Adds an item with the given text and description to the menu, creates a corresponding submenu, and binds the submenu to the item.
