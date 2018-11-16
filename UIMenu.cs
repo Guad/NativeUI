@@ -317,6 +317,16 @@ namespace NativeUI
 
             return new SizeF(width, height);
         }
+        
+        /// <summary>
+        /// Old GetScreenResolutionMantainRatio Method to support old versions
+        /// </summary>
+        /// <returns></returns>
+        [Obsolete("Use GetScreenResolutionMaintainRatio")]
+        public static SizeF GetScreenResolutionMantainRatio()
+        {
+            return GetScreenResolutionMaintainRatio();
+        }
 
         /// <summary>
         /// Chech whether the mouse is inside the specified rectangle.
