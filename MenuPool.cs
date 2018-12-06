@@ -61,7 +61,10 @@ namespace NativeUI
         /// <returns>The newly created submenu.</returns>
         public UIMenu AddSubMenu(UIMenu menu, string text)
         {
-            return AddSubMenu(menu, text, "", Point.Empty);
+            Point Offset = Point.Empty;
+            if (OffsetInheritance)
+                Offset = menu.Offset;
+            return AddSubMenu(menu, text, "", Offset);
         }
 
         /// <summary>
@@ -89,7 +92,10 @@ namespace NativeUI
         /// <returns>The newly created submenu.</returns>
         public UIMenu AddSubMenu(UIMenu menu, string text, string description)
         {
-            return AddSubMenu(menu, text, description, Point.Empty);
+            Point Offset = Point.Empty;
+            if (OffsetInheritance)
+                Offset = menu.Offset;
+            return AddSubMenu(menu, text, description, Offset);
         }
 
         /// <summary>
