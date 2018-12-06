@@ -34,6 +34,10 @@ namespace NativeUI
         
         public bool DisableInstructionalButtons { set { _menuList.ForEach(m => m.DisableInstructionalButtons(value)); } }
 
+        public bool BannerInheritance = true;
+
+        public bool OffsetInheritance = true;
+
         private readonly List<UIMenu> _menuList = new List<UIMenu>();
 
 
