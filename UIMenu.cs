@@ -147,6 +147,10 @@ namespace NativeUI
 
         public Point Offset;
 
+        public Sprite BannerSprite { get { return _logo; } }
+        public UIResRectangle BannerRectangle { get { return _tmpRectangle; } }
+        public string BannerTexture { get { return _customBanner; } }
+
         #endregion
 
         #region Events

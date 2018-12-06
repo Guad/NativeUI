@@ -112,6 +112,12 @@ namespace NativeUI
             UIMenuItem item = new UIMenuItem(text, description);
             menu.AddItem(item);
             UIMenu submenu = new UIMenu(menu.Title.Caption, text, offset);
+            if (BannerInheritance && menu.BannerTexture != null)
+                submenu.SetBannerType(submenu.BannerTexture);
+            else if (BannerInheritance && menu.BannerRectangle != null)
+                submenu.SetBannerType(submenu.BannerRectangle);
+            else if (BannerInheritance && menu.BannerSprite != null)
+                submenu.SetBannerType(menu.BannerSprite);
             Add(submenu);
             menu.BindMenuToItem(submenu, item);
             return submenu;
