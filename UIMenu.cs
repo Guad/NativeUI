@@ -72,7 +72,6 @@ namespace NativeUI
 
         private readonly Scaleform _instructionalButtonsScaleform;
 
-        private Point _offset;
         private readonly int _extraYOffset;
 
         private static readonly MenuControls[] _menuControls = Enum.GetValues(typeof(MenuControls)).Cast<MenuControls>().ToArray();
@@ -145,6 +144,12 @@ namespace NativeUI
         public bool FormatDescriptions = true;
         public bool MouseControlsEnabled = true;
         public bool ScaleWithSafezone = true;
+
+        public Point Offset { get; }
+
+        public Sprite BannerSprite { get { return _logo; } }
+        public UIResRectangle BannerRectangle { get { return _tmpRectangle; } }
+        public string BannerTexture { get { return _customBanner; } }
 
         #endregion
 
@@ -227,7 +232,7 @@ namespace NativeUI
         /// <param name="spriteName">Sprite name for the banner.</param>
         public UIMenu(string title, string subtitle, Point offset, string spriteLibrary, string spriteName)
         {
-            _offset = offset;
+            Offset = offset;
             Children = new Dictionary<UIMenuItem, UIMenu>();
             WidthOffset = 0;
 
@@ -235,30 +240,30 @@ namespace NativeUI
             UpdateScaleform();
 
             _mainMenu = new UIContainer(new Point(0, 0), new Size(700, 500), Color.FromArgb(0, 0, 0, 0));
-            _logo = new Sprite(spriteLibrary, spriteName, new Point(0 + _offset.X, 0 + _offset.Y), new Size(431, 107));
-            _mainMenu.Items.Add(Title = new UIResText(title, new Point(215 + _offset.X, 20 + _offset.Y), 1.15f, Color.White, Font.HouseScript, UIResText.Alignment.Centered));
+            _logo = new Sprite(spriteLibrary, spriteName, new Point(0 + Offset.X, 0 + Offset.Y), new Size(431, 107));
+            _mainMenu.Items.Add(Title = new UIResText(title, new Point(215 + Offset.X, 20 + Offset.Y), 1.15f, Color.White, Font.HouseScript, UIResText.Alignment.Centered));
             if (!String.IsNullOrWhiteSpace(subtitle))
             {
-                _mainMenu.Items.Add(new UIResRectangle(new Point(0 + offset.X, 107 + _offset.Y), new Size(431, 37), Color.Black));
-                _mainMenu.Items.Add(Subtitle = new UIResText(subtitle, new Point(8 + _offset.X, 110 + _offset.Y), 0.35f, Color.WhiteSmoke, 0, UIResText.Alignment.Left));
+                _mainMenu.Items.Add(new UIResRectangle(new Point(0 + offset.X, 107 + Offset.Y), new Size(431, 37), Color.Black));
+                _mainMenu.Items.Add(Subtitle = new UIResText(subtitle, new Point(8 + Offset.X, 110 + Offset.Y), 0.35f, Color.WhiteSmoke, 0, UIResText.Alignment.Left));
 
                 if (subtitle.StartsWith("~"))
                 {
                     CounterPretext = subtitle.Substring(0, 3);
                 }
-                _counterText = new UIResText("", new Point(425 + _offset.X, 110 + _offset.Y), 0.35f, Color.WhiteSmoke, 0, UIResText.Alignment.Right);
+                _counterText = new UIResText("", new Point(425 + Offset.X, 110 + Offset.Y), 0.35f, Color.WhiteSmoke, 0, UIResText.Alignment.Right);
                 _extraYOffset = 37;
             }
 
-            _upAndDownSprite = new Sprite("commonmenu", "shop_arrows_upanddown", new Point(190 + _offset.X, 147 + 37 * (MaxItemsOnScreen + 1) + _offset.Y - 37 + _extraYOffset), new Size(50, 50));
-            _extraRectangleUp = new UIResRectangle(new Point(0 + _offset.X, 144 + 38 * (MaxItemsOnScreen + 1) + _offset.Y - 37 + _extraYOffset), new Size(431, 18), Color.FromArgb(200, 0, 0, 0));
-            _extraRectangleDown = new UIResRectangle(new Point(0 + _offset.X, 144 + 18 + 38 * (MaxItemsOnScreen + 1) + _offset.Y - 37 + _extraYOffset), new Size(431, 18), Color.FromArgb(200, 0, 0, 0));
+            _upAndDownSprite = new Sprite("commonmenu", "shop_arrows_upanddown", new Point(190 + Offset.X, 147 + 37 * (MaxItemsOnScreen + 1) + Offset.Y - 37 + _extraYOffset), new Size(50, 50));
+            _extraRectangleUp = new UIResRectangle(new Point(0 + Offset.X, 144 + 38 * (MaxItemsOnScreen + 1) + Offset.Y - 37 + _extraYOffset), new Size(431, 18), Color.FromArgb(200, 0, 0, 0));
+            _extraRectangleDown = new UIResRectangle(new Point(0 + Offset.X, 144 + 18 + 38 * (MaxItemsOnScreen + 1) + Offset.Y - 37 + _extraYOffset), new Size(431, 18), Color.FromArgb(200, 0, 0, 0));
 
-            _descriptionBar = new UIResRectangle(new Point(_offset.X, 123), new Size(431, 4), Color.Black);
-            _descriptionRectangle = new Sprite("commonmenu", "gradient_bgd", new Point(_offset.X, 127), new Size(431, 30));
-            _descriptionText = new UIResText("Description", new Point(_offset.X + 5, 125), 0.35f, Color.FromArgb(255, 255, 255, 255), Font.ChaletLondon, UIResText.Alignment.Left);
+            _descriptionBar = new UIResRectangle(new Point(Offset.X, 123), new Size(431, 4), Color.Black);
+            _descriptionRectangle = new Sprite("commonmenu", "gradient_bgd", new Point(Offset.X, 127), new Size(431, 30));
+            _descriptionText = new UIResText("Description", new Point(Offset.X + 5, 125), 0.35f, Color.FromArgb(255, 255, 255, 255), Font.ChaletLondon, UIResText.Alignment.Left);
 
-            _background = new Sprite("commonmenu", "gradient_bgd", new Point(_offset.X, 144 + _offset.Y - 37 + _extraYOffset), new Size(290, 25));
+            _background = new Sprite("commonmenu", "gradient_bgd", new Point(Offset.X, 144 + Offset.Y - 37 + _extraYOffset), new Size(290, 25));
 
 
             SetKey(MenuControls.Up, Control.PhoneUp);
@@ -376,8 +381,8 @@ namespace NativeUI
         {
             WidthOffset = widthOffset;
             _logo.Size = new Size(431 + WidthOffset, 107);
-            _mainMenu.Items[0].Position = new Point((WidthOffset + _offset.X + 431) / 2, 20 + _offset.Y); // Title
-            _counterText.Position = new Point(425 + _offset.X + widthOffset, 110 + _offset.Y);
+            _mainMenu.Items[0].Position = new Point((WidthOffset + Offset.X + 431) / 2, 20 + Offset.Y); // Title
+            _counterText.Position = new Point(425 + Offset.X + widthOffset, 110 + Offset.Y);
             if (_mainMenu.Items.Count >= 1)
             {
                 var tmp = (UIResRectangle)_mainMenu.Items[1];
@@ -406,7 +411,7 @@ namespace NativeUI
         {
             _logo = spriteBanner;
             _logo.Size = new Size(431 + WidthOffset, 107);
-            _logo.Position = new Point(_offset.X, _offset.Y);
+            _logo.Position = new Point(Offset.X, Offset.Y);
         }
 
         /// <summary>
@@ -417,7 +422,7 @@ namespace NativeUI
         {
             _logo = null;
             _tmpRectangle = rectangle;
-            _tmpRectangle.Position = new Point(_offset.X, _offset.Y);
+            _tmpRectangle.Position = new Point(Offset.X, Offset.Y);
             _tmpRectangle.Size = new Size(431 + WidthOffset, 107);
         }
 
@@ -438,7 +443,7 @@ namespace NativeUI
         {
             int selectedItem = CurrentSelection;
 
-            item.Offset = _offset;
+            item.Offset = Offset;
             item.Parent = this;
             item.Position((MenuItems.Count * 25) - 37 + _extraYOffset);
             MenuItems.Add(item);
@@ -506,7 +511,7 @@ namespace NativeUI
 
             _extraRectangleDown.Size = new Size(431 + WidthOffset, 18);
 
-            _upAndDownSprite.Position = new Point(190 + _offset.X + (WidthOffset > 0 ? (WidthOffset / 2) : WidthOffset), 147 + 37 * (MaxItemsOnScreen + 1) + _offset.Y - 37 + _extraYOffset);
+            _upAndDownSprite.Position = new Point(190 + Offset.X + (WidthOffset > 0 ? (WidthOffset / 2) : WidthOffset), 147 + 37 * (MaxItemsOnScreen + 1) + Offset.Y - 37 + _extraYOffset);
 
             reDraw = false;
 
@@ -907,9 +912,9 @@ namespace NativeUI
         {
             //_descriptionText.WordWrap = new Size(425 + WidthOffset, 0);
 
-            _descriptionBar.Position = new Point(_offset.X, 149 - 37 + _extraYOffset + _offset.Y);
-            _descriptionRectangle.Position = new Point(_offset.X, 149 - 37 + _extraYOffset + _offset.Y);
-            _descriptionText.Position = new Point(_offset.X + 8, 155 - 37 + _extraYOffset + _offset.Y);
+            _descriptionBar.Position = new Point(Offset.X, 149 - 37 + _extraYOffset + Offset.Y);
+            _descriptionRectangle.Position = new Point(Offset.X, 149 - 37 + _extraYOffset + Offset.Y);
+            _descriptionText.Position = new Point(Offset.X + 8, 155 - 37 + _extraYOffset + Offset.Y);
 
             _descriptionBar.Size = new Size(431 + WidthOffset, 4);
             _descriptionRectangle.Size = new Size(431 + WidthOffset, 30);
@@ -918,9 +923,9 @@ namespace NativeUI
             if (count > MaxItemsOnScreen + 1)
                 count = MaxItemsOnScreen + 2;
 
-            _descriptionBar.Position = new Point(_offset.X, 38 * count + _descriptionBar.Position.Y);
-            _descriptionRectangle.Position = new Point(_offset.X, 38 * count + _descriptionRectangle.Position.Y);
-            _descriptionText.Position = new Point(_offset.X + 8, 38 * count + _descriptionText.Position.Y);
+            _descriptionBar.Position = new Point(Offset.X, 38 * count + _descriptionBar.Position.Y);
+            _descriptionRectangle.Position = new Point(Offset.X, 38 * count + _descriptionRectangle.Position.Y);
+            _descriptionText.Position = new Point(Offset.X + 8, 38 * count + _descriptionText.Position.Y);
         }
 
         /// <summary>
@@ -1017,7 +1022,7 @@ namespace NativeUI
             {
                 Point start = ((ScaleWithSafezone) ? safe : new Point(0, 0));
 
-                Sprite.DrawTexture(_customBanner, new Point(start.X + _offset.X, start.Y + _offset.Y), drawWidth);
+                Sprite.DrawTexture(_customBanner, new Point(start.X + Offset.X, start.Y + Offset.Y), drawWidth);
             }
             _mainMenu.Draw();
             if (MenuItems.Count == 0)
@@ -1120,8 +1125,8 @@ namespace NativeUI
 
             for (int i = _minItem; i <= limit; i++)
             {
-                int xpos = _offset.X + safezoneOffset.X;
-                int ypos = _offset.Y + 144 - 37 + _extraYOffset + (counter * 38) + safezoneOffset.Y;
+                int xpos = Offset.X + safezoneOffset.X;
+                int ypos = Offset.Y + 144 - 37 + _extraYOffset + (counter * 38) + safezoneOffset.Y;
                 int xsize = 431 + WidthOffset;
                 const int ysize = 38;
                 UIMenuItem uiMenuItem = MenuItems[i];
@@ -1166,8 +1171,8 @@ namespace NativeUI
                     uiMenuItem.Hovered = false;
                 counter++;
             }
-            int extraY = 144 + 38 * (MaxItemsOnScreen + 1) + _offset.Y - 37 + _extraYOffset + safezoneOffset.Y;
-            int extraX = safezoneOffset.X + _offset.X;
+            int extraY = 144 + 38 * (MaxItemsOnScreen + 1) + Offset.Y - 37 + _extraYOffset + safezoneOffset.Y;
+            int extraX = safezoneOffset.X + Offset.X;
             if (Size <= MaxItemsOnScreen + 1) return;
             if (IsMouseInBounds(new Point(extraX, extraY), new Size(431 + WidthOffset, 18)))
             {
