@@ -145,7 +145,7 @@ namespace NativeUI
         public bool MouseControlsEnabled = true;
         public bool ScaleWithSafezone = true;
 
-        public Point Offset;
+        public Point Offset { get; }
 
         public Sprite BannerSprite { get { return _logo; } }
         public UIResRectangle BannerRectangle { get { return _tmpRectangle; } }
