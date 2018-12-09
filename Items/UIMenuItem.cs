@@ -238,12 +238,15 @@ namespace NativeUI
             Trevor,
             Lock,
             Tick,
+            Sale
         }
 
         internal static string BadgeToSpriteLib(BadgeStyle badge)
         {
             switch (badge)
             {
+                case BadgeStyle.Sale:
+                    return "mpshopsale";
                 default:
                     return "commonmenu";
             }   
@@ -299,6 +302,8 @@ namespace NativeUI
                     return "shop_tick_icon";
                 case BadgeStyle.Trevor:
                     return selected ? "shop_trevor_icon_b" : "shop_trevor_icon_a";
+                case BadgeStyle.Sale:
+                    return "saleicon";
                 default:
                     return "";
             }
