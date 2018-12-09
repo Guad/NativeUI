@@ -240,7 +240,12 @@ namespace NativeUI
             Tick,
             Sale,
             ArrowLeft,
-            ArrowRight
+            ArrowRight,
+            Audio1,
+            Audio2,
+            Audio3,
+            AudioInactive,
+            AudioMute
         }
 
         internal static string BadgeToSpriteLib(BadgeStyle badge)
@@ -249,6 +254,12 @@ namespace NativeUI
             {
                 case BadgeStyle.Sale:
                     return "mpshopsale";
+                case BadgeStyle.Audio1:
+                case BadgeStyle.Audio2:
+                case BadgeStyle.Audio3:
+                case BadgeStyle.AudioInactive:
+                case BadgeStyle.AudioMute:
+                    return "mpleaderboard";
                 default:
                     return "commonmenu";
             }   
@@ -310,6 +321,16 @@ namespace NativeUI
                     return "arrowleft";
                 case BadgeStyle.ArrowRight:
                     return "arrowright";
+                case BadgeStyle.Audio1:
+                    return "leaderboard_audio_1";
+                case BadgeStyle.Audio2:
+                    return "leaderboard_audio_2";
+                case BadgeStyle.Audio3:
+                    return "leaderboard_audio_3";
+                case BadgeStyle.AudioInactive:
+                    return "leaderboard_audio_inactive";
+                case BadgeStyle.AudioMute:
+                    return "leaderboard_audio_mute";
                 default:
                     return "";
             }
