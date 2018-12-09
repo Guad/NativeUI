@@ -238,7 +238,9 @@ namespace NativeUI
             Trevor,
             Lock,
             Tick,
-            Sale
+            Sale,
+            ArrowLeft,
+            ArrowRight
         }
 
         internal static string BadgeToSpriteLib(BadgeStyle badge)
@@ -304,6 +306,10 @@ namespace NativeUI
                     return selected ? "shop_trevor_icon_b" : "shop_trevor_icon_a";
                 case BadgeStyle.Sale:
                     return "saleicon";
+                case BadgeStyle.ArrowLeft:
+                    return "arrowleft";
+                case BadgeStyle.ArrowRight:
+                    return "arrowright";
                 default:
                     return "";
             }
