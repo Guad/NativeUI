@@ -499,6 +499,23 @@ namespace NativeUI
             RecaulculateDescriptionPosition();
         }
 
+        /// <summary>
+        /// Removes the items that matches the predicate.
+        /// </summary>
+        /// <param name="predicate">The function to use as the check.</param>
+        public void Remove(Func<UIMenuItem, bool> predicate)
+        {
+            List<UIMenuItem> TempList = new List<UIMenuItem>(MenuItems);
+            foreach (var item in TempList)
+            {
+                if (predicate(item))
+                {
+                    MenuItems.Remove(item);
+                }
+            }
+            RecaulculateDescriptionPosition();
+        }
+
         private void DrawCalculations()
         {
             drawWidth = new Size(431 + WidthOffset, 107);
