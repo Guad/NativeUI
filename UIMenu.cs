@@ -1441,6 +1441,11 @@ namespace NativeUI
             OnCheckboxChange?.Invoke(this, sender, Checked);
         }
 
+        protected virtual void MenuOpenEv()
+        {
+            OnMenuOpen?.Invoke(this);
+        }
+
         protected virtual void MenuCloseEv()
         {
             OnMenuClose?.Invoke(this);
