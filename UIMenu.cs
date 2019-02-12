@@ -745,10 +745,14 @@ namespace NativeUI
 
 
         /// <summary>
-        /// Bind a menu to a button. When the button is clicked that menu will open.
+        /// Makes the specified item open a menu when is activated.
         /// </summary>
+        /// <param name="menuToBind">The menu that is going to be opened when the item is activated.</param>
+        /// <param name="itemToBindTo">The item that is going to activate the menu.</param>
         public void BindMenuToItem(UIMenu menuToBind, UIMenuItem itemToBindTo)
         {
+            if (!MenuItems.Contains(itemToBindTo))
+                AddItem(itemToBindTo);
             menuToBind.ParentMenu = this;
             menuToBind.ParentItem = itemToBindTo;
             if (Children.ContainsKey(itemToBindTo))
