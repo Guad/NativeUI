@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -19,6 +19,8 @@ namespace NativeUI
     public delegate void CheckboxChangeEvent(UIMenu sender, UIMenuCheckboxItem checkboxItem, bool Checked);
 
     public delegate void ItemSelectEvent(UIMenu sender, UIMenuItem selectedItem, int index);
+
+    public delegate void MenuOpenEvent(UIMenu sender);
 
     public delegate void MenuCloseEvent(UIMenu sender);
 
@@ -174,6 +176,11 @@ namespace NativeUI
         /// Called when user selects a simple item.
         /// </summary>
         public event ItemSelectEvent OnItemSelect;
+
+        /// <summary>
+        /// Called when user opens the menu.
+        /// </summary>
+        public event MenuOpenEvent OnMenuOpen;
 
         /// <summary>
         /// Called when user closes the menu or goes back in a menu chain.
