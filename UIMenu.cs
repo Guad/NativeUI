@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -1327,6 +1327,10 @@ namespace NativeUI
             get { return _visible; }
             set
             {
+                if (value)
+                    MenuOpenEv();
+                else
+                    MenuCloseEv();
                 _visible = value;
                 _justOpened = value;
                 _itemsDirty = value;
