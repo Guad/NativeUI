@@ -747,7 +747,6 @@ namespace NativeUI
                 if (ResetCursorOnOpen)
                     Cursor.Position = tmp;
             }
-            MenuCloseEv();
         }
 
 
