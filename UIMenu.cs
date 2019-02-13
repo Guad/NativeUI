@@ -20,6 +20,8 @@ namespace NativeUI
 
     public delegate void ItemSelectEvent(UIMenu sender, UIMenuItem selectedItem, int index);
 
+    public delegate void MenuOpenEvent(UIMenu sender);
+
     public delegate void MenuCloseEvent(UIMenu sender);
 
     public delegate void MenuChangeEvent(UIMenu oldMenu, UIMenu newMenu, bool forward);
@@ -174,6 +176,11 @@ namespace NativeUI
         /// Called when user selects a simple item.
         /// </summary>
         public event ItemSelectEvent OnItemSelect;
+
+        /// <summary>
+        /// Called when user opens the menu.
+        /// </summary>
+        public event MenuOpenEvent OnMenuOpen;
 
         /// <summary>
         /// Called when user closes the menu or goes back in a menu chain.
@@ -740,7 +747,6 @@ namespace NativeUI
                 if (ResetCursorOnOpen)
                     Cursor.Position = tmp;
             }
-            MenuCloseEv();
         }
 
 
@@ -1324,6 +1330,10 @@ namespace NativeUI
             get { return _visible; }
             set
             {
+                if (value)
+                    MenuOpenEv();
+                else
+                    MenuCloseEv();
                 _visible = value;
                 _justOpened = value;
                 _itemsDirty = value;
@@ -1436,6 +1446,11 @@ namespace NativeUI
         protected virtual void CheckboxChange(UIMenuCheckboxItem sender, bool Checked)
         {
             OnCheckboxChange?.Invoke(this, sender, Checked);
+        }
+
+        protected virtual void MenuOpenEv()
+        {
+            OnMenuOpen?.Invoke(this);
         }
 
         protected virtual void MenuCloseEv()
