@@ -27,8 +27,21 @@ namespace NativeUI
         /// </summary>
         public int Index
         {
-            get { return _index % _items.Count; }
-            set { _index = 100000000 - (100000000 % _items.Count) + value; }
+            get { return _index % Items.Count; }
+            set { _index = 100000000 - (100000000 % Items.Count) + value; }
+        }
+
+        /// <summary>
+        /// Returns the current selected index.
+        /// </summary>
+        public List<object> Items
+        {
+            get => _items;
+            set
+            {
+                Index = 0;
+                _items = value;
+            }
         }
 
 
@@ -54,7 +67,7 @@ namespace NativeUI
             : base(text, description)
         {
             const int y = 0;
-            _items = items;
+            Items = items;
             _arrowLeft = new Sprite("commonmenu", "arrowleft", new Point(110, 105 + y), new Size(30, 30));
             _arrowRight = new Sprite("commonmenu", "arrowright", new Point(280, 105 + y), new Size(30, 30));
             _itemText = new UIResText("", new Point(290, y + 104), 0.35f, Color.White, Font.ChaletLondon,
@@ -83,7 +96,7 @@ namespace NativeUI
         /// <returns>Item index.</returns>
         public virtual int ItemToIndex(object item)
         {
-            return _items.FindIndex(p => ReferenceEquals(p, item));
+            return Items.FindIndex(p => ReferenceEquals(p, item));
         }
 
 
@@ -94,7 +107,7 @@ namespace NativeUI
         /// <returns>Item</returns>
         public virtual object IndexToItem(int index)
         {
-            return _items[index];
+            return Items[index];
         }
 
 
@@ -105,7 +118,7 @@ namespace NativeUI
         {
             base.Draw();
 
-            string caption = _items[Index].ToString();
+            string caption = Items[Index].ToString();
             float offset = StringMeasurer.MeasureString(caption, _itemText.Font, _itemText.Scale);
 
             _itemText.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
@@ -146,7 +159,7 @@ namespace NativeUI
 
         public string CurrentItem()
         {
-            return _items[Index].ToString();
+            return Items[Index].ToString();
         }
     }
 }
