@@ -1025,7 +1025,12 @@ namespace NativeUI
                 DisEnableControls(false);
 
             if (_buttonsEnabled)
+            {
                 Function.Call(Hash._0x0DF606929C105BE1, _instructionalButtonsScaleform.Handle, 255, 255, 255, 255, 0);
+                UI.HideHudComponentThisFrame(HudComponent.VehicleName);
+                UI.HideHudComponentThisFrame(HudComponent.AreaName);
+                UI.HideHudComponentThisFrame(HudComponent.StreetName);
+            }
             // _instructionalButtonsScaleform.Render2D(); // Bug #13
 
             if (ScaleWithSafezone)
