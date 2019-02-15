@@ -32,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ScriptHookVDotNet2, Version=2.10.6.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>packages\ScriptHookVDotNet2.2.10.7\lib\net452\ScriptHookVDotNet2.dll</HintPath>
+      <HintPath>..\packages\ScriptHookVDotNet2.2.10.7\lib\net452\ScriptHookVDotNet2.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -49,14 +49,13 @@
     <Compile Include="MenuExample.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="NativeUI.csproj">
-      <Project>{f3e16ed9-dbf7-4e7b-b04b-9b24b11891d3}</Project>
-      <Name>NativeUI</Name>
-      <Private>False</Private>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\NativeUI\NativeUI.csproj">
+      <Project>{f3e16ed9-dbf7-4e7b-b04b-9b24b11891d3}</Project>
+      <Name>NativeUI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
