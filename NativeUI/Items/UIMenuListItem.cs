@@ -67,7 +67,7 @@ namespace NativeUI
             : base(text, description)
         {
             const int y = 0;
-            Items = items;
+            _items = items;
             _arrowLeft = new Sprite("commonmenu", "arrowleft", new Point(110, 105 + y), new Size(30, 30));
             _arrowRight = new Sprite("commonmenu", "arrowright", new Point(280, 105 + y), new Size(30, 30));
             _itemText = new UIResText("", new Point(290, y + 104), 0.35f, Color.White, Font.ChaletLondon,
