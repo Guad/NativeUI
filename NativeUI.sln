@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.22823.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NativeUI", "NativeUI.csproj", "{F3E16ED9-DBF7-4E7B-B04B-9B24B11891D3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NativeUI", "NativeUI\NativeUI.csproj", "{F3E16ED9-DBF7-4E7B-B04B-9B24B11891D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MenuExample", "MenuExample.csproj", "{79D9A09F-1999-4148-9BA0-20AEBA9B3C8B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MenuExample", "MenuExample\MenuExample.csproj", "{79D9A09F-1999-4148-9BA0-20AEBA9B3C8B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
