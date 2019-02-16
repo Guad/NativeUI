@@ -15,6 +15,10 @@ namespace NativeUI
     public delegate void IndexChangedEvent(UIMenu sender, int newIndex);
 
     public delegate void ListChangedEvent(UIMenu sender, UIMenuListItem listItem, int newIndex);
+    
+    public delegate void SliderChangedEvent(UIMenu sender, UIMenuSliderItem listItem, int newIndex);
+
+    public delegate void SliderSelectedEvent(UIMenu sender, UIMenuSliderItem listItem, int newIndex);
 
     public delegate void CheckboxChangeEvent(UIMenu sender, UIMenuCheckboxItem checkboxItem, bool Checked);
 
@@ -31,6 +35,8 @@ namespace NativeUI
     public delegate void ItemCheckboxEvent(UIMenuCheckboxItem sender, bool Checked);
 
     public delegate void ItemListEvent(UIMenuListItem sender, int newIndex);
+
+    public delegate void ItemSliderEvent(UIMenuSliderItem sender, int newIndex);
 
     #endregion
 
@@ -176,6 +182,16 @@ namespace NativeUI
         /// Called when user selects a simple item.
         /// </summary>
         public event ItemSelectEvent OnItemSelect;
+
+        /// <summary>
+        /// Called when user presses left or right, changing a slider position.
+        /// </summary>
+        public event SliderChangedEvent OnSliderChange;
+
+        /// <summary>
+        /// Called when user selects a slider item.
+        /// </summary>
+        public event SliderSelectedEvent OnSliderSelect;
 
         /// <summary>
         /// Called when user opens the menu.
@@ -656,7 +672,7 @@ namespace NativeUI
 
 
         /// <summary>
-        /// Go left on a UIMenuListItem.
+        /// Go left on a UIMenuListItem, UIMenuDynamicListItem or UIMenuSliderItem.
         /// </summary>
         public void GoLeft()
         {
@@ -674,6 +690,14 @@ namespace NativeUI
                 string newItem = it.Callback(it, UIMenuDynamicListItem.ChangeDirection.Left);
                 it.CurrentListItem = newItem;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
+            }
+            else if (MenuItems[CurrentSelection] is UIMenuSliderItem)
+            {
+                var it = (UIMenuSliderItem)MenuItems[CurrentSelection];
+                it.Index = it.Index - 1;
+                Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
+                SliderChange(it, it.Index);
+                it.SliderChangedTrigger(it.Index);
             }
         }
 
@@ -697,6 +721,14 @@ namespace NativeUI
                 string newItem = it.Callback(it, UIMenuDynamicListItem.ChangeDirection.Right);
                 it.CurrentListItem = newItem;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
+            }
+            else if (MenuItems[CurrentSelection] is UIMenuSliderItem)
+            {
+                var it = (UIMenuSliderItem)MenuItems[CurrentSelection];
+                it.Index++;
+                Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
+                SliderChange(it, it.Index);
+                it.SliderChangedTrigger(it.Index);
             }
         }
 
@@ -1447,6 +1479,15 @@ namespace NativeUI
             OnItemSelect?.Invoke(this, selecteditem, index);
         }
 
+        protected virtual void SliderChange(UIMenuSliderItem sender, int newindex)
+        {
+            OnSliderChange?.Invoke(this, sender, newindex);
+        }
+
+        protected virtual void SliderSelect(UIMenuSliderItem sender, int newindex)
+        {
+            OnSliderSelect?.Invoke(this, sender, newindex);
+        }
 
         protected virtual void CheckboxChange(UIMenuCheckboxItem sender, bool Checked)
         {
