@@ -12,28 +12,31 @@ namespace NativeUI
         protected UIResRectangle _rectangleSlider;
         protected UIResRectangle _rectangleDivider;
 
-        protected List<dynamic> _items;
+        protected int _value = 0;
 
 
         /// <summary>
         /// Triggered when the slider is changed.
         /// </summary>
         public event ItemSliderEvent OnSliderChanged;
-
-        /// <summary>
-        /// Triggered when a list item is selected.
-        /// </summary>
-        public event ItemSliderEvent OnSliderSelected;
-
-        protected int _index;
         
         /// <summary>
-        /// Returns the current selected index.
+        /// Returns the value of the slider.
         /// </summary>
-        public int Index
+        public int Value
         {
-            get { return _index % _items.Count; }
-            set { _index = 100000000 - (100000000 % _items.Count) + value; }
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                if (value > 100)
+                    _value = 100;
+                else
+                    _value = value;
+                SliderChanged();
+            }
         }
 
 
@@ -43,7 +46,7 @@ namespace NativeUI
         /// <param name="text">Item label.</param>
         /// <param name="items">List that contains your items.</param>
         /// <param name="index">Index in the list. If unsure user 0.</param>
-        public UIMenuSliderItem(string text, int index) : this(text, index, "", false)
+        public UIMenuSliderItem(string text) : this(text, "", false)
         {
         }
 
@@ -54,7 +57,7 @@ namespace NativeUI
         /// <param name="items">List that contains your items.</param>
         /// <param name="index">Index in the list. If unsure user 0.</param>
         /// <param name="description">Description for this item.</param>
-        public UIMenuSliderItem(string text, int index, string description) : this(text, index, description, false)
+        public UIMenuSliderItem(string text, string description) : this(text, description, false)
         {
         }
 
@@ -66,7 +69,7 @@ namespace NativeUI
         /// <param name="index">Index in the list. If unsure user 0.</param>
         /// <param name="description">Description for this item.</param>
         /// /// <param name="divider">Put a divider in the center of the slider</param>
-        public UIMenuSliderItem(string text, int index, string description, bool divider)
+        public UIMenuSliderItem(string text, string description, bool divider)
             : base(text, description)
         {
             const int y = 0;
@@ -82,7 +85,6 @@ namespace NativeUI
             {
                 _rectangleDivider = new UIResRectangle(new Point(0, 0), new Size(2, 20), Color.Transparent);
             }
-            _index = index;
         }
 
         /// <summary>
@@ -102,28 +104,6 @@ namespace NativeUI
 
 
         /// <summary>
-        /// Find an item in the list and return it's index.
-        /// </summary>
-        /// <param name="item">Item to search for.</param>
-        /// <returns>Item index.</returns>
-        public virtual int ItemToIndex(dynamic item)
-        {
-            return _items.FindIndex(item);
-        }
-
-
-        /// <summary>
-        /// Find an item by it's index and return the item.
-        /// </summary>
-        /// <param name="index">Item's index.</param>
-        /// <returns>Item</returns>
-        public virtual dynamic IndexToItem(int index)
-        {
-            return _items[index];
-        }
-
-
-        /// <summary>
         /// Draw item.
         /// </summary>
         public override void Draw()
@@ -132,7 +112,7 @@ namespace NativeUI
 
             _arrowLeft.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
             _arrowRight.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
-            int offset = ((_rectangleBackground.Size.Width - _rectangleSlider.Size.Width)/(_items.Count - 1)) * Index;
+            int offset = ((_rectangleBackground.Size.Width - _rectangleSlider.Size.Width)/(1)) * _value;
             _rectangleSlider.Position = new Point(250 + Offset.X + offset, _rectangleSlider.Position.Y);
             if (Selected)
             {
@@ -148,14 +128,9 @@ namespace NativeUI
             _rectangleDivider.Draw();
         }
 
-        internal virtual void SliderChangedTrigger(int newindex)
+        internal virtual void SliderChanged()
         {
-            OnSliderChanged?.Invoke(this, newindex);
-        }
-
-        internal virtual void SliderSelectedTrigger(int newindex)
-        {
-            OnSliderSelected?.Invoke(this, newindex);
+            OnSliderChanged?.Invoke(this, Value);
         }
     }
 }
