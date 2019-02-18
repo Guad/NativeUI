@@ -694,10 +694,9 @@ namespace NativeUI
             else if (MenuItems[CurrentSelection] is UIMenuSliderItem)
             {
                 var it = (UIMenuSliderItem)MenuItems[CurrentSelection];
-                it.Index = it.Index - 1;
+                it.Value--;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
-                SliderChange(it, it.Index);
-                it.SliderChangedTrigger(it.Index);
+                SliderChange(it, it.Value);
             }
         }
 
@@ -725,10 +724,9 @@ namespace NativeUI
             else if (MenuItems[CurrentSelection] is UIMenuSliderItem)
             {
                 var it = (UIMenuSliderItem)MenuItems[CurrentSelection];
-                it.Index++;
+                it.Value++;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
-                SliderChange(it, it.Index);
-                it.SliderChangedTrigger(it.Index);
+                SliderChange(it, it.Value);
             }
         }
 
