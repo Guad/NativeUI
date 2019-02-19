@@ -53,7 +53,7 @@ namespace NativeUI
             set
             {
                 if (value > _max)
-                    _value = 100;
+                    _value = _max;
                 else
                     _value = value;
                 SliderChanged();
