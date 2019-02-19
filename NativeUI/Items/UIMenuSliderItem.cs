@@ -34,6 +34,7 @@ namespace NativeUI
             }
             set
             {
+                _max = value;
                 if (_value > value)
                 {
                     _value = value;
