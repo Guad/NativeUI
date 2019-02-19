@@ -53,6 +53,7 @@
     <Compile Include="InstructionalButton.cs" />
     <Compile Include="Items\IListItem.cs" />
     <Compile Include="Items\UIMenuDynamicListItem.cs" />
+    <Compile Include="Items\UIMenuSliderItem.cs" />
     <Compile Include="MenuPool.cs" />
     <Compile Include="PauseMenu\TabItem.cs" />
     <Compile Include="PauseMenu\TabItemSimpleList.cs" />
