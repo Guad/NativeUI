@@ -11,8 +11,7 @@ namespace NativeUI
         protected UIResRectangle _rectangleBackground;
         protected UIResRectangle _rectangleSlider;
         protected UIResRectangle _rectangleDivider;
-
-        protected int _min = 0;
+        
         protected int _value = 0;
         protected int _max = 100;
 
@@ -24,23 +23,6 @@ namespace NativeUI
 
 
         /// <summary>
-        /// The minimum value of the slider.
-        /// </summary>
-        public int Minimum
-        {
-            get
-            {
-                return _min;
-            }
-            set
-            {
-                if (value < 0)
-                    _min = 0;
-                else
-                    _min = value;
-            }
-        }
-        /// <summary>
         /// The maximum value of the slider.
         /// </summary>
         public int Maximum
@@ -51,7 +33,6 @@ namespace NativeUI
             }
             set
             {
-                _min = value;
                 if (_value > value)
                 {
                     _value = value;
@@ -69,9 +50,7 @@ namespace NativeUI
             }
             set
             {
-                if (value < _min)
-                    _value = 0;
-                else if (value > _max)
+                if (value > _max)
                     _value = 100;
                 else
                     _value = value;
