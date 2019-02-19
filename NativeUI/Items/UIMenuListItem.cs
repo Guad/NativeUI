@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using GTA;
@@ -92,6 +92,7 @@ namespace NativeUI
         /// </summary>
         /// <param name="item">Item to search for.</param>
         /// <returns>Item index.</returns>
+        [Obsolete("Use UIMenuListItem.Items.FindIndex(p => ReferenceEquals(p, item)) instead.")]
         public virtual int ItemToIndex(object item)
         {
             return Items.FindIndex(p => ReferenceEquals(p, item));
@@ -103,6 +104,7 @@ namespace NativeUI
         /// </summary>
         /// <param name="index">Item's index.</param>
         /// <returns>Item</returns>
+        [Obsolete("Use UIMenuListItem.Items[Index] instead.")]
         public virtual object IndexToItem(int index)
         {
             return Items[index];
@@ -155,6 +157,7 @@ namespace NativeUI
             throw new Exception("UIMenuListItem cannot have a right label.");
         }
 
+        [Obsolete("Use UIMenuListItem.Items[Index].ToString() instead.")]
         public string CurrentItem()
         {
             return Items[Index].ToString();
