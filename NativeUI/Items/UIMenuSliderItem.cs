@@ -54,6 +54,8 @@ namespace NativeUI
             {
                 if (value > _max)
                     _value = _max;
+                else if (value < 0)
+                    _value = 0;
                 else
                     _value = value;
                 SliderChanged();
