@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace NativeUI
@@ -12,16 +12,54 @@ namespace NativeUI
         protected UIResRectangle _rectangleSlider;
         protected UIResRectangle _rectangleDivider;
 
+        protected int _min = 0;
         protected int _value = 0;
+        protected int _max = 100;
 
 
         /// <summary>
         /// Triggered when the slider is changed.
         /// </summary>
         public event ItemSliderEvent OnSliderChanged;
-        
+
+
         /// <summary>
-        /// Returns the value of the slider.
+        /// The minimum value of the slider.
+        /// </summary>
+        public int Minimum
+        {
+            get
+            {
+                return _min;
+            }
+            set
+            {
+                if (value < 0)
+                    _min = 0;
+                else
+                    _min = value;
+            }
+        }
+        /// <summary>
+        /// The maximum value of the slider.
+        /// </summary>
+        public int Maximum
+        {
+            get
+            {
+                return _max;
+            }
+            set
+            {
+                _min = value;
+                if (_value > value)
+                {
+                    _value = value;
+                }
+            }
+        }
+        /// <summary>
+        /// Curent value of the slider.
         /// </summary>
         public int Value
         {
@@ -31,7 +69,9 @@ namespace NativeUI
             }
             set
             {
-                if (value > 100)
+                if (value < _min)
+                    _value = 0;
+                else if (value > _max)
                     _value = 100;
                 else
                     _value = value;
