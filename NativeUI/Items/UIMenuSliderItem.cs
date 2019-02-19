@@ -109,8 +109,7 @@ namespace NativeUI
         /// <param name="index">Index in the list. If unsure user 0.</param>
         /// <param name="description">Description for this item.</param>
         /// /// <param name="divider">Put a divider in the center of the slider</param>
-        public UIMenuSliderItem(string text, string description, bool divider)
-            : base(text, description)
+        public UIMenuSliderItem(string text, string description, bool divider) : base(text, description)
         {
             const int y = 0;
             _arrowLeft = new Sprite("commonmenutu", "arrowleft", new Point(0, 105 + y), new Size(15, 15));
