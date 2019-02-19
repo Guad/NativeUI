@@ -185,12 +185,7 @@ namespace NativeUI
         /// Called when user presses left or right, changing a slider position.
         /// </summary>
         public event SliderChangedEvent OnSliderChange;
-
-        /// <summary>
-        /// Called when user selects a slider item.
-        /// </summary>
-        public event SliderSelectedEvent OnSliderSelect;
-
+        
         /// <summary>
         /// Called when user opens the menu.
         /// </summary>
@@ -1478,11 +1473,6 @@ namespace NativeUI
         protected virtual void SliderChange(UIMenuSliderItem sender, int newindex)
         {
             OnSliderChange?.Invoke(this, sender, newindex);
-        }
-
-        protected virtual void SliderSelect(UIMenuSliderItem sender, int newindex)
-        {
-            OnSliderSelect?.Invoke(this, sender, newindex);
         }
 
         protected virtual void CheckboxChange(UIMenuCheckboxItem sender, bool Checked)
