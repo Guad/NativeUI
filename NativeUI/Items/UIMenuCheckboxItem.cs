@@ -17,8 +17,7 @@ namespace NativeUI
         /// </summary>
         /// <param name="text">Item label.</param>
         /// <param name="check">Boolean value whether the checkbox is checked.</param>
-        public UIMenuCheckboxItem(string text, bool check)
-            : this(text, check, "")
+        public UIMenuCheckboxItem(string text, bool check) : this(text, check, "")
         {
         }
 
@@ -28,8 +27,7 @@ namespace NativeUI
         /// <param name="text">Item label.</param>
         /// <param name="check">Boolean value whether the checkbox is checked.</param>
         /// <param name="description">Description for this item.</param>
-        public UIMenuCheckboxItem(string text, bool check, string description)
-            : base(text, description)
+        public UIMenuCheckboxItem(string text, bool check, string description) : base(text, description)
         {
             const int y = 0;
             _checkedSprite = new Sprite("commonmenu", "shop_box_blank", new Point(410, y + 95), new Size(50, 50));

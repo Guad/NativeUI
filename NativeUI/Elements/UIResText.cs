@@ -16,14 +16,12 @@ namespace NativeUI
             TextAlignment = Alignment.Left;
         }
 
-        public UIResText(string caption, Point position, float scale, Color color)
-            : base(caption, position, scale, color)
+        public UIResText(string caption, Point position, float scale, Color color) : base(caption, position, scale, color)
         {
             TextAlignment = Alignment.Left;
         }
 
-        public UIResText(string caption, Point position, float scale, Color color, Font font, Alignment justify)
-            : base(caption, position, scale, color, font, false)
+        public UIResText(string caption, Point position, float scale, Color color, Font font, Alignment justify) : base(caption, position, scale, color, font, false)
         {
             TextAlignment = justify;
         }

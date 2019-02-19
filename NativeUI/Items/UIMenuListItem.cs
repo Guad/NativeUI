@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using GTA;
@@ -51,8 +51,7 @@ namespace NativeUI
         /// <param name="text">Item label.</param>
         /// <param name="items">List that contains your items.</param>
         /// <param name="index">Index in the list. If unsure user 0.</param>
-        public UIMenuListItem(string text, List<object> items, int index)
-            : this(text, items, index, "")
+        public UIMenuListItem(string text, List<object> items, int index) : this(text, items, index, "")
         {
         }
 
@@ -63,8 +62,7 @@ namespace NativeUI
         /// <param name="items">List that contains your items.</param>
         /// <param name="index">Index in the list. If unsure user 0.</param>
         /// <param name="description">Description for this item.</param>
-        public UIMenuListItem(string text, List<object> items, int index, string description)
-            : base(text, description)
+        public UIMenuListItem(string text, List<object> items, int index, string description) : base(text, description)
         {
             const int y = 0;
             _items = items;
