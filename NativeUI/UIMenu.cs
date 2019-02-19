@@ -694,7 +694,7 @@ namespace NativeUI
             else if (MenuItems[CurrentSelection] is UIMenuSliderItem)
             {
                 var it = (UIMenuSliderItem)MenuItems[CurrentSelection];
-                it.Value--;
+                it.Value -= it.Multiplier;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
                 SliderChange(it, it.Value);
             }
@@ -724,7 +724,7 @@ namespace NativeUI
             else if (MenuItems[CurrentSelection] is UIMenuSliderItem)
             {
                 var it = (UIMenuSliderItem)MenuItems[CurrentSelection];
-                it.Value++;
+                it.Value += it.Multiplier;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
                 SliderChange(it, it.Value);
             }

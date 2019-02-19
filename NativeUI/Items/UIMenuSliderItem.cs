@@ -14,6 +14,7 @@ namespace NativeUI
         
         protected int _value = 0;
         protected int _max = 100;
+        protected int _multiplier = 5;
 
 
         /// <summary>
@@ -55,6 +56,20 @@ namespace NativeUI
                 else
                     _value = value;
                 SliderChanged();
+            }
+        }
+        /// <summary>
+        /// The multiplier of the left and right navigation movements.
+        /// </summary>
+        public int Multiplier
+        {
+            get
+            {
+                return _multiplier;
+            }
+            set
+            {
+                _multiplier = value;
             }
         }
 
