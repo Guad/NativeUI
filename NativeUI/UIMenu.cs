@@ -18,8 +18,6 @@ namespace NativeUI
     
     public delegate void SliderChangedEvent(UIMenu sender, UIMenuSliderItem listItem, int newIndex);
 
-    public delegate void SliderSelectedEvent(UIMenu sender, UIMenuSliderItem listItem, int newIndex);
-
     public delegate void CheckboxChangeEvent(UIMenu sender, UIMenuCheckboxItem checkboxItem, bool Checked);
 
     public delegate void ItemSelectEvent(UIMenu sender, UIMenuItem selectedItem, int index);
