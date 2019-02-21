@@ -1,6 +1,6 @@
-﻿using System;
+﻿using CitizenFX.Core.UI;
+using System;
 using System.Drawing;
-using Font = GTA.Font;
 
 namespace NativeUI
 {
@@ -39,8 +39,8 @@ namespace NativeUI
             const int y = 0;
             _arrowLeft = new Sprite("commonmenu", "arrowleft", new Point(110, 105 + y), new Size(30, 30));
             _arrowRight = new Sprite("commonmenu", "arrowright", new Point(280, 105 + y), new Size(30, 30));
-            _itemText = new UIResText("", new Point(290, y + 104), 0.35f, Color.White, Font.ChaletLondon,
-                UIResText.Alignment.Right);
+            _itemText = new UIResText("", new Point(290, y + 104), 0.35f, Colors.White, Font.ChaletLondon,
+                Alignment.Right);
 
             CurrentListItem = startingItem;
             Callback = changeCallback;
@@ -69,23 +69,23 @@ namespace NativeUI
             string caption = CurrentListItem;
             float offset = StringMeasurer.MeasureString(caption, _itemText.Font, _itemText.Scale);
 
-            _itemText.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
+            _itemText.Color = Enabled ? Selected ? Colors.Black : Colors.WhiteSmoke : Color.FromArgb(163, 159, 148);
 
             _itemText.Caption = caption;
 
-            _arrowLeft.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
-            _arrowRight.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
+            _arrowLeft.Color = Enabled ? Selected ? Colors.Black : Colors.WhiteSmoke : Color.FromArgb(163, 159, 148);
+            _arrowRight.Color = Enabled ? Selected ? Colors.Black : Colors.WhiteSmoke : Color.FromArgb(163, 159, 148);
 
             _arrowLeft.Position = new Point(375 - (int)offset + Offset.X + Parent.WidthOffset, _arrowLeft.Position.Y);
             if (Selected)
             {
                 _arrowLeft.Draw();
                 _arrowRight.Draw();
-                _itemText.Position = new Point(403 + Offset.X + Parent.WidthOffset, _itemText.Position.Y);
+                _itemText.Position = new PointF(403 + Offset.X + Parent.WidthOffset, _itemText.Position.Y);
             }
             else
             {
-                _itemText.Position = new Point(418 + Offset.X + Parent.WidthOffset, _itemText.Position.Y);
+                _itemText.Position = new PointF(418 + Offset.X + Parent.WidthOffset, _itemText.Position.Y);
             }
             _itemText.Draw();
         }

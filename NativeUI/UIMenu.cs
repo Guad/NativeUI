@@ -1,12 +1,10 @@
-﻿using System;
+﻿using CitizenFX.Core;
+using CitizenFX.Core.Native;
+using CitizenFX.Core.UI;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
-using GTA;
-using GTA.Native;
-using Control = GTA.Control;
-using Font = GTA.Font;
 
 namespace NativeUI
 {
@@ -44,7 +42,7 @@ namespace NativeUI
     public class UIMenu
     {
         #region Private Fields
-        private readonly UIContainer _mainMenu;
+        private readonly Container _mainMenu;
         private Sprite _logo;
         private readonly Sprite _background;
 
@@ -255,19 +253,19 @@ namespace NativeUI
             _instructionalButtonsScaleform = new Scaleform("instructional_buttons");
             UpdateScaleform();
 
-            _mainMenu = new UIContainer(new Point(0, 0), new Size(700, 500), Color.FromArgb(0, 0, 0, 0));
+            _mainMenu = new Container(new Point(0, 0), new Size(700, 500), Color.FromArgb(0, 0, 0, 0));
             _logo = new Sprite(spriteLibrary, spriteName, new Point(0 + Offset.X, 0 + Offset.Y), new Size(431, 107));
-            _mainMenu.Items.Add(Title = new UIResText(title, new Point(215 + Offset.X, 20 + Offset.Y), 1.15f, Color.White, Font.HouseScript, UIResText.Alignment.Centered));
+            _mainMenu.Items.Add(Title = new UIResText(title, new Point(215 + Offset.X, 20 + Offset.Y), 1.15f, Colors.White, Font.HouseScript, Alignment.Center));
             if (!String.IsNullOrWhiteSpace(subtitle))
             {
-                _mainMenu.Items.Add(new UIResRectangle(new Point(0 + offset.X, 107 + Offset.Y), new Size(431, 37), Color.Black));
-                _mainMenu.Items.Add(Subtitle = new UIResText(subtitle, new Point(8 + Offset.X, 110 + Offset.Y), 0.35f, Color.WhiteSmoke, 0, UIResText.Alignment.Left));
+                _mainMenu.Items.Add(new UIResRectangle(new Point(0 + offset.X, 107 + Offset.Y), new Size(431, 37), Colors.Black));
+                _mainMenu.Items.Add(Subtitle = new UIResText(subtitle, new Point(8 + Offset.X, 110 + Offset.Y), 0.35f, Colors.WhiteSmoke, 0, Alignment.Left));
 
                 if (subtitle.StartsWith("~"))
                 {
                     CounterPretext = subtitle.Substring(0, 3);
                 }
-                _counterText = new UIResText("", new Point(425 + Offset.X, 110 + Offset.Y), 0.35f, Color.WhiteSmoke, 0, UIResText.Alignment.Right);
+                _counterText = new UIResText("", new Point(425 + Offset.X, 110 + Offset.Y), 0.35f, Colors.WhiteSmoke, 0, Alignment.Right);
                 _extraYOffset = 37;
             }
 
@@ -275,9 +273,9 @@ namespace NativeUI
             _extraRectangleUp = new UIResRectangle(new Point(0 + Offset.X, 144 + 38 * (MaxItemsOnScreen + 1) + Offset.Y - 37 + _extraYOffset), new Size(431, 18), Color.FromArgb(200, 0, 0, 0));
             _extraRectangleDown = new UIResRectangle(new Point(0 + Offset.X, 144 + 18 + 38 * (MaxItemsOnScreen + 1) + Offset.Y - 37 + _extraYOffset), new Size(431, 18), Color.FromArgb(200, 0, 0, 0));
 
-            _descriptionBar = new UIResRectangle(new Point(Offset.X, 123), new Size(431, 4), Color.Black);
+            _descriptionBar = new UIResRectangle(new Point(Offset.X, 123), new Size(431, 4), Colors.Black);
             _descriptionRectangle = new Sprite("commonmenu", "gradient_bgd", new Point(Offset.X, 127), new Size(431, 30));
-            _descriptionText = new UIResText("Description", new Point(Offset.X + 5, 125), 0.35f, Color.FromArgb(255, 255, 255, 255), Font.ChaletLondon, UIResText.Alignment.Left);
+            _descriptionText = new UIResText("Description", new Point(Offset.X + 5, 125), 0.35f, Color.FromArgb(255, 255, 255, 255), Font.ChaletLondon, Alignment.Left);
 
             _background = new Sprite("commonmenu", "gradient_bgd", new Point(Offset.X, 144 + Offset.Y - 37 + _extraYOffset), new Size(290, 25));
 
@@ -330,8 +328,8 @@ namespace NativeUI
         /// <returns></returns>
         public static SizeF GetScreenResolutionMaintainRatio()
         {
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
+            int screenw = Screen.Resolution.Width;
+            int screenh = Screen.Resolution.Height;
             const float height = 1080f;
             float ratio = (float)screenw / screenh;
             var width = height * ratio;
@@ -378,8 +376,8 @@ namespace NativeUI
             g = 10 - g;
 
             const float hmp = 5.4f;
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
+            int screenw = Screen.Resolution.Width;
+            int screenh = Screen.Resolution.Height;
             float ratio = (float)screenw / screenh;
             float wmp = ratio * hmp;
 
@@ -764,11 +762,11 @@ namespace NativeUI
             Visible = false;
             if (ParentMenu != null)
             {
-                var tmp = Cursor.Position;
+                // var tmp = Cursor.Position;
                 ParentMenu.Visible = true;
                 MenuChangeEv(ParentMenu, false);
                 if (ResetCursorOnOpen)
-                    Cursor.Position = tmp;
+                    API.SetCursorLocation(0.5f, 0.5f);
             }
         }
 
@@ -878,11 +876,13 @@ namespace NativeUI
             List<Keys> tmpKeys = new List<Keys>(_keyDictionary[control].Item1);
             List<Tuple<Control, int>> tmpControls = new List<Tuple<Control, int>>(_keyDictionary[control].Item2);
 
+            /*
             if (key != Keys.None)
             {
                 if (tmpKeys.Any(Game.IsKeyPressed))
                     return true;
             }
+            */
             if (tmpControls.Any(tuple => Game.IsControlJustPressed(tuple.Item2, tuple.Item1)))
                 return true;
             return false;
@@ -900,11 +900,13 @@ namespace NativeUI
             List<Keys> tmpKeys = new List<Keys>(_keyDictionary[control].Item1);
             List<Tuple<Control, int>> tmpControls = new List<Tuple<Control, int>>(_keyDictionary[control].Item2);
 
+            /*
             if (key != Keys.None)
             {
                 if (tmpKeys.Any(Game.IsKeyPressed))
                     return true;
             }
+            */
             if (tmpControls.Any(tuple => Game.IsControlJustReleased(tuple.Item2, tuple.Item1)))
                 return true;
             return false;
@@ -929,6 +931,7 @@ namespace NativeUI
                     _controlCounter = 0;
                 return false;
             }
+            /*
             if (key != Keys.None)
             {
                 if (tmpKeys.Any(Game.IsKeyPressed))
@@ -937,6 +940,7 @@ namespace NativeUI
                     return true;
                 }
             }
+            */
             if (tmpControls.Any(tuple => Game.IsControlPressed(tuple.Item2, tuple.Item1)))
             {
                 _controlCounter = 1;
@@ -973,9 +977,9 @@ namespace NativeUI
             if (count > MaxItemsOnScreen + 1)
                 count = MaxItemsOnScreen + 2;
 
-            _descriptionBar.Position = new Point(Offset.X, 38 * count + _descriptionBar.Position.Y);
+            _descriptionBar.Position = new PointF(Offset.X, 38 * count + _descriptionBar.Position.Y);
             _descriptionRectangle.Position = new Point(Offset.X, 38 * count + _descriptionRectangle.Position.Y);
-            _descriptionText.Position = new Point(Offset.X + 8, 38 * count + _descriptionText.Position.Y);
+            _descriptionText.Position = new PointF(Offset.X + 8, 38 * count + _descriptionText.Position.Y);
         }
 
         /// <summary>
@@ -1049,10 +1053,10 @@ namespace NativeUI
 
             if (_buttonsEnabled)
             {
-                Function.Call(Hash._0x0DF606929C105BE1, _instructionalButtonsScaleform.Handle, 255, 255, 255, 255, 0);
-                UI.HideHudComponentThisFrame(HudComponent.VehicleName);
-                UI.HideHudComponentThisFrame(HudComponent.AreaName);
-                UI.HideHudComponentThisFrame(HudComponent.StreetName);
+                Function.Call(Hash.DRAW_SCALEFORM_MOVIE_FULLSCREEN, _instructionalButtonsScaleform.Handle, 255, 255, 255, 255, 0);
+                Screen.Hud.HideComponentThisFrame(HudComponent.VehicleName);
+                Screen.Hud.HideComponentThisFrame(HudComponent.AreaName);
+                Screen.Hud.HideComponentThisFrame(HudComponent.StreetName);
             }
             // _instructionalButtonsScaleform.Render2D(); // Bug #13
 
@@ -1166,16 +1170,16 @@ namespace NativeUI
             if (IsMouseInBounds(new Point(0, 0), new Size(30, 1080)) && MouseEdgeEnabled)
             {
                 GameplayCamera.RelativeHeading += 5f;
-                Function.Call(Hash._0x8DB8CFFD58B62552, 6);
+                Function.Call(Hash._SET_CURSOR_SPRITE, 6);
             }
             else if (IsMouseInBounds(new Point(Convert.ToInt32(GetScreenResolutionMaintainRatio().Width - 30f), 0), new Size(30, 1080)) && MouseEdgeEnabled)
             {
                 GameplayCamera.RelativeHeading -= 5f;
-                Function.Call(Hash._0x8DB8CFFD58B62552, 7);
+                Function.Call(Hash._SET_CURSOR_SPRITE, 7);
             }
             else if (MouseEdgeEnabled)
             {
-                Function.Call(Hash._0x8DB8CFFD58B62552, 1);
+                Function.Call(Hash._SET_CURSOR_SPRITE, 1);
             }
 
             for (int i = _minItem; i <= limit; i++)
@@ -1335,8 +1339,8 @@ namespace NativeUI
             _instructionalButtonsScaleform.CallFunction("CREATE_CONTAINER");
 
 
-            _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 0, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)Control.PhoneSelect, 0), _selectTextLocalized);
-            _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 1, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)Control.PhoneCancel, 0), _backTextLocalized);
+            _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 0, Function.Call<string>(Hash.GET_CONTROL_INSTRUCTIONAL_BUTTON, 2, (int)Control.PhoneSelect, 0), _selectTextLocalized);
+            _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 1, Function.Call<string>(Hash.GET_CONTROL_INSTRUCTIONAL_BUTTON, 2, (int)Control.PhoneCancel, 0), _backTextLocalized);
             int count = 2;
             foreach (var button in _instructionalButtons.Where(button => button.ItemBind == null || MenuItems[CurrentSelection] == button.ItemBind))
             {
@@ -1368,8 +1372,9 @@ namespace NativeUI
                 UpdateScaleform();
                 if (ParentMenu != null || !value) return;
                 if (!ResetCursorOnOpen) return;
-                Cursor.Position = new Point(Screen.PrimaryScreen.Bounds.Width / 2, Screen.PrimaryScreen.Bounds.Height / 2);
-                Function.Call(Hash._0x8DB8CFFD58B62552, 1);
+                // Cursor.Position = new Point(Screen.PrimaryScreen.Bounds.Width / 2, Screen.PrimaryScreen.Bounds.Height / 2);
+                API.SetCursorLocation(Screen.Resolution.Width / 2f, Screen.Resolution.Height / 2f);
+                Function.Call(Hash._SET_CURSOR_SPRITE, 1);
             }
         }
 

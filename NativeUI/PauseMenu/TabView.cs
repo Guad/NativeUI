@@ -1,9 +1,9 @@
-﻿using System;
+﻿using CitizenFX.Core;
+using CitizenFX.Core.Native;
+using CitizenFX.Core.UI;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
-using GTA;
-using GTA.Native;
-using Font = GTA.Font;
 
 namespace NativeUI.PauseMenu
 {
@@ -75,16 +75,16 @@ namespace NativeUI.PauseMenu
             _sc.CallFunction("CREATE_CONTAINER");
 
 
-            _sc.CallFunction("SET_DATA_SLOT", 0, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)Control.PhoneSelect, 0), UIMenu._selectTextLocalized);
-            _sc.CallFunction("SET_DATA_SLOT", 1, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)Control.PhoneCancel, 0), UIMenu._backTextLocalized);
+            _sc.CallFunction("SET_DATA_SLOT", 0, Function.Call<string>(Hash.GET_CONTROL_INSTRUCTIONAL_BUTTON, 2, (int)Control.PhoneSelect, 0), UIMenu._selectTextLocalized);
+            _sc.CallFunction("SET_DATA_SLOT", 1, Function.Call<string>(Hash.GET_CONTROL_INSTRUCTIONAL_BUTTON, 2, (int)Control.PhoneCancel, 0), UIMenu._backTextLocalized);
 
-            _sc.CallFunction("SET_DATA_SLOT", 2, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)Control.FrontendRb, 0), "");
-            _sc.CallFunction("SET_DATA_SLOT", 3, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)Control.FrontendLb, 0), _browseTextLocalized);
+            _sc.CallFunction("SET_DATA_SLOT", 2, Function.Call<string>(Hash.GET_CONTROL_INSTRUCTIONAL_BUTTON, 2, (int)Control.FrontendRb, 0), "");
+            _sc.CallFunction("SET_DATA_SLOT", 3, Function.Call<string>(Hash.GET_CONTROL_INSTRUCTIONAL_BUTTON, 2, (int)Control.FrontendLb, 0), _browseTextLocalized);
         }
 
         public void DrawInstructionalButton(int slot, Control control, string text)
         {
-            _sc.CallFunction("SET_DATA_SLOT", slot, Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int)control, 0), text);
+            _sc.CallFunction("SET_DATA_SLOT", slot, Function.Call<string>(Hash.GET_CONTROL_INSTRUCTIONAL_BUTTON, 2, (int)control, 0), text);
         }
 
         public void ProcessControls()
@@ -217,8 +217,8 @@ namespace NativeUI.PauseMenu
             var safe = new Point(300, 180);
             if (!HideTabs)
             {
-                new UIResText(Title, new Point(safe.X, safe.Y - 80), 1f, Color.White, Font.ChaletComprimeCologne,
-                    UIResText.Alignment.Left)
+                new UIResText(Title, new Point(safe.X, safe.Y - 80), 1f, Colors.White, Font.ChaletComprimeCologne,
+                    Alignment.Left)
                 {
                     DropShadow = true,
                 }.Draw();
@@ -235,8 +235,8 @@ namespace NativeUI.PauseMenu
                     Photo.Draw();
                 }
 
-                new UIResText(Name, new Point((int)res.Width - safe.X - 70, safe.Y - 95), 0.7f, Color.White,
-                    Font.ChaletComprimeCologne, UIResText.Alignment.Right)
+                new UIResText(Name, new Point((int)res.Width - safe.X - 70, safe.Y - 95), 0.7f, Colors.White,
+                    Font.ChaletComprimeCologne, Alignment.Right)
                 {
                     DropShadow = true,
                 }.Draw();
@@ -248,8 +248,8 @@ namespace NativeUI.PauseMenu
                 }
 
 
-                new UIResText(t, new Point((int)res.Width - safe.X - 70, safe.Y - 60), 0.4f, Color.White,
-                    Font.ChaletComprimeCologne, UIResText.Alignment.Right)
+                new UIResText(t, new Point((int)res.Width - safe.X - 70, safe.Y - 60), 0.4f, Colors.White,
+                    Font.ChaletComprimeCologne, Alignment.Right)
                 {
                     DropShadow = true,
                 }.Draw();
@@ -260,8 +260,8 @@ namespace NativeUI.PauseMenu
                     subt = "";
                 }
 
-                new UIResText(subt, new Point((int)res.Width - safe.X - 70, safe.Y - 40), 0.4f, Color.White,
-                    Font.ChaletComprimeCologne, UIResText.Alignment.Right)
+                new UIResText(subt, new Point((int)res.Width - safe.X - 70, safe.Y - 40), 0.4f, Colors.White,
+                    Font.ChaletComprimeCologne, Alignment.Right)
                 {
                     DropShadow = true,
                 }.Draw();
@@ -279,20 +279,20 @@ namespace NativeUI.PauseMenu
                         new Size(tabWidth, 40));
 
                     var tabColor = Tabs[i].Active
-                        ? Color.White
-                        : hovering ? Color.FromArgb(100, 50, 50, 50) : Color.Black;
+                        ? Colors.White
+                        : hovering ? Color.FromArgb(100, 50, 50, 50) : Colors.Black;
                     new UIResRectangle(safe.AddPoints(new Point((tabWidth + 5) * i, 0)), new Size(tabWidth, 40),
                         Color.FromArgb(Tabs[i].Active ? 255 : 200, tabColor)).Draw();
 
                     new UIResText(Tabs[i].Title.ToUpper(), safe.AddPoints(new Point((tabWidth / 2) + (tabWidth + 5) * i, 5)),
                         0.35f,
-                        Tabs[i].Active ? Color.Black : Color.White, Font.ChaletLondon, UIResText.Alignment.Centered)
+                        Tabs[i].Active ? Colors.Black : Colors.White, Font.ChaletLondon, Alignment.Center)
                         .Draw();
 
                     if (Tabs[i].Active)
                     {
                         new UIResRectangle(safe.SubtractPoints(new Point(-((tabWidth + 5) * i), 10)),
-                            new Size(tabWidth, 10), Color.DodgerBlue).Draw();
+                            new Size(tabWidth, 10), Colors.DodgerBlue).Draw();
                     }
 
                     if (hovering && Game.IsControlJustPressed(0, Control.CursorAccept) && !Tabs[i].Active)

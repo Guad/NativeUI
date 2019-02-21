@@ -1,15 +1,14 @@
+﻿using CitizenFX.Core.Native;
+using CitizenFX.Core.UI;
 using System;
 using System.Drawing;
-using GTA;
-using GTA.Native;
-using Font = GTA.Font;
 
 namespace NativeUI
 {
     /// <summary>
     /// A Text object in the 1080 pixels height base system.
     /// </summary>
-    public class UIResText : UIText
+    public class UIResText : Text
     {
         public UIResText(string caption, Point position, float scale) : base(caption, position, scale)
         {
@@ -21,7 +20,7 @@ namespace NativeUI
             TextAlignment = Alignment.Left;
         }
 
-        public UIResText(string caption, Point position, float scale, Color color, Font font, Alignment justify) : base(caption, position, scale, color, font, false)
+        public UIResText(string caption, Point position, float scale, Color color, Font font, Alignment justify) : base(caption, position, scale, color, font, justify)
         {
             TextAlignment = justify;
         }
@@ -118,10 +117,10 @@ namespace NativeUI
 
         public Size WordWrap { get; set; }
 
-        public override void Draw(Size offset)
+        public override void Draw(SizeF offset)
         {
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
+            int screenw = Screen.Resolution.Width;
+            int screenh = Screen.Resolution.Height;
             const float height = 1080f;
             float ratio = (float)screenw / screenh;
             var width = height * ratio;
@@ -138,7 +137,7 @@ namespace NativeUI
                 Function.Call(Hash.SET_TEXT_OUTLINE);
             switch (TextAlignment)
             {
-                case Alignment.Centered:
+                case Alignment.Center:
                     Function.Call(Hash.SET_TEXT_CENTRE, true);
                     break;
                 case Alignment.Right:
@@ -161,8 +160,8 @@ namespace NativeUI
 
         public static void Draw(string caption, int xPos, int yPos, Font font, float scale, Color color, Alignment alignment, bool dropShadow, bool outline, int wordWrap)
         {
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
+            int screenw = Screen.Resolution.Width;
+            int screenh = Screen.Resolution.Height;
             const float height = 1080f;
             float ratio = (float)screenw / screenh;
             var width = height * ratio;
@@ -179,7 +178,7 @@ namespace NativeUI
                 Function.Call(Hash.SET_TEXT_OUTLINE);
             switch (alignment)
             {
-                case Alignment.Centered:
+                case Alignment.Center:
                     Function.Call(Hash.SET_TEXT_CENTRE, true);
                     break;
                 case Alignment.Right:

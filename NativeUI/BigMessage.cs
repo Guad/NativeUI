@@ -1,7 +1,7 @@
-﻿using System;
+﻿using CitizenFX.Core;
+using CitizenFX.Core.Native;
+using System;
 using System.Runtime.Remoting.Messaging;
-using GTA;
-using GTA.Native;
 
 namespace NativeUI
 {
@@ -22,7 +22,7 @@ namespace NativeUI
             _sc = new Scaleform("MP_BIG_MESSAGE_FREEMODE");
             var timeout = 1000;
             var start = DateTime.Now;
-            while (!Function.Call<bool>(Hash.HAS_SCALEFORM_MOVIE_LOADED, _sc.Handle) && DateTime.Now.Subtract(start).TotalMilliseconds < timeout) Script.Yield();
+            while (!Function.Call<bool>(Hash.HAS_SCALEFORM_MOVIE_LOADED, _sc.Handle) && DateTime.Now.Subtract(start).TotalMilliseconds < timeout) BaseScript.Delay(0);
         }
 
         public void Dispose()
@@ -108,7 +108,7 @@ namespace NativeUI
         }
     }
 
-    public class BigMessageThread : Script
+    public class BigMessageThread : BaseScript
     {
         public static BigMessageHandler MessageInstance { get; set; }
 
@@ -116,7 +116,7 @@ namespace NativeUI
         {
             MessageInstance = new BigMessageHandler();
 
-            Tick += (sender, args) =>
+            Tick += async () =>
             {
                 MessageInstance.Update();
             };

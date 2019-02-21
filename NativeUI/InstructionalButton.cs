@@ -1,4 +1,5 @@
-﻿using GTA.Native;
+﻿using CitizenFX.Core;
+using CitizenFX.Core.Native;
 
 namespace NativeUI
 {
@@ -9,7 +10,7 @@ namespace NativeUI
         public UIMenuItem ItemBind { get; private set; }
 
         private readonly string _buttonString;
-        private readonly GTA.Control _buttonControl;
+        private readonly Control _buttonControl;
         private readonly bool _usingControls;
 
         /// <summary>
@@ -18,7 +19,7 @@ namespace NativeUI
         /// </summary>
         /// <param name="control">GTA.Control that gets converted into a button.</param>
         /// <param name="text">Help text that goes with the button.</param>
-        public InstructionalButton(GTA.Control control, string text)
+        public InstructionalButton(Control control, string text)
         {
             Text = text;
             _buttonControl = control;
@@ -50,7 +51,7 @@ namespace NativeUI
 
         public string GetButtonId()
         {
-            return _usingControls ? Function.Call<string>(Hash._0x0499D7B09FC9B407, 2, (int) _buttonControl, 0) : "t_" + _buttonString;
+            return _usingControls ? Function.Call<string>(Hash.GET_CONTROL_INSTRUCTIONAL_BUTTON, 2, (int) _buttonControl, 0) : "t_" + _buttonString;
         }
     }
 }

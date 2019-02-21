@@ -1,13 +1,13 @@
-﻿using System.Drawing;
-using GTA;
-using GTA.Native;
+﻿using CitizenFX.Core.Native;
+using CitizenFX.Core.UI;
+using System.Drawing;
 
 namespace NativeUI
 {
     /// <summary>
     /// A rectangle in 1080 pixels height system.
     /// </summary>
-    public class UIResRectangle : UIRectangle
+    public class UIResRectangle : Rectangle
     {
         public UIResRectangle()
         { }
@@ -18,11 +18,11 @@ namespace NativeUI
         public UIResRectangle(Point pos, Size size, Color color) : base(pos, size, color)
         { }
         
-        public override void Draw(Size offset)
+        public override void Draw(SizeF offset)
         {
             if (!Enabled) return;
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
+            int screenw = Screen.Resolution.Width;
+            int screenh = Screen.Resolution.Height;
             const float height = 1080f;
             float ratio = (float)screenw / screenh;
             var width = height * ratio;
@@ -37,8 +37,8 @@ namespace NativeUI
 
         public static void Draw(int xPos, int yPos, int boxWidth, int boxHeight, Color color)
         {
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
+            int screenw = Screen.Resolution.Width;
+            int screenh = Screen.Resolution.Height;
             const float height = 1080f;
             float ratio = (float)screenw / screenh;
             var width = height * ratio;

@@ -1,9 +1,9 @@
-﻿using System;
+﻿using CitizenFX.Core;
+using CitizenFX.Core.Native;
+using CitizenFX.Core.UI;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
-using GTA;
-using GTA.Native;
-using Font = GTA.Font;
 
 namespace NativeUI.PauseMenu
 {
@@ -154,8 +154,8 @@ namespace NativeUI.PauseMenu
                 var hasBothBadges = hasRightBadge && hasLeftBadge;
                 var hasAnyBadge = hasRightBadge || hasLeftBadge;
 
-                new UIResRectangle(SafeSize.AddPoints(new Point(0, (itemSize.Height + 3) * i)), itemSize, (Index == c && Focused) ? Color.FromArgb(fullAlpha, Color.White) : Focused && hovering ? Color.FromArgb(100, 50, 50, 50) : Color.FromArgb(blackAlpha, Color.Black)).Draw();
-                new UIResText(Items[c].Text, SafeSize.AddPoints(new Point((hasBothBadges ? 60 : hasAnyBadge ? 30 : 6), 5 + (itemSize.Height + 3) * i)), 0.35f, Color.FromArgb(fullAlpha, (Index == c && Focused) ? Color.Black : Color.White)).Draw();
+                new UIResRectangle(SafeSize.AddPoints(new Point(0, (itemSize.Height + 3) * i)), itemSize, (Index == c && Focused) ? Color.FromArgb(fullAlpha, Colors.White) : Focused && hovering ? Color.FromArgb(100, 50, 50, 50) : Color.FromArgb(blackAlpha, Colors.Black)).Draw();
+                new UIResText(Items[c].Text, SafeSize.AddPoints(new Point((hasBothBadges ? 60 : hasAnyBadge ? 30 : 6), 5 + (itemSize.Height + 3) * i)), 0.35f, Color.FromArgb(fullAlpha, (Index == c && Focused) ? Colors.Black : Colors.White)).Draw();
 
                 if (hasLeftBadge && !hasRightBadge)
                 {
@@ -186,8 +186,8 @@ namespace NativeUI.PauseMenu
                 {
                     new UIResText(Items[c].RightLabel,
                         SafeSize.AddPoints(new Point(BottomRight.X - SafeSize.X - 5, 5 + (itemSize.Height + 3) * i)),
-                        0.35f, Color.FromArgb(fullAlpha, (Index == c && Focused) ? Color.Black : Color.White),
-                        Font.ChaletLondon, UIResText.Alignment.Right).Draw();
+                        0.35f, Color.FromArgb(fullAlpha, (Index == c && Focused) ? Colors.Black : Colors.White),
+                        Font.ChaletLondon, Alignment.Right).Draw();
                 }
 
                 if (Items[c] is UIMenuCheckboxItem)
@@ -213,21 +213,21 @@ namespace NativeUI.PauseMenu
 
                     var arrowLeft = new Sprite("commonmenu", "arrowleft", basePos, new Size(30, 30));
                     var arrowRight = new Sprite("commonmenu", "arrowright", basePos, new Size(30, 30));
-                    var itemText = new UIResText("", basePos, 0.35f, Color.White, Font.ChaletLondon,
-                        UIResText.Alignment.Left)
-                    { TextAlignment = UIResText.Alignment.Right };
+                    var itemText = new UIResText("", basePos, 0.35f, Colors.White, Font.ChaletLondon,
+                        Alignment.Left)
+                    { TextAlignment = Alignment.Right };
 
                     string caption = convItem.IndexToItem(convItem.Index).ToString();
                     float offset = StringMeasurer.MeasureString(caption, itemText.Font, itemText.Scale);
 
                     var selected = c == Index && Focused;
 
-                    itemText.Color = convItem.Enabled ? selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
+                    itemText.Color = convItem.Enabled ? selected ? Colors.Black : Colors.WhiteSmoke : Color.FromArgb(163, 159, 148);
 
                     itemText.Caption = caption;
 
-                    arrowLeft.Color = convItem.Enabled ? selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
-                    arrowRight.Color = convItem.Enabled ? selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
+                    arrowLeft.Color = convItem.Enabled ? selected ? Colors.Black : Colors.WhiteSmoke : Color.FromArgb(163, 159, 148);
+                    arrowRight.Color = convItem.Enabled ? selected ? Colors.Black : Colors.WhiteSmoke : Color.FromArgb(163, 159, 148);
 
                     arrowLeft.Position =
                         SafeSize.AddPoints(new Point(BottomRight.X - SafeSize.X - 60 - (int)offset, yoffset + (itemSize.Height + 3)*i));
