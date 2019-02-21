@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NativeUI</RootNamespace>
-    <AssemblyName>NativeUI</AssemblyName>
+    <AssemblyName>NativeUI.net</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -30,7 +30,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>bin\x64\Release\NativeUI.xml</DocumentationFile>
+    <DocumentationFile>bin\x64\Release\NativeUI.net.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CitizenFX.Core, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
