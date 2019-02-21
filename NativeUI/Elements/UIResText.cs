@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using GTA;
 using GTA.Native;
@@ -198,13 +198,6 @@ namespace NativeUI
             AddLongString(caption);
 
             Function.Call(Hash._DRAW_TEXT, x, y);
-        }
-
-        public enum Alignment
-        {
-            Left,
-            Centered,
-            Right,
         }
     }
 }
