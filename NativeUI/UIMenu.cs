@@ -1195,7 +1195,6 @@ namespace NativeUI
                     {
                         Function.Call(Hash._0x8DB8CFFD58B62552, 5);
                     }
-
                     if (Game.IsControlJustPressed(0, Control.Attack))
                         if (uiMenuItem.Selected && uiMenuItem.Enabled)
                         {
