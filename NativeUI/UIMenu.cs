@@ -1182,12 +1182,19 @@ namespace NativeUI
             {
                 int xpos = Offset.X + safezoneOffset.X;
                 int ypos = Offset.Y + 144 - 37 + _extraYOffset + (counter * 38) + safezoneOffset.Y;
+                int yposSelected = Offset.Y + 144 - 37 + _extraYOffset + safezoneOffset.Y + CurrentSelection * 38;
                 int xsize = 431 + WidthOffset;
                 const int ysize = 38;
                 UIMenuItem uiMenuItem = MenuItems[i];
                 if (IsMouseInBounds(new Point(xpos, ypos), new Size(xsize, ysize)))
                 {
                     uiMenuItem.Hovered = true;
+                    int res = IsMouseInListItemArrows(MenuItems[i], new Point(xpos, yposSelected),
+                        safezoneOffset);
+                    if (uiMenuItem.Hovered && res == 1 && MenuItems[i] is IListItem)
+                    {
+                        Function.Call(Hash._0x8DB8CFFD58B62552, 5);
+                    }
                     if (Game.IsControlJustPressed(0, Control.Attack))
                         if (uiMenuItem.Selected && uiMenuItem.Enabled)
                         {
@@ -1195,8 +1202,6 @@ namespace NativeUI
                                 IsMouseInListItemArrows(MenuItems[i], new Point(xpos, ypos),
                                     safezoneOffset) > 0)
                             {
-                                int res = IsMouseInListItemArrows(MenuItems[i], new Point(xpos, ypos),
-                                    safezoneOffset);
                                 switch (res)
                                 {
                                     case 1:
