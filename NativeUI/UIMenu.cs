@@ -470,6 +470,29 @@ namespace NativeUI
         }
 
         /// <summary>
+        /// Add an item at index n.
+        /// </summary>
+        /// <param name="item">Item object to be added. Can be normal item, checkbox or list item.</param>
+        /// <param name="index">Index to add the item at.</param>
+        public void AddItemAt(UIMenuItem item, int index)
+        {
+            int selectedItem = CurrentSelection;
+
+            item.Offset = Offset;
+            item.Parent = this;
+            MenuItems.Insert(index, item);
+
+            for (int i = index; i < MenuItems.Count; i++) // recalculate items positions
+            {
+                item.Position((i * 25) - 37 + _extraYOffset);
+            }
+
+            RecaulculateDescriptionPosition();
+
+            CurrentSelection = selectedItem;
+        }
+
+        /// <summary>
         /// Remove an item at index n.
         /// </summary>
         /// <param name="index">Index to remove the item at.</param>
