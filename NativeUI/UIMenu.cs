@@ -45,7 +45,6 @@ namespace NativeUI
     {
         #region Private Fields
         private readonly UIContainer _mainMenu;
-        private Sprite _logo;
         private readonly Sprite _background;
 
         private readonly UIResRectangle _descriptionBar;
@@ -53,8 +52,6 @@ namespace NativeUI
         private readonly UIResText _descriptionText;
         private readonly UIResText _counterText;
 
-        private UIResRectangle _tmpRectangle;
-        private string _customBanner;
         private int _activeItem = 1000;
 
         private bool _visible;
@@ -153,9 +150,9 @@ namespace NativeUI
 
         public Point Offset { get; }
 
-        public Sprite BannerSprite { get { return _logo; } }
-        public UIResRectangle BannerRectangle { get { return _tmpRectangle; } }
-        public string BannerTexture { get { return _customBanner; } }
+        public Sprite BannerSprite { get; private set; }
+        public UIResRectangle BannerRectangle { get; private set; }
+        public string BannerTexture { get; private set; }
 
         #endregion
 
@@ -234,7 +231,7 @@ namespace NativeUI
         /// <param name="customBanner">Path to your custom texture.</param>
         public UIMenu(string title, string subtitle, Point offset, string customBanner) : this(title, subtitle, offset, "commonmenu", "interaction_bgd")
         {
-            _customBanner = customBanner;
+            BannerTexture = customBanner;
         }
 
 
@@ -256,7 +253,7 @@ namespace NativeUI
             UpdateScaleform();
 
             _mainMenu = new UIContainer(new Point(0, 0), new Size(700, 500), Color.FromArgb(0, 0, 0, 0));
-            _logo = new Sprite(spriteLibrary, spriteName, new Point(0 + Offset.X, 0 + Offset.Y), new Size(431, 107));
+            BannerSprite = new Sprite(spriteLibrary, spriteName, new Point(0 + Offset.X, 0 + Offset.Y), new Size(431, 107));
             _mainMenu.Items.Add(Title = new UIResText(title, new Point(215 + Offset.X, 20 + Offset.Y), 1.15f, Color.White, Font.HouseScript, UIResText.Alignment.Centered));
             if (!String.IsNullOrWhiteSpace(subtitle))
             {
@@ -396,7 +393,7 @@ namespace NativeUI
         public void SetMenuWidthOffset(int widthOffset)
         {
             WidthOffset = widthOffset;
-            _logo.Size = new Size(431 + WidthOffset, 107);
+            BannerSprite.Size = new Size(431 + WidthOffset, 107);
             _mainMenu.Items[0].Position = new Point((WidthOffset + Offset.X + 431) / 2, 20 + Offset.Y); // Title
             _counterText.Position = new Point(425 + Offset.X + widthOffset, 110 + Offset.Y);
             if (_mainMenu.Items.Count >= 1)
@@ -404,9 +401,9 @@ namespace NativeUI
                 var tmp = (UIResRectangle)_mainMenu.Items[1];
                 tmp.Size = new Size(431 + WidthOffset, 37);
             }
-            if (_tmpRectangle != null)
+            if (BannerRectangle != null)
             {
-                _tmpRectangle.Size = new Size(431 + WidthOffset, 107);
+                BannerRectangle.Size = new Size(431 + WidthOffset, 107);
             }
         }
 
@@ -425,9 +422,9 @@ namespace NativeUI
         /// <param name="spriteBanner">Sprite object. The position and size does not matter.</param>
         public void SetBannerType(Sprite spriteBanner)
         {
-            _logo = spriteBanner;
-            _logo.Size = new Size(431 + WidthOffset, 107);
-            _logo.Position = new Point(Offset.X, Offset.Y);
+            BannerSprite = spriteBanner;
+            BannerSprite.Size = new Size(431 + WidthOffset, 107);
+            BannerSprite.Position = new Point(Offset.X, Offset.Y);
         }
 
         /// <summary>
@@ -436,10 +433,10 @@ namespace NativeUI
         /// <param name="rectangle">UIResRectangle object. Position and size does not matter.</param>
         public void SetBannerType(UIResRectangle rectangle)
         {
-            _logo = null;
-            _tmpRectangle = rectangle;
-            _tmpRectangle.Position = new Point(Offset.X, Offset.Y);
-            _tmpRectangle.Size = new Size(431 + WidthOffset, 107);
+            BannerSprite = null;
+            BannerRectangle = rectangle;
+            BannerRectangle.Position = new Point(Offset.X, Offset.Y);
+            BannerRectangle.Size = new Size(431 + WidthOffset, 107);
         }
 
         /// <summary>
@@ -448,7 +445,7 @@ namespace NativeUI
         /// <param name="pathToCustomSprite">Path to your sprite image.</param>
         public void SetBannerType(string pathToCustomSprite)
         {
-            _customBanner = pathToCustomSprite;
+            BannerTexture = pathToCustomSprite;
         }
 
         /// <summary>
@@ -1064,20 +1061,20 @@ namespace NativeUI
 
             if (ReDraw) DrawCalculations();
 
-            if (String.IsNullOrWhiteSpace(_customBanner))
+            if (String.IsNullOrWhiteSpace(BannerTexture))
             {
-                if (_logo != null)
-                    _logo.Draw();
+                if (BannerSprite != null)
+                    BannerSprite.Draw();
                 else
                 {
-                    _tmpRectangle?.Draw();
+                    BannerRectangle?.Draw();
                 }
             }
             else
             {
                 Point start = ((ScaleWithSafezone) ? Safe : new Point(0, 0));
 
-                Sprite.DrawTexture(_customBanner, new Point(start.X + Offset.X, start.Y + Offset.Y), DrawWidth);
+                Sprite.DrawTexture(BannerTexture, new Point(start.X + Offset.X, start.Y + Offset.Y), DrawWidth);
             }
             _mainMenu.Draw();
             if (MenuItems.Count == 0)
