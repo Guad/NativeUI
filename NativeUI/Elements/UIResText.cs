@@ -29,7 +29,6 @@ namespace NativeUI
 
         public Alignment TextAlignment { get; set; }
         public bool DropShadow { get; set; } = false;
-        public bool Outline { get; set; } = false;
 
         /// <summary>
         /// Push a long string into the stack.
