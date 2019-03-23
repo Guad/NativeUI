@@ -40,7 +40,7 @@ public class MenuExample : Script
         {
             if (item == newitem)
             {
-                dish = item.IndexToItem(index).ToString();
+                dish = item.Items[index].ToString();
                 UI.Notify("Preparing ~b~" + dish + "~w~...");
             }
 

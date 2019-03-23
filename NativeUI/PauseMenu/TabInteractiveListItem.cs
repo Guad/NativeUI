@@ -216,7 +216,7 @@ namespace NativeUI.PauseMenu
                         UIResText.Alignment.Left)
                     { TextAlignment = UIResText.Alignment.Right };
 
-                    string caption = convItem.IndexToItem(convItem.Index).ToString();
+                    string caption = convItem.Items[convItem.Index].ToString();
                     float offset = StringMeasurer.MeasureString(caption, itemText.Font, itemText.Scale);
 
                     var selected = c == Index && Focused;
