@@ -671,7 +671,7 @@ namespace NativeUI
         {
             if (MenuItems[CurrentSelection] is UIMenuListItem)
             {
-                var it = (UIMenuListItem) MenuItems[CurrentSelection];
+                var it = (UIMenuListItem)MenuItems[CurrentSelection];
                 it.Index = it.Index - 1;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
                 ListChange(it, it.Index);
@@ -679,14 +679,14 @@ namespace NativeUI
             }
             else if (MenuItems[CurrentSelection] is UIMenuDynamicListItem)
             {
-                var it = (UIMenuDynamicListItem) MenuItems[CurrentSelection];
+                UIMenuDynamicListItem it = (UIMenuDynamicListItem)MenuItems[CurrentSelection];
                 string newItem = it.Callback(it, UIMenuDynamicListItem.ChangeDirection.Left);
                 it.CurrentListItem = newItem;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
             }
             else if (MenuItems[CurrentSelection] is UIMenuSliderItem)
             {
-                var it = (UIMenuSliderItem)MenuItems[CurrentSelection];
+                UIMenuSliderItem it = (UIMenuSliderItem)MenuItems[CurrentSelection];
                 it.Value -= it.Multiplier;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
                 SliderChange(it, it.Value);
@@ -701,7 +701,7 @@ namespace NativeUI
         {
             if (MenuItems[CurrentSelection] is UIMenuListItem)
             {
-                var it = (UIMenuListItem) MenuItems[CurrentSelection];
+                UIMenuListItem it = (UIMenuListItem)MenuItems[CurrentSelection];
                 it.Index++;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
                 ListChange(it, it.Index);
@@ -709,14 +709,14 @@ namespace NativeUI
             }
             else if (MenuItems[CurrentSelection] is UIMenuDynamicListItem)
             {
-                var it = (UIMenuDynamicListItem)MenuItems[CurrentSelection];
+                UIMenuDynamicListItem it = (UIMenuDynamicListItem)MenuItems[CurrentSelection];
                 string newItem = it.Callback(it, UIMenuDynamicListItem.ChangeDirection.Right);
                 it.CurrentListItem = newItem;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
             }
             else if (MenuItems[CurrentSelection] is UIMenuSliderItem)
             {
-                var it = (UIMenuSliderItem)MenuItems[CurrentSelection];
+                UIMenuSliderItem it = (UIMenuSliderItem)MenuItems[CurrentSelection];
                 it.Value += it.Multiplier;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
                 SliderChange(it, it.Value);
@@ -736,7 +736,7 @@ namespace NativeUI
             }
             if (MenuItems[CurrentSelection] is UIMenuCheckboxItem)
             {
-                var it = (UIMenuCheckboxItem)MenuItems[CurrentSelection];
+                UIMenuCheckboxItem it = (UIMenuCheckboxItem)MenuItems[CurrentSelection];
                 it.Checked = !it.Checked;
                 Game.PlaySound(AUDIO_SELECT, AUDIO_LIBRARY);
                 CheckboxChange(it, it.Checked);
