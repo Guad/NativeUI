@@ -122,10 +122,10 @@ namespace NativeUI
         .ToList();
 
         // Draw Variables
-        private Point safe { get; set; }
-        private Size backgroundSize { get; set; }
-        private Size drawWidth { get; set; }
-        private bool reDraw = true;
+        private Point Safe { get; set; }
+        private Size BackgroundSize { get; set; }
+        private Size DrawWidth { get; set; }
+        private bool ReDraw = true;
 
         internal readonly static string _selectTextLocalized = Game.GetGXTEntry("HUD_INPUT2");
         internal readonly static string _backTextLocalized = Game.GetGXTEntry("HUD_INPUT3");
@@ -503,7 +503,7 @@ namespace NativeUI
             _maxItem = MaxItemsOnScreen;
             _minItem = 0;
 
-            reDraw = true;
+            ReDraw = true;
         }
 
         /// <summary>
@@ -534,11 +534,11 @@ namespace NativeUI
 
         private void DrawCalculations()
         {
-            drawWidth = new Size(431 + WidthOffset, 107);
+            DrawWidth = new Size(431 + WidthOffset, 107);
 
-            safe = GetSafezoneBounds();
+            Safe = GetSafezoneBounds();
 
-            backgroundSize = Size > MaxItemsOnScreen + 1 ? new Size(431 + WidthOffset, 38 * (MaxItemsOnScreen + 1)) : new Size(431 + WidthOffset, 38 * Size);
+            BackgroundSize = Size > MaxItemsOnScreen + 1 ? new Size(431 + WidthOffset, 38 * (MaxItemsOnScreen + 1)) : new Size(431 + WidthOffset, 38 * Size);
 
             _extraRectangleUp.Size = new Size(431 + WidthOffset, 18);
 
@@ -546,7 +546,7 @@ namespace NativeUI
 
             _upAndDownSprite.Position = new Point(190 + Offset.X + (WidthOffset > 0 ? (WidthOffset / 2) : WidthOffset), 147 + 37 * (MaxItemsOnScreen + 1) + Offset.Y - 37 + _extraYOffset);
 
-            reDraw = false;
+            ReDraw = false;
 
             if (MenuItems.Count != 0 && !String.IsNullOrWhiteSpace(MenuItems[_activeItem % (MenuItems.Count)].Description))
             {
@@ -1062,7 +1062,7 @@ namespace NativeUI
                 Function.Call((Hash)0xF5A2C681787E579D, 0f, 0f, 0f, 0f); // stuff
             }
 
-            if (reDraw) DrawCalculations();
+            if (ReDraw) DrawCalculations();
 
             if (String.IsNullOrWhiteSpace(_customBanner))
             {
@@ -1075,9 +1075,9 @@ namespace NativeUI
             }
             else
             {
-                Point start = ((ScaleWithSafezone) ? safe : new Point(0, 0));
+                Point start = ((ScaleWithSafezone) ? Safe : new Point(0, 0));
 
-                Sprite.DrawTexture(_customBanner, new Point(start.X + Offset.X, start.Y + Offset.Y), drawWidth);
+                Sprite.DrawTexture(_customBanner, new Point(start.X + Offset.X, start.Y + Offset.Y), DrawWidth);
             }
             _mainMenu.Draw();
             if (MenuItems.Count == 0)
@@ -1086,7 +1086,7 @@ namespace NativeUI
                 return;
             }
 
-            _background.Size = backgroundSize;
+            _background.Size = BackgroundSize;
 
             _background.Draw();
 
@@ -1458,7 +1458,7 @@ namespace NativeUI
         #region Event Invokers
         protected virtual void IndexChange(int newindex)
         {
-            reDraw = true;
+            ReDraw = true;
 
             OnIndexChange?.Invoke(this, newindex);
         }
