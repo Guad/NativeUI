@@ -220,7 +220,7 @@ namespace NativeUI.PauseMenu
                 new UIResText(Title, new Point(safe.X, safe.Y - 80), 1f, Color.White, Font.ChaletComprimeCologne,
                     UIResText.Alignment.Left)
                 {
-                    DropShadow = true,
+                    Shadow = true,
                 }.Draw();
 
                 if (Photo == null)
@@ -238,7 +238,7 @@ namespace NativeUI.PauseMenu
                 new UIResText(Name, new Point((int)res.Width - safe.X - 70, safe.Y - 95), 0.7f, Color.White,
                     Font.ChaletComprimeCologne, UIResText.Alignment.Right)
                 {
-                    DropShadow = true,
+                    Shadow = true,
                 }.Draw();
 
                 string t = Money;
@@ -251,7 +251,7 @@ namespace NativeUI.PauseMenu
                 new UIResText(t, new Point((int)res.Width - safe.X - 70, safe.Y - 60), 0.4f, Color.White,
                     Font.ChaletComprimeCologne, UIResText.Alignment.Right)
                 {
-                    DropShadow = true,
+                    Shadow = true,
                 }.Draw();
 
                 string subt = MoneySubtitle;
@@ -263,7 +263,7 @@ namespace NativeUI.PauseMenu
                 new UIResText(subt, new Point((int)res.Width - safe.X - 70, safe.Y - 40), 0.4f, Color.White,
                     Font.ChaletComprimeCologne, UIResText.Alignment.Right)
                 {
-                    DropShadow = true,
+                    Shadow = true,
                 }.Draw();
 
                 for (int i = 0; i < Tabs.Count; i++)
