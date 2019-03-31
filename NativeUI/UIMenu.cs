@@ -43,7 +43,6 @@ namespace NativeUI
     {
         #region Private Fields
         private readonly Container _mainMenu;
-        private Sprite _logo;
         private readonly Sprite _background;
 
         private readonly UIResRectangle _descriptionBar;
@@ -51,8 +50,6 @@ namespace NativeUI
         private readonly UIResText _descriptionText;
         private readonly UIResText _counterText;
 
-        private UIResRectangle _tmpRectangle;
-        private string _customBanner;
         private int _activeItem = 1000;
 
         private bool _visible;
@@ -120,10 +117,10 @@ namespace NativeUI
         .ToList();
 
         // Draw Variables
-        private Point safe { get; set; }
-        private Size backgroundSize { get; set; }
-        private Size drawWidth { get; set; }
-        private bool reDraw = true;
+        private Point Safe { get; set; }
+        private Size BackgroundSize { get; set; }
+        private Size DrawWidth { get; set; }
+        private bool ReDraw = true;
 
         internal readonly static string _selectTextLocalized = Game.GetGXTEntry("HUD_INPUT2");
         internal readonly static string _backTextLocalized = Game.GetGXTEntry("HUD_INPUT3");
@@ -151,9 +148,9 @@ namespace NativeUI
 
         public Point Offset { get; }
 
-        public Sprite BannerSprite { get { return _logo; } }
-        public UIResRectangle BannerRectangle { get { return _tmpRectangle; } }
-        public string BannerTexture { get { return _customBanner; } }
+        public Sprite BannerSprite { get; private set; }
+        public UIResRectangle BannerRectangle { get; private set; }
+        public string BannerTexture { get; private set; }
 
         #endregion
 
@@ -232,7 +229,7 @@ namespace NativeUI
         /// <param name="customBanner">Path to your custom texture.</param>
         public UIMenu(string title, string subtitle, Point offset, string customBanner) : this(title, subtitle, offset, "commonmenu", "interaction_bgd")
         {
-            _customBanner = customBanner;
+            BannerTexture = customBanner;
         }
 
 
@@ -253,9 +250,9 @@ namespace NativeUI
             _instructionalButtonsScaleform = new Scaleform("instructional_buttons");
             UpdateScaleform();
 
-            _mainMenu = new Container(new Point(0, 0), new Size(700, 500), Color.FromArgb(0, 0, 0, 0));
-            _logo = new Sprite(spriteLibrary, spriteName, new Point(0 + Offset.X, 0 + Offset.Y), new Size(431, 107));
-            _mainMenu.Items.Add(Title = new UIResText(title, new Point(215 + Offset.X, 20 + Offset.Y), 1.15f, Colors.White, Font.HouseScript, Alignment.Center));
+            _mainMenu = new UIContainer(new Point(0, 0), new Size(700, 500), Color.FromArgb(0, 0, 0, 0));
+            BannerSprite = new Sprite(spriteLibrary, spriteName, new Point(0 + Offset.X, 0 + Offset.Y), new Size(431, 107));
+            _mainMenu.Items.Add(Title = new UIResText(title, new Point(215 + Offset.X, 20 + Offset.Y), 1.15f, Color.White, Font.HouseScript, UIResText.Alignment.Centered));
             if (!String.IsNullOrWhiteSpace(subtitle))
             {
                 _mainMenu.Items.Add(new UIResRectangle(new Point(0 + offset.X, 107 + Offset.Y), new Size(431, 37), Colors.Black));
@@ -394,7 +391,7 @@ namespace NativeUI
         public void SetMenuWidthOffset(int widthOffset)
         {
             WidthOffset = widthOffset;
-            _logo.Size = new Size(431 + WidthOffset, 107);
+            BannerSprite.Size = new Size(431 + WidthOffset, 107);
             _mainMenu.Items[0].Position = new Point((WidthOffset + Offset.X + 431) / 2, 20 + Offset.Y); // Title
             _counterText.Position = new Point(425 + Offset.X + widthOffset, 110 + Offset.Y);
             if (_mainMenu.Items.Count >= 1)
@@ -402,9 +399,9 @@ namespace NativeUI
                 var tmp = (UIResRectangle)_mainMenu.Items[1];
                 tmp.Size = new Size(431 + WidthOffset, 37);
             }
-            if (_tmpRectangle != null)
+            if (BannerRectangle != null)
             {
-                _tmpRectangle.Size = new Size(431 + WidthOffset, 107);
+                BannerRectangle.Size = new Size(431 + WidthOffset, 107);
             }
         }
 
@@ -423,9 +420,9 @@ namespace NativeUI
         /// <param name="spriteBanner">Sprite object. The position and size does not matter.</param>
         public void SetBannerType(Sprite spriteBanner)
         {
-            _logo = spriteBanner;
-            _logo.Size = new Size(431 + WidthOffset, 107);
-            _logo.Position = new Point(Offset.X, Offset.Y);
+            BannerSprite = spriteBanner;
+            BannerSprite.Size = new Size(431 + WidthOffset, 107);
+            BannerSprite.Position = new Point(Offset.X, Offset.Y);
         }
 
         /// <summary>
@@ -434,10 +431,10 @@ namespace NativeUI
         /// <param name="rectangle">UIResRectangle object. Position and size does not matter.</param>
         public void SetBannerType(UIResRectangle rectangle)
         {
-            _logo = null;
-            _tmpRectangle = rectangle;
-            _tmpRectangle.Position = new Point(Offset.X, Offset.Y);
-            _tmpRectangle.Size = new Size(431 + WidthOffset, 107);
+            BannerSprite = null;
+            BannerRectangle = rectangle;
+            BannerRectangle.Position = new Point(Offset.X, Offset.Y);
+            BannerRectangle.Size = new Size(431 + WidthOffset, 107);
         }
 
         /// <summary>
@@ -446,7 +443,7 @@ namespace NativeUI
         /// <param name="pathToCustomSprite">Path to your sprite image.</param>
         public void SetBannerType(string pathToCustomSprite)
         {
-            _customBanner = pathToCustomSprite;
+            BannerTexture = pathToCustomSprite;
         }
 
         /// <summary>
@@ -501,7 +498,7 @@ namespace NativeUI
             _maxItem = MaxItemsOnScreen;
             _minItem = 0;
 
-            reDraw = true;
+            ReDraw = true;
         }
 
         /// <summary>
@@ -532,11 +529,11 @@ namespace NativeUI
 
         private void DrawCalculations()
         {
-            drawWidth = new Size(431 + WidthOffset, 107);
+            DrawWidth = new Size(431 + WidthOffset, 107);
 
-            safe = GetSafezoneBounds();
+            Safe = GetSafezoneBounds();
 
-            backgroundSize = Size > MaxItemsOnScreen + 1 ? new Size(431 + WidthOffset, 38 * (MaxItemsOnScreen + 1)) : new Size(431 + WidthOffset, 38 * Size);
+            BackgroundSize = Size > MaxItemsOnScreen + 1 ? new Size(431 + WidthOffset, 38 * (MaxItemsOnScreen + 1)) : new Size(431 + WidthOffset, 38 * Size);
 
             _extraRectangleUp.Size = new Size(431 + WidthOffset, 18);
 
@@ -544,7 +541,7 @@ namespace NativeUI
 
             _upAndDownSprite.Position = new Point(190 + Offset.X + (WidthOffset > 0 ? (WidthOffset / 2) : WidthOffset), 147 + 37 * (MaxItemsOnScreen + 1) + Offset.Y - 37 + _extraYOffset);
 
-            reDraw = false;
+            ReDraw = false;
 
             if (MenuItems.Count != 0 && !String.IsNullOrWhiteSpace(MenuItems[_activeItem % (MenuItems.Count)].Description))
             {
@@ -669,7 +666,7 @@ namespace NativeUI
         {
             if (MenuItems[CurrentSelection] is UIMenuListItem)
             {
-                var it = (UIMenuListItem) MenuItems[CurrentSelection];
+                var it = (UIMenuListItem)MenuItems[CurrentSelection];
                 it.Index = it.Index - 1;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
                 ListChange(it, it.Index);
@@ -677,14 +674,14 @@ namespace NativeUI
             }
             else if (MenuItems[CurrentSelection] is UIMenuDynamicListItem)
             {
-                var it = (UIMenuDynamicListItem) MenuItems[CurrentSelection];
+                UIMenuDynamicListItem it = (UIMenuDynamicListItem)MenuItems[CurrentSelection];
                 string newItem = it.Callback(it, UIMenuDynamicListItem.ChangeDirection.Left);
                 it.CurrentListItem = newItem;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
             }
             else if (MenuItems[CurrentSelection] is UIMenuSliderItem)
             {
-                var it = (UIMenuSliderItem)MenuItems[CurrentSelection];
+                UIMenuSliderItem it = (UIMenuSliderItem)MenuItems[CurrentSelection];
                 it.Value -= it.Multiplier;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
                 SliderChange(it, it.Value);
@@ -699,7 +696,7 @@ namespace NativeUI
         {
             if (MenuItems[CurrentSelection] is UIMenuListItem)
             {
-                var it = (UIMenuListItem) MenuItems[CurrentSelection];
+                UIMenuListItem it = (UIMenuListItem)MenuItems[CurrentSelection];
                 it.Index++;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
                 ListChange(it, it.Index);
@@ -707,14 +704,14 @@ namespace NativeUI
             }
             else if (MenuItems[CurrentSelection] is UIMenuDynamicListItem)
             {
-                var it = (UIMenuDynamicListItem)MenuItems[CurrentSelection];
+                UIMenuDynamicListItem it = (UIMenuDynamicListItem)MenuItems[CurrentSelection];
                 string newItem = it.Callback(it, UIMenuDynamicListItem.ChangeDirection.Right);
                 it.CurrentListItem = newItem;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
             }
             else if (MenuItems[CurrentSelection] is UIMenuSliderItem)
             {
-                var it = (UIMenuSliderItem)MenuItems[CurrentSelection];
+                UIMenuSliderItem it = (UIMenuSliderItem)MenuItems[CurrentSelection];
                 it.Value += it.Multiplier;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
                 SliderChange(it, it.Value);
@@ -734,7 +731,7 @@ namespace NativeUI
             }
             if (MenuItems[CurrentSelection] is UIMenuCheckboxItem)
             {
-                var it = (UIMenuCheckboxItem)MenuItems[CurrentSelection];
+                UIMenuCheckboxItem it = (UIMenuCheckboxItem)MenuItems[CurrentSelection];
                 it.Checked = !it.Checked;
                 Game.PlaySound(AUDIO_SELECT, AUDIO_LIBRARY);
                 CheckboxChange(it, it.Checked);
@@ -1066,22 +1063,22 @@ namespace NativeUI
                 Function.Call((Hash)0xF5A2C681787E579D, 0f, 0f, 0f, 0f); // stuff
             }
 
-            if (reDraw) DrawCalculations();
+            if (ReDraw) DrawCalculations();
 
-            if (String.IsNullOrWhiteSpace(_customBanner))
+            if (String.IsNullOrWhiteSpace(BannerTexture))
             {
-                if (_logo != null)
-                    _logo.Draw();
+                if (BannerSprite != null)
+                    BannerSprite.Draw();
                 else
                 {
-                    _tmpRectangle?.Draw();
+                    BannerRectangle?.Draw();
                 }
             }
             else
             {
-                Point start = ((ScaleWithSafezone) ? safe : new Point(0, 0));
+                Point start = ((ScaleWithSafezone) ? Safe : new Point(0, 0));
 
-                Sprite.DrawTexture(_customBanner, new Point(start.X + Offset.X, start.Y + Offset.Y), drawWidth);
+                Sprite.DrawTexture(BannerTexture, new Point(start.X + Offset.X, start.Y + Offset.Y), DrawWidth);
             }
             _mainMenu.Draw();
             if (MenuItems.Count == 0)
@@ -1090,7 +1087,7 @@ namespace NativeUI
                 return;
             }
 
-            _background.Size = backgroundSize;
+            _background.Size = BackgroundSize;
 
             _background.Draw();
 
@@ -1463,7 +1460,7 @@ namespace NativeUI
         #region Event Invokers
         protected virtual void IndexChange(int newindex)
         {
-            reDraw = true;
+            ReDraw = true;
 
             OnIndexChange?.Invoke(this, newindex);
         }

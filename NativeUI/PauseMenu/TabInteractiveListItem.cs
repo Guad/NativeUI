@@ -25,7 +25,6 @@ namespace NativeUI.PauseMenu
         protected const int MaxItemsPerView = 15;
         protected int _minItem;
         protected int _maxItem;
-        private bool _focused;
 
         public void MoveDown()
         {
@@ -217,7 +216,7 @@ namespace NativeUI.PauseMenu
                         Alignment.Left)
                     { TextAlignment = Alignment.Right };
 
-                    string caption = convItem.IndexToItem(convItem.Index).ToString();
+                    string caption = convItem.Items[convItem.Index].ToString();
                     float offset = StringMeasurer.MeasureString(caption, itemText.Font, itemText.Scale);
 
                     var selected = c == Index && Focused;
