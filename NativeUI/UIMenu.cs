@@ -250,9 +250,9 @@ namespace NativeUI
             _instructionalButtonsScaleform = new Scaleform("instructional_buttons");
             UpdateScaleform();
 
-            _mainMenu = new UIContainer(new Point(0, 0), new Size(700, 500), Color.FromArgb(0, 0, 0, 0));
+            _mainMenu = new Container(new Point(0, 0), new Size(700, 500), Color.FromArgb(0, 0, 0, 0));
             BannerSprite = new Sprite(spriteLibrary, spriteName, new Point(0 + Offset.X, 0 + Offset.Y), new Size(431, 107));
-            _mainMenu.Items.Add(Title = new UIResText(title, new Point(215 + Offset.X, 20 + Offset.Y), 1.15f, Color.White, Font.HouseScript, UIResText.Alignment.Centered));
+            _mainMenu.Items.Add(Title = new UIResText(title, new Point(215 + Offset.X, 20 + Offset.Y), 1.15f, Colors.White, Font.HouseScript, Alignment.Center));
             if (!String.IsNullOrWhiteSpace(subtitle))
             {
                 _mainMenu.Items.Add(new UIResRectangle(new Point(0 + offset.X, 107 + Offset.Y), new Size(431, 37), Colors.Black));
@@ -1194,7 +1194,7 @@ namespace NativeUI
                         safezoneOffset);
                     if (uiMenuItem.Hovered && res == 1 && MenuItems[i] is IListItem)
                     {
-                        Function.Call(Hash._0x8DB8CFFD58B62552, 5);
+                        Function.Call(Hash._SET_CURSOR_SPRITE, 5);
                     }
                     if (Game.IsControlJustPressed(0, Control.Attack))
                         if (uiMenuItem.Selected && uiMenuItem.Enabled)
