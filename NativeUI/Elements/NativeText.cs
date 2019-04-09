@@ -24,14 +24,14 @@ namespace NativeUI.Elements
         /// <summary>
         /// Draws the text on screen.
         /// </summary>
-        public void Draw()
-        {
-
-        }
-
+        public void Draw() => Draw(Size.Empty);
+        
         /// <summary>
         /// Draws the text on screen with the specified offset.
         /// </summary>
-        public void Draw(Size offset) => Draw();
+        public void Draw(Size offset)
+        {
+
+        }
     }
 }
