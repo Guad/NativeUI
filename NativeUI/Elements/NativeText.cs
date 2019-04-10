@@ -1,4 +1,4 @@
-using GTA;
+﻿using GTA;
 using System.Drawing;
 
 namespace NativeUI.Elements
@@ -56,6 +56,20 @@ namespace NativeUI.Elements
         /// </summary>
         public Color Color { get; set; }
 
+        #endregion
+
+        #region Constructors
+
+        public NativeText(string caption)
+        {
+            // Start by storing our properties
+            Caption = caption;
+        }
+
+        #endregion
+
+        #region Drawing
+
         /// <summary>
         /// Draws the text on screen.
         /// </summary>
@@ -68,5 +82,7 @@ namespace NativeUI.Elements
         {
 
         }
+
+        #endregion
     }
 }
