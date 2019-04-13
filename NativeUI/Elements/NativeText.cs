@@ -1,4 +1,4 @@
-﻿using GTA;
+using GTA;
 using GTA.Native;
 using System;
 using System.Drawing;
@@ -164,22 +164,7 @@ namespace NativeUI.Elements
 
             // Start adding the text
             Function.Call(Hash._SET_TEXT_ENTRY, "jamyfafi");
-            // If the UTF-8 byte coint matches the total text length
-            if (Encoding.UTF8.GetByteCount(Caption) == Caption.Length)
-            {
-                // Iterate over the string length as long as is not over 99
-                for (int i = 0; i < Caption.Length; i += 99)
-                {
-                    // Create a substring based on a random value
-                    string SubString = Caption.Substring(i, Math.Min(99, Caption.Length - i));
-                    // And add that string
-                    Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, SubString);
-                }
-            }
-            else
-            {
-                // TODO from AddLongStringForUtf8
-            }
+            Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, Caption);
             // And draw it
             Function.Call(Hash._DRAW_TEXT, _Relative.X, _Relative.Y);
         }
