@@ -1,8 +1,7 @@
 using GTA;
 using GTA.Native;
-using System;
+using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 
 namespace NativeUI.Elements
 {
@@ -21,6 +20,15 @@ namespace NativeUI.Elements
     /// </summary>
     public class NativeText : UIElement
     {
+        #region Consistent Values
+
+        /// <summary>
+        /// Max size of every Caption chunk.
+        /// </summary>
+        private const int ChunkSize = 90;
+
+        #endregion
+
         #region Private Properties
 
         /// <summary>
@@ -43,6 +51,14 @@ namespace NativeUI.Elements
         /// Internal width calculation.
         /// </summary>
         private float Width = 0f;
+        /// <summary>
+        /// List of chunks of the Caption.
+        /// </summary>
+        private List<string> Chunks = new List<string>();
+        /// <summary>
+        /// Internal storage of the caption.
+        /// </summary>
+        private string _Caption = "";
 
         #endregion
 
@@ -55,7 +71,16 @@ namespace NativeUI.Elements
         /// <summary>
         /// The UTF-8 string to draw on the screen.
         /// </summary>
-        public string Caption { get; set; } = "";
+        public string Caption
+        {
+            get => _Caption;
+            set // F
+            {
+                _Caption = value;
+                Chunks.Clear();
+                Chunks.Add(value);
+            }
+        }
         /// <summary>
         /// The position of the text
         /// </summary>
@@ -174,9 +199,14 @@ namespace NativeUI.Elements
                 Function.Call(Hash.SET_TEXT_WRAP, _Relative.X, CalculatedWrap);
             }
 
-            // Start adding the text
-            Function.Call(Hash._SET_TEXT_ENTRY, "jamyfafi");
-            Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, Caption);
+            // Time to draw everything!
+            // Call BEGIN_TEXT_COMMAND_DISPLAY_TEXT to start sending text
+            Function.Call(Hash._SET_TEXT_ENTRY, "STRING");
+            // Then, send the string on chunks of 90 characters
+            foreach (string Chunk in Chunks)
+            {
+                Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, Chunk);
+            }
             // And draw it
             Function.Call(Hash._DRAW_TEXT, _Relative.X, _Relative.Y);
         }
