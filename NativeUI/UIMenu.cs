@@ -667,27 +667,24 @@ namespace NativeUI
         /// </summary>
         public void GoLeft()
         {
-            if (MenuItems[CurrentSelection] is UIMenuListItem)
+            if (MenuItems[CurrentSelection] is UIMenuListItem list)
             {
-                var it = (UIMenuListItem)MenuItems[CurrentSelection];
-                it.Index = it.Index - 1;
+                list.Index = list.Index - 1;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
-                ListChange(it, it.Index);
-                it.ListChangedTrigger(it.Index);
+                ListChange(list, list.Index);
+                list.ListChangedTrigger(list.Index);
             }
-            else if (MenuItems[CurrentSelection] is UIMenuDynamicListItem)
+            else if (MenuItems[CurrentSelection] is UIMenuDynamicListItem dynamic)
             {
-                UIMenuDynamicListItem it = (UIMenuDynamicListItem)MenuItems[CurrentSelection];
-                string newItem = it.Callback(it, UIMenuDynamicListItem.ChangeDirection.Left);
-                it.CurrentListItem = newItem;
+                string newItem = dynamic.Callback(dynamic, UIMenuDynamicListItem.ChangeDirection.Left);
+                dynamic.CurrentListItem = newItem;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
             }
-            else if (MenuItems[CurrentSelection] is UIMenuSliderItem)
+            else if (MenuItems[CurrentSelection] is UIMenuSliderItem slider)
             {
-                UIMenuSliderItem it = (UIMenuSliderItem)MenuItems[CurrentSelection];
-                it.Value -= it.Multiplier;
+                slider.Value -= slider.Multiplier;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
-                SliderChange(it, it.Value);
+                SliderChange(slider, slider.Value);
             }
         }
 
@@ -697,27 +694,24 @@ namespace NativeUI
         /// </summary>
         public void GoRight()
         {
-            if (MenuItems[CurrentSelection] is UIMenuListItem)
+            if (MenuItems[CurrentSelection] is UIMenuListItem list)
             {
-                UIMenuListItem it = (UIMenuListItem)MenuItems[CurrentSelection];
-                it.Index++;
+                list.Index++;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
-                ListChange(it, it.Index);
-                it.ListChangedTrigger(it.Index);
+                ListChange(list, list.Index);
+                list.ListChangedTrigger(list.Index);
             }
-            else if (MenuItems[CurrentSelection] is UIMenuDynamicListItem)
+            else if (MenuItems[CurrentSelection] is UIMenuDynamicListItem dynamic)
             {
-                UIMenuDynamicListItem it = (UIMenuDynamicListItem)MenuItems[CurrentSelection];
-                string newItem = it.Callback(it, UIMenuDynamicListItem.ChangeDirection.Right);
-                it.CurrentListItem = newItem;
+                string newItem = dynamic.Callback(dynamic, UIMenuDynamicListItem.ChangeDirection.Right);
+                dynamic.CurrentListItem = newItem;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
             }
-            else if (MenuItems[CurrentSelection] is UIMenuSliderItem)
+            else if (MenuItems[CurrentSelection] is UIMenuSliderItem slider)
             {
-                UIMenuSliderItem it = (UIMenuSliderItem)MenuItems[CurrentSelection];
-                it.Value += it.Multiplier;
+                slider.Value += slider.Multiplier;
                 Game.PlaySound(AUDIO_LEFTRIGHT, AUDIO_LIBRARY);
-                SliderChange(it, it.Value);
+                SliderChange(slider, slider.Value);
             }
         }
 
@@ -732,13 +726,12 @@ namespace NativeUI
                 Game.PlaySound(AUDIO_ERROR, AUDIO_LIBRARY);
                 return;
             }
-            if (MenuItems[CurrentSelection] is UIMenuCheckboxItem)
+            if (MenuItems[CurrentSelection] is UIMenuCheckboxItem checkbox)
             {
-                UIMenuCheckboxItem it = (UIMenuCheckboxItem)MenuItems[CurrentSelection];
-                it.Checked = !it.Checked;
+                checkbox.Checked = !checkbox.Checked;
                 Game.PlaySound(AUDIO_SELECT, AUDIO_LIBRARY);
-                CheckboxChange(it, it.Checked);
-                it.CheckboxEventTrigger();
+                CheckboxChange(checkbox, checkbox.Checked);
+                checkbox.CheckboxEventTrigger();
             }
             else
             {
