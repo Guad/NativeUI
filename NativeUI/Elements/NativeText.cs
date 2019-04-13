@@ -201,7 +201,7 @@ namespace NativeUI.Elements
 
             // Time to draw everything!
             // Call BEGIN_TEXT_COMMAND_DISPLAY_TEXT to start sending text
-            Function.Call(Hash._SET_TEXT_ENTRY, "STRING");
+            Function.Call(Hash._SET_TEXT_ENTRY, "CELL_EMAIL_BCON");
             // Then, send the string on chunks of 90 characters
             foreach (string Chunk in Chunks)
             {
