@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NativeUI.Elements;
+using System;
 using System.Drawing;
 
 namespace NativeUI
@@ -9,13 +10,13 @@ namespace NativeUI
     public class UIMenuItem
     {
         protected UIResRectangle _rectangle;
-        protected UIResText _text;
+        protected NativeText _text;
         protected Sprite _selectedSprite;
 
         protected Sprite _badgeLeft;
         protected Sprite _badgeRight;
 
-        protected UIResText _labelText;
+        protected NativeText _labelText;
 
         private readonly Color _disabledColor = Color.FromArgb(163, 159, 148); // Why allocating memory for same color every time?
 
@@ -43,14 +44,14 @@ namespace NativeUI
             Enabled = true;
 
             _rectangle = new UIResRectangle(new Point(0, 0), new Size(431, 38), Color.FromArgb(20, 255, 255, 255)); // Color.FromArgb(150, 0, 0, 0)
-            _text = new UIResText(text, new Point(8, 0), 0.33f, Color.WhiteSmoke, GTA.Font.ChaletLondon, UIResText.Alignment.Left);
+            _text = new NativeText(text, new Point(8, 0), 0.33f, Color.WhiteSmoke, GTA.Font.ChaletLondon, TextAlignment.Left);
             Description = description;
             _selectedSprite = new Sprite("commonmenu", "gradient_nav", new Point(0, 0), new Size(431, 38));
 
             _badgeLeft = new Sprite("commonmenu", "", new Point(0, 0), new Size(40, 40));
             _badgeRight = new Sprite("commonmenu", "", new Point(0, 0), new Size(40, 40));
 
-            _labelText = new UIResText("", new Point(0, 0), 0.35f) {TextAlignment = UIResText.Alignment.Right};
+            _labelText = new NativeText("", new Point(0, 0), 0.35f) {Alignment = TextAlignment.Right};
         }
 
 

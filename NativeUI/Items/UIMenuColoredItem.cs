@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using NativeUI.Elements;
+using System.Drawing;
 
 namespace NativeUI
 {
@@ -36,13 +37,13 @@ namespace NativeUI
         {
             _selectedSprite = new Sprite("commonmenu", "gradient_nav", new Point(0, 0), new Size(431, 38), 0, HighlightColor);
             _rectangle = new UIResRectangle(new Point(0, 0), new Size(431, 38), Color.FromArgb(150, 0, 0, 0));
-            _text = new UIResText(Text, new Point(8, 0), 0.33f, Color.WhiteSmoke, GTA.Font.ChaletLondon, UIResText.Alignment.Left);
+            _text = new NativeText(Text, new Point(8, 0), 0.33f, Color.WhiteSmoke, GTA.Font.ChaletLondon, TextAlignment.Left);
             Description = Description;
 
             _badgeLeft = new Sprite("commonmenu", "", new Point(0, 0), new Size(40, 40));
             _badgeRight = new Sprite("commonmenu", "", new Point(0, 0), new Size(40, 40));
 
-            _labelText = new UIResText("", new Point(0, 0), 0.35f) { TextAlignment = UIResText.Alignment.Right };
+            _labelText = new NativeText("", new Point(0, 0), 0.35f) { Alignment = TextAlignment.Right };
         }
         
         

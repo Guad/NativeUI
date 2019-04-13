@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using GTA;
 using GTA.Native;
+using NativeUI.Elements;
 using Font = GTA.Font;
 
 namespace NativeUI.PauseMenu
@@ -217,8 +218,8 @@ namespace NativeUI.PauseMenu
             var safe = new Point(300, 180);
             if (!HideTabs)
             {
-                new UIResText(Title, new Point(safe.X, safe.Y - 80), 1f, Color.White, Font.ChaletComprimeCologne,
-                    UIResText.Alignment.Left)
+                new NativeText(Title, new Point(safe.X, safe.Y - 80), 1f, Color.White, Font.ChaletComprimeCologne,
+                    TextAlignment.Left)
                 {
                     Shadow = true,
                 }.Draw();
@@ -235,8 +236,8 @@ namespace NativeUI.PauseMenu
                     Photo.Draw();
                 }
 
-                new UIResText(Name, new Point((int)res.Width - safe.X - 70, safe.Y - 95), 0.7f, Color.White,
-                    Font.ChaletComprimeCologne, UIResText.Alignment.Right)
+                new NativeText(Name, new Point((int)res.Width - safe.X - 70, safe.Y - 95), 0.7f, Color.White,
+                    Font.ChaletComprimeCologne, TextAlignment.Right)
                 {
                     Shadow = true,
                 }.Draw();
@@ -248,8 +249,8 @@ namespace NativeUI.PauseMenu
                 }
 
 
-                new UIResText(t, new Point((int)res.Width - safe.X - 70, safe.Y - 60), 0.4f, Color.White,
-                    Font.ChaletComprimeCologne, UIResText.Alignment.Right)
+                new NativeText(t, new Point((int)res.Width - safe.X - 70, safe.Y - 60), 0.4f, Color.White,
+                    Font.ChaletComprimeCologne, TextAlignment.Right)
                 {
                     Shadow = true,
                 }.Draw();
@@ -260,8 +261,8 @@ namespace NativeUI.PauseMenu
                     subt = "";
                 }
 
-                new UIResText(subt, new Point((int)res.Width - safe.X - 70, safe.Y - 40), 0.4f, Color.White,
-                    Font.ChaletComprimeCologne, UIResText.Alignment.Right)
+                new NativeText(subt, new Point((int)res.Width - safe.X - 70, safe.Y - 40), 0.4f, Color.White,
+                    Font.ChaletComprimeCologne, TextAlignment.Right)
                 {
                     Shadow = true,
                 }.Draw();
@@ -284,9 +285,9 @@ namespace NativeUI.PauseMenu
                     new UIResRectangle(safe.AddPoints(new Point((tabWidth + 5) * i, 0)), new Size(tabWidth, 40),
                         Color.FromArgb(Tabs[i].Active ? 255 : 200, tabColor)).Draw();
 
-                    new UIResText(Tabs[i].Title.ToUpper(), safe.AddPoints(new Point((tabWidth / 2) + (tabWidth + 5) * i, 5)),
+                    new NativeText(Tabs[i].Title.ToUpper(), safe.AddPoints(new Point((tabWidth / 2) + (tabWidth + 5) * i, 5)),
                         0.35f,
-                        Tabs[i].Active ? Color.Black : Color.White, Font.ChaletLondon, UIResText.Alignment.Centered)
+                        Tabs[i].Active ? Color.Black : Color.White, Font.ChaletLondon, TextAlignment.Centered)
                         .Draw();
 
                     if (Tabs[i].Active)

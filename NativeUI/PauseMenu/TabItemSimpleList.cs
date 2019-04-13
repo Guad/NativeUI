@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using NativeUI.Elements;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Font = GTA.Font;
@@ -34,8 +35,8 @@ namespace NativeUI.PauseMenu
 
                 var item = Dictionary.ElementAt(i);
 
-                new UIResText(item.Key, new Point(TopLeft.X + 6, TopLeft.Y + 5 + (40 * i)), 0.35f, Color.FromArgb(fullAlpha, Color.White)).Draw();
-                new UIResText(item.Value, new Point(BottomRight.X - 6, TopLeft.Y + 5 + (40 * i)), 0.35f, Color.FromArgb(fullAlpha, Color.White), Font.ChaletLondon, UIResText.Alignment.Right).Draw();
+                new NativeText(item.Key, new Point(TopLeft.X + 6, TopLeft.Y + 5 + (40 * i)), 0.35f, Color.FromArgb(fullAlpha, Color.White)).Draw();
+                new NativeText(item.Value, new Point(BottomRight.X - 6, TopLeft.Y + 5 + (40 * i)), 0.35f, Color.FromArgb(fullAlpha, Color.White), Font.ChaletLondon, TextAlignment.Right).Draw();
             }
         }
     }

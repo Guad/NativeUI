@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Drawing;
 using GTA;
+using NativeUI.Elements;
 using Font = GTA.Font;
 
 namespace NativeUI
 {
     public class UIMenuListItem : UIMenuItem, IListItem
     {
-        protected UIResText _itemText;
+        protected NativeText _itemText;
         protected Sprite _arrowLeft;
         protected Sprite _arrowRight;
 
@@ -68,8 +69,7 @@ namespace NativeUI
             _items = items;
             _arrowLeft = new Sprite("commonmenu", "arrowleft", new Point(110, 105 + y), new Size(30, 30));
             _arrowRight = new Sprite("commonmenu", "arrowright", new Point(280, 105 + y), new Size(30, 30));
-            _itemText = new UIResText("", new Point(290, y + 104), 0.35f, Color.White, Font.ChaletLondon,
-                UIResText.Alignment.Left) {TextAlignment = UIResText.Alignment.Right};
+            _itemText = new NativeText("", new Point(290, y + 104), 0.35f, Color.White, Font.ChaletLondon, TextAlignment.Right);
             Index = index;
         }
 

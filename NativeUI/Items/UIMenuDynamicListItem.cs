@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NativeUI.Elements;
+using System;
 using System.Drawing;
 using Font = GTA.Font;
 
@@ -14,7 +15,7 @@ namespace NativeUI
 
         public delegate string DynamicListItemChangeCallback(UIMenuDynamicListItem sender, ChangeDirection direction);
 
-        protected UIResText _itemText;
+        protected NativeText _itemText;
         protected Sprite _arrowLeft;
         protected Sprite _arrowRight;
 
@@ -39,8 +40,7 @@ namespace NativeUI
             const int y = 0;
             _arrowLeft = new Sprite("commonmenu", "arrowleft", new Point(110, 105 + y), new Size(30, 30));
             _arrowRight = new Sprite("commonmenu", "arrowright", new Point(280, 105 + y), new Size(30, 30));
-            _itemText = new UIResText("", new Point(290, y + 104), 0.35f, Color.White, Font.ChaletLondon,
-                UIResText.Alignment.Right);
+            _itemText = new NativeText("", new Point(290, y + 104), 0.35f, Color.White, Font.ChaletLondon, TextAlignment.Right);
 
             CurrentListItem = startingItem;
             Callback = changeCallback;

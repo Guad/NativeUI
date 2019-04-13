@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using GTA;
 using GTA.Native;
+using NativeUI.Elements;
 using Control = GTA.Control;
 using Font = GTA.Font;
 
@@ -49,8 +50,8 @@ namespace NativeUI
 
         private readonly UIResRectangle _descriptionBar;
         private readonly Sprite _descriptionRectangle;
-        private readonly UIResText _descriptionText;
-        private readonly UIResText _counterText;
+        private readonly NativeText _descriptionText;
+        private readonly NativeText _counterText;
 
         private int _activeItem = 1000;
 
@@ -254,17 +255,17 @@ namespace NativeUI
 
             _mainMenu = new UIContainer(new Point(0, 0), new Size(700, 500), Color.FromArgb(0, 0, 0, 0));
             BannerSprite = new Sprite(spriteLibrary, spriteName, new Point(0 + Offset.X, 0 + Offset.Y), new Size(431, 107));
-            _mainMenu.Items.Add(Title = new UIResText(title, new Point(215 + Offset.X, 20 + Offset.Y), 1.15f, Color.White, Font.HouseScript, UIResText.Alignment.Centered));
+            _mainMenu.Items.Add(Title = new NativeText(title, new Point(215 + Offset.X, 20 + Offset.Y), 1.15f, Color.White, Font.HouseScript, TextAlignment.Centered));
             if (!String.IsNullOrWhiteSpace(subtitle))
             {
                 _mainMenu.Items.Add(new UIResRectangle(new Point(0 + offset.X, 107 + Offset.Y), new Size(431, 37), Color.Black));
-                _mainMenu.Items.Add(Subtitle = new UIResText(subtitle, new Point(8 + Offset.X, 110 + Offset.Y), 0.35f, Color.WhiteSmoke, 0, UIResText.Alignment.Left));
+                _mainMenu.Items.Add(Subtitle = new NativeText(subtitle, new Point(8 + Offset.X, 110 + Offset.Y), 0.35f, Color.WhiteSmoke, 0, TextAlignment.Left));
 
                 if (subtitle.StartsWith("~"))
                 {
                     CounterPretext = subtitle.Substring(0, 3);
                 }
-                _counterText = new UIResText("", new Point(425 + Offset.X, 110 + Offset.Y), 0.35f, Color.WhiteSmoke, 0, UIResText.Alignment.Right);
+                _counterText = new NativeText("", new Point(425 + Offset.X, 110 + Offset.Y), 0.35f, Color.WhiteSmoke, 0, TextAlignment.Right);
                 _extraYOffset = 37;
             }
 
@@ -274,7 +275,7 @@ namespace NativeUI
 
             _descriptionBar = new UIResRectangle(new Point(Offset.X, 123), new Size(431, 4), Color.Black);
             _descriptionRectangle = new Sprite("commonmenu", "gradient_bgd", new Point(Offset.X, 127), new Size(431, 30));
-            _descriptionText = new UIResText("Description", new Point(Offset.X + 5, 125), 0.35f, Color.FromArgb(255, 255, 255, 255), Font.ChaletLondon, UIResText.Alignment.Left);
+            _descriptionText = new NativeText("Description", new Point(Offset.X + 5, 125), 0.35f, Color.FromArgb(255, 255, 255, 255), Font.ChaletLondon, TextAlignment.Left);
 
             _background = new Sprite("commonmenu", "gradient_bgd", new Point(Offset.X, 144 + Offset.Y - 37 + _extraYOffset), new Size(290, 25));
 
@@ -1416,13 +1417,13 @@ namespace NativeUI
         /// <summary>
         /// Returns the title object.
         /// </summary>
-        public UIResText Title { get; }
+        public NativeText Title { get; }
 
 
         /// <summary>
         /// Returns the subtitle object.
         /// </summary>
-        public UIResText Subtitle { get; }
+        public NativeText Subtitle { get; }
 
 
         /// <summary>

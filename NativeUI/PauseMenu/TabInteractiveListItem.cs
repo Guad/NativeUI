@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using GTA;
 using GTA.Native;
+using NativeUI.Elements;
 using Font = GTA.Font;
 
 namespace NativeUI.PauseMenu
@@ -154,7 +155,7 @@ namespace NativeUI.PauseMenu
                 var hasAnyBadge = hasRightBadge || hasLeftBadge;
 
                 new UIResRectangle(SafeSize.AddPoints(new Point(0, (itemSize.Height + 3) * i)), itemSize, (Index == c && Focused) ? Color.FromArgb(fullAlpha, Color.White) : Focused && hovering ? Color.FromArgb(100, 50, 50, 50) : Color.FromArgb(blackAlpha, Color.Black)).Draw();
-                new UIResText(Items[c].Text, SafeSize.AddPoints(new Point((hasBothBadges ? 60 : hasAnyBadge ? 30 : 6), 5 + (itemSize.Height + 3) * i)), 0.35f, Color.FromArgb(fullAlpha, (Index == c && Focused) ? Color.Black : Color.White)).Draw();
+                new NativeText(Items[c].Text, SafeSize.AddPoints(new Point((hasBothBadges ? 60 : hasAnyBadge ? 30 : 6), 5 + (itemSize.Height + 3) * i)), 0.35f, Color.FromArgb(fullAlpha, (Index == c && Focused) ? Color.Black : Color.White)).Draw();
 
                 if (hasLeftBadge && !hasRightBadge)
                 {
@@ -183,10 +184,10 @@ namespace NativeUI.PauseMenu
 
                 if (!string.IsNullOrEmpty(Items[c].RightLabel))
                 {
-                    new UIResText(Items[c].RightLabel,
+                    new NativeText(Items[c].RightLabel,
                         SafeSize.AddPoints(new Point(BottomRight.X - SafeSize.X - 5, 5 + (itemSize.Height + 3) * i)),
                         0.35f, Color.FromArgb(fullAlpha, (Index == c && Focused) ? Color.Black : Color.White),
-                        Font.ChaletLondon, UIResText.Alignment.Right).Draw();
+                        Font.ChaletLondon, TextAlignment.Right).Draw();
                 }
 
                 if (Items[c] is UIMenuCheckboxItem)
@@ -212,9 +213,7 @@ namespace NativeUI.PauseMenu
 
                     var arrowLeft = new Sprite("commonmenu", "arrowleft", basePos, new Size(30, 30));
                     var arrowRight = new Sprite("commonmenu", "arrowright", basePos, new Size(30, 30));
-                    var itemText = new UIResText("", basePos, 0.35f, Color.White, Font.ChaletLondon,
-                        UIResText.Alignment.Left)
-                    { TextAlignment = UIResText.Alignment.Right };
+                    var itemText = new NativeText("", basePos, 0.35f, Color.White, Font.ChaletLondon, TextAlignment.Right);
 
                     string caption = convItem.Items[convItem.Index].ToString();
                     float offset = StringMeasurer.MeasureString(caption, itemText.Font, itemText.Scale);
