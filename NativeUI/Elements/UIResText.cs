@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using GTA;
 using GTA.Native;
@@ -9,7 +9,7 @@ namespace NativeUI
     /// <summary>
     /// A Text object in the 1080 pixels height base system.
     /// </summary>
-    [Obsolete("Use NativeText instead", true)]
+    [Obsolete("Use NativeUI.Elements.NativeText instead")]
     public class UIResText : UIText
     {
         public UIResText(string caption, Point position, float scale) : base(caption, position, scale)
