@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using GTA;
+using NativeUI.Elements;
 using Font = GTA.Font;
 
 namespace NativeUI
@@ -19,8 +20,7 @@ namespace NativeUI
             SizeF res = UIMenu.GetScreenResolutionMaintainRatio();
             Point safe = UIMenu.GetSafezoneBounds();
 
-            UIResText.Draw(Label, (int)res.Width - safe.X - 180, (int)res.Height - safe.Y - (30 + (4 * interval)), Font.ChaletLondon, 0.3f, Color.White,
-                UIResText.Alignment.Right, false, false, 0);
+            new NativeText(Label, new Point((int)res.Width - safe.X - 180, (int)res.Height - safe.Y - (30 + (4 * interval))), 0.3f, Color.White, Font.ChaletLondon, TextAlignment.Right).Draw();
             Sprite.Draw("timerbars", "all_black_bg", (int)res.Width - safe.X - 298, (int)res.Height - safe.Y - (40 + (4 * interval)), 300, 37, 0f, Color.FromArgb(180, 255, 255, 255));
 
             UI.HideHudComponentThisFrame(HudComponent.AreaName);
@@ -44,8 +44,7 @@ namespace NativeUI
             Point safe = UIMenu.GetSafezoneBounds();
 
             base.Draw(interval);
-            UIResText.Draw(Text, (int)res.Width - safe.X - 10, (int)res.Height - safe.Y - (42 + (4 * interval)), Font.ChaletLondon, 0.5f, Color.White, 
-                UIResText.Alignment.Right, false, false, 0);
+            new NativeText(Text, new Point((int)res.Width - safe.X - 10, (int)res.Height - safe.Y - (42 + (4 * interval))), 0.5f, Color.White, Font.ChaletLondon, TextAlignment.Right).Draw();
         }
     }
 
