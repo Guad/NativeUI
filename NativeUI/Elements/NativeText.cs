@@ -1,5 +1,6 @@
 using GTA;
 using GTA.Native;
+using NativeUI.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -105,11 +106,7 @@ namespace NativeUI.Elements
             set
             {
                 _Position = value;
-                float W = Game.ScreenResolution.Width;
-                float H = Game.ScreenResolution.Height;
-                float Ratio = W / H;
-                Width = 1080f * Ratio;
-                _Relative = new PointF(Position.X / Width, Position.Y / 1080f);
+                _Relative = Position.ToRelative(out Width);
             }
         }
         /// <summary>
