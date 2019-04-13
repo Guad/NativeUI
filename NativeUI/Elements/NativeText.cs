@@ -117,10 +117,22 @@ namespace NativeUI.Elements
 
         #region Constructors
 
-        public NativeText(string caption, Point position)
+        public NativeText(string caption, Point position) : this(caption, position, 1, Color.White, GTA.Font.ChaletLondon, TextAlignment.Left) { }
+
+        public NativeText(string caption, Point position, float scale) : this(caption, position, scale, Color.White, GTA.Font.ChaletLondon, TextAlignment.Left) { }
+
+        public NativeText(string caption, Point position, float scale, Color color) : this(caption, position, scale, color, GTA.Font.ChaletLondon, TextAlignment.Left) { }
+
+        public NativeText(string caption, Point position, float scale, Color color, GTA.Font font) : this(caption, position, scale, color, font, TextAlignment.Left) { }
+
+        public NativeText(string caption, Point position, float scale, Color color, GTA.Font font, TextAlignment alignment)
         {
-            // Start by storing our properties
             Caption = caption;
+            Position = position;
+            Scale = scale;
+            Color = color;
+            Font = font;
+            Alignment = alignment;
         }
 
         #endregion
