@@ -39,10 +39,7 @@ namespace NativeUI.Elements
         /// </summary>
         public Point Position
         {
-            get
-            {
-                return _Position;
-            }
+            get => _Position;
             set
             {
                 _Position = value;
@@ -57,10 +54,7 @@ namespace NativeUI.Elements
         /// </summary>
         public Size Size
         {
-            get
-            {
-                return _Size;
-            }
+            get => _Size;
             set
             {
                 _Size = value;
@@ -128,19 +122,15 @@ namespace NativeUI.Elements
                 // Request it
                 Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, TextureDict, true);
             }
+            
+            // For now, the calculations at the top do not work and need tweaking
+            // Calculate the width of the control and make the X and Y position
+            float Width = 1080f * ((float)Game.ScreenResolution.Width / Game.ScreenResolution.Height);
+            float X = (Position.X / Width) + (_RelativeSize.Width * 0.5f);
+            float Y = (Position.Y / 1080f) + (_RelativeSize.Height * 0.5f);
 
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
-            float ratio = (float)Game.ScreenResolution.Width / Game.ScreenResolution.Height;
-            float width = 1080f * ratio;
-
-            float w = Size.Width / width;
-            float h = Size.Height / 1080f;
-            float x = (Position.X / width) + (_RelativeSize.Width * 0.5f);
-            float y = (Position.Y / 1080f) + (_RelativeSize.Height * 0.5f);
-
-            // Draw the sprite
-            Function.Call(Hash.DRAW_SPRITE, TextureDict, TextureName, _RelativePos.X, _RelativePos.Y, _RelativeSize.Width, _RelativeSize.Height, Heading, Color.R, Color.G, Color.B, Color.A);
+            // Finally, draw the sprite
+            Function.Call(Hash.DRAW_SPRITE, TextureDict, TextureName, X, Y, _RelativeSize.Width, _RelativeSize.Height, Heading, Color.R, Color.G, Color.B, Color.A);
         }
 
         #endregion

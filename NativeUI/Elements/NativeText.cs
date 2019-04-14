@@ -106,7 +106,7 @@ namespace NativeUI.Elements
             set
             {
                 _Position = value;
-                _Relative = Position.ToRelative(out Width);
+                _Relative = Position.ToRelative(out _, out Width);
             }
         }
         /// <summary>
