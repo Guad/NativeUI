@@ -10,8 +10,8 @@ namespace NativeUI
     public class UIMenuListItem : UIMenuItem, IListItem
     {
         protected NativeText _itemText;
-        protected Sprite _arrowLeft;
-        protected Sprite _arrowRight;
+        protected NativeSprite _arrowLeft;
+        protected NativeSprite _arrowRight;
 
         protected int _index;
         protected List<object> _items;
@@ -67,8 +67,8 @@ namespace NativeUI
         {
             const int y = 0;
             _items = items;
-            _arrowLeft = new Sprite("commonmenu", "arrowleft", new Point(110, 105 + y), new Size(30, 30));
-            _arrowRight = new Sprite("commonmenu", "arrowright", new Point(280, 105 + y), new Size(30, 30));
+            _arrowLeft = new NativeSprite("commonmenu", "arrowleft", new Point(110, 105 + y), new Size(30, 30));
+            _arrowRight = new NativeSprite("commonmenu", "arrowright", new Point(280, 105 + y), new Size(30, 30));
             _itemText = new NativeText("", new Point(290, y + 104), 0.35f, Color.White, Font.ChaletLondon, TextAlignment.Right);
             Index = index;
         }

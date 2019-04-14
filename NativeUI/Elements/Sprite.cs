@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -7,6 +7,7 @@ using GTA.Native;
 
 namespace NativeUI
 {
+    [Obsolete("Use NativeUI.Elements.NativeSprite instead")]
     public class Sprite
     {
         public Point Position;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NativeUI.Elements;
+using System;
 using System.Drawing;
 
 namespace NativeUI.PauseMenu
@@ -7,7 +8,7 @@ namespace NativeUI.PauseMenu
     {
         public TabItem(string name)
         {
-            RockstarTile = new Sprite("pause_menu_sp_content", "rockstartilebmp", new Point(), new Size(64, 64), 0f, Color.FromArgb(40, 255, 255, 255));
+            RockstarTile = new NativeSprite("pause_menu_sp_content", "rockstartilebmp", new Point(), new Size(64, 64), 0f, Color.FromArgb(40, 255, 255, 255));
             Title = name;
             DrawBg = true;
             UseDynamicPositionment = true;
@@ -31,7 +32,7 @@ namespace NativeUI.PauseMenu
         public bool DrawBg;
         public bool FadeInWhenFocused { get; set; }
 
-        protected Sprite RockstarTile;
+        protected NativeSprite RockstarTile;
 
         public void OnActivated()
         {

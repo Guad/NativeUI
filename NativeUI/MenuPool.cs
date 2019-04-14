@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using NativeUI.Elements;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -250,7 +251,7 @@ namespace NativeUI
             }
         }
 
-        public void SetBannerType(Sprite bannerType)
+        public void SetBannerType(NativeSprite bannerType)
         {
             _menuList.ForEach(m => m.SetBannerType(bannerType));
         }

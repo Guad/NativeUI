@@ -21,7 +21,7 @@ namespace NativeUI
             Point safe = UIMenu.GetSafezoneBounds();
 
             new NativeText(Label, new Point((int)res.Width - safe.X - 180, (int)res.Height - safe.Y - (30 + (4 * interval))), 0.3f, Color.White, Font.ChaletLondon, TextAlignment.Right).Draw();
-            Sprite.Draw("timerbars", "all_black_bg", (int)res.Width - safe.X - 298, (int)res.Height - safe.Y - (40 + (4 * interval)), 300, 37, 0f, Color.FromArgb(180, 255, 255, 255));
+            new NativeSprite("timerbars", "all_black_bg", new Point((int)res.Width - safe.X - 298, (int)res.Height - safe.Y - (40 + (4 * interval))), new Size(300, 37), 0f, Color.FromArgb(180, 255, 255, 255)).Draw();
 
             UI.HideHudComponentThisFrame(HudComponent.AreaName);
             UI.HideHudComponentThisFrame(HudComponent.StreetName);

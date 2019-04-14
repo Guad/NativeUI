@@ -46,10 +46,10 @@ namespace NativeUI
     {
         #region Private Fields
         private readonly UIContainer _mainMenu;
-        private readonly Sprite _background;
+        private readonly NativeSprite _background;
 
         private readonly UIResRectangle _descriptionBar;
-        private readonly Sprite _descriptionRectangle;
+        private readonly NativeSprite _descriptionRectangle;
         private readonly NativeText _descriptionText;
         private readonly NativeText _counterText;
 
@@ -70,7 +70,7 @@ namespace NativeUI
             new Dictionary<MenuControls, Tuple<List<Keys>, List<Tuple<Control, int>>>>();
 
         private readonly List<InstructionalButton> _instructionalButtons = new List<InstructionalButton>();
-        private readonly Sprite _upAndDownSprite;
+        private readonly NativeSprite _upAndDownSprite;
         private readonly UIResRectangle _extraRectangleUp;
         private readonly UIResRectangle _extraRectangleDown;
 
@@ -151,7 +151,7 @@ namespace NativeUI
 
         public Point Offset { get; }
 
-        public Sprite BannerSprite { get; private set; }
+        public NativeSprite BannerSprite { get; private set; }
         public UIResRectangle BannerRectangle { get; private set; }
         public string BannerTexture { get; private set; }
 
@@ -254,7 +254,7 @@ namespace NativeUI
             UpdateScaleform();
 
             _mainMenu = new UIContainer(new Point(0, 0), new Size(700, 500), Color.FromArgb(0, 0, 0, 0));
-            BannerSprite = new Sprite(spriteLibrary, spriteName, new Point(0 + Offset.X, 0 + Offset.Y), new Size(431, 107));
+            BannerSprite = new NativeSprite(spriteLibrary, spriteName, new Point(0 + Offset.X, 0 + Offset.Y), new Size(431, 107));
             _mainMenu.Items.Add(Title = new NativeText(title, new Point(215 + Offset.X, 20 + Offset.Y), 1.15f, Color.White, Font.HouseScript, TextAlignment.Centered));
             if (!String.IsNullOrWhiteSpace(subtitle))
             {
@@ -269,15 +269,15 @@ namespace NativeUI
                 _extraYOffset = 37;
             }
 
-            _upAndDownSprite = new Sprite("commonmenu", "shop_arrows_upanddown", new Point(190 + Offset.X, 147 + 37 * (MaxItemsOnScreen + 1) + Offset.Y - 37 + _extraYOffset), new Size(50, 50));
+            _upAndDownSprite = new NativeSprite("commonmenu", "shop_arrows_upanddown", new Point(190 + Offset.X, 147 + 37 * (MaxItemsOnScreen + 1) + Offset.Y - 37 + _extraYOffset), new Size(50, 50));
             _extraRectangleUp = new UIResRectangle(new Point(0 + Offset.X, 144 + 38 * (MaxItemsOnScreen + 1) + Offset.Y - 37 + _extraYOffset), new Size(431, 18), Color.FromArgb(200, 0, 0, 0));
             _extraRectangleDown = new UIResRectangle(new Point(0 + Offset.X, 144 + 18 + 38 * (MaxItemsOnScreen + 1) + Offset.Y - 37 + _extraYOffset), new Size(431, 18), Color.FromArgb(200, 0, 0, 0));
 
             _descriptionBar = new UIResRectangle(new Point(Offset.X, 123), new Size(431, 4), Color.Black);
-            _descriptionRectangle = new Sprite("commonmenu", "gradient_bgd", new Point(Offset.X, 127), new Size(431, 30));
+            _descriptionRectangle = new NativeSprite("commonmenu", "gradient_bgd", new Point(Offset.X, 127), new Size(431, 30));
             _descriptionText = new NativeText("Description", new Point(Offset.X + 5, 125), 0.35f, Color.FromArgb(255, 255, 255, 255), Font.ChaletLondon, TextAlignment.Left);
 
-            _background = new Sprite("commonmenu", "gradient_bgd", new Point(Offset.X, 144 + Offset.Y - 37 + _extraYOffset), new Size(290, 25));
+            _background = new NativeSprite("commonmenu", "gradient_bgd", new Point(Offset.X, 144 + Offset.Y - 37 + _extraYOffset), new Size(290, 25));
 
 
             SetKey(MenuControls.Up, Control.PhoneUp);
@@ -421,7 +421,7 @@ namespace NativeUI
         /// Set the banner to your own Sprite object.
         /// </summary>
         /// <param name="spriteBanner">Sprite object. The position and size does not matter.</param>
-        public void SetBannerType(Sprite spriteBanner)
+        public void SetBannerType(NativeSprite spriteBanner)
         {
             BannerSprite = spriteBanner;
             BannerSprite.Size = new Size(431 + WidthOffset, 107);

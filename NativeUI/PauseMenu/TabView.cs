@@ -21,7 +21,7 @@ namespace NativeUI.PauseMenu
         }
 
         public string Title { get; set; }
-        public Sprite Photo { get; set; }
+        public NativeSprite Photo { get; set; }
         public string Name { get; set; }
         public string Money { get; set; }
         public string MoneySubtitle { get; set; }
@@ -226,7 +226,7 @@ namespace NativeUI.PauseMenu
 
                 if (Photo == null)
                 {
-                    new Sprite("char_multiplayer", "char_multiplayer",
+                    new NativeSprite("char_multiplayer", "char_multiplayer",
                         new Point((int)res.Width - safe.X - 64, safe.Y - 80), new Size(64, 64)).Draw();
                 }
                 else

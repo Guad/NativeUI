@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using NativeUI.Elements;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace NativeUI
 {
     public class UIMenuSliderItem : UIMenuItem
     {
-        protected Sprite _arrowLeft;
-        protected Sprite _arrowRight;
+        protected NativeSprite _arrowLeft;
+        protected NativeSprite _arrowRight;
 
         protected UIResRectangle _rectangleBackground;
         protected UIResRectangle _rectangleSlider;
@@ -109,8 +110,8 @@ namespace NativeUI
         public UIMenuSliderItem(string text, string description, bool divider) : base(text, description)
         {
             const int y = 0;
-            _arrowLeft = new Sprite("commonmenutu", "arrowleft", new Point(0, 105 + y), new Size(15, 15));
-            _arrowRight = new Sprite("commonmenutu", "arrowright", new Point(0, 105 + y), new Size(15, 15));
+            _arrowLeft = new NativeSprite("commonmenutu", "arrowleft", new Point(0, 105 + y), new Size(15, 15));
+            _arrowRight = new NativeSprite("commonmenutu", "arrowright", new Point(0, 105 + y), new Size(15, 15));
             _rectangleBackground = new UIResRectangle(new Point(0, 0), new Size(150, 9), Color.FromArgb(255, 4, 32, 57));
             _rectangleSlider = new UIResRectangle(new Point(0, 0), new Size(75, 9), Color.FromArgb(255, 57, 116, 200));
             if (divider)

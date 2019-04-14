@@ -11,10 +11,10 @@ namespace NativeUI
     {
         protected UIResRectangle _rectangle;
         protected NativeText _text;
-        protected Sprite _selectedSprite;
+        protected NativeSprite _selectedSprite;
 
-        protected Sprite _badgeLeft;
-        protected Sprite _badgeRight;
+        protected NativeSprite _badgeLeft;
+        protected NativeSprite _badgeRight;
 
         protected NativeText _labelText;
 
@@ -46,10 +46,10 @@ namespace NativeUI
             _rectangle = new UIResRectangle(new Point(0, 0), new Size(431, 38), Color.FromArgb(20, 255, 255, 255)); // Color.FromArgb(150, 0, 0, 0)
             _text = new NativeText(text, new Point(8, 0), 0.33f, Color.WhiteSmoke, GTA.Font.ChaletLondon, TextAlignment.Left);
             Description = description;
-            _selectedSprite = new Sprite("commonmenu", "gradient_nav", new Point(0, 0), new Size(431, 38));
+            _selectedSprite = new NativeSprite("commonmenu", "gradient_nav", new Point(0, 0), new Size(431, 38));
 
-            _badgeLeft = new Sprite("commonmenu", "", new Point(0, 0), new Size(40, 40));
-            _badgeRight = new Sprite("commonmenu", "", new Point(0, 0), new Size(40, 40));
+            _badgeLeft = new NativeSprite("commonmenu", "", new Point(0, 0), new Size(40, 40));
+            _badgeRight = new NativeSprite("commonmenu", "", new Point(0, 0), new Size(40, 40));
 
             _labelText = new NativeText("", new Point(0, 0), 0.35f) {Alignment = TextAlignment.Right};
         }

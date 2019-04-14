@@ -67,7 +67,7 @@ namespace NativeUI.PauseMenu
             base.FadeInWhenFocused = true;
             base.DrawBg = false;
 
-            _noLogo = new Sprite("gtav_online", "rockstarlogo256", new Point(), new Size(512, 256));
+            _noLogo = new NativeSprite("gtav_online", "rockstarlogo256", new Point(), new Size(512, 256));
             _maxItem = MaxItemsPerView;
             _minItem = 0;
 
@@ -84,7 +84,7 @@ namespace NativeUI.PauseMenu
         protected const int MaxItemsPerView = 15;
         protected int _minItem;
         protected int _maxItem;
-        protected Sprite _noLogo { get; set; }
+        protected NativeSprite _noLogo { get; set; }
 
         public override void ProcessControls()
         {
@@ -179,7 +179,7 @@ namespace NativeUI.PauseMenu
             else if (Heists[Index].Logo != null && Heists[Index].Logo.FileName != null &&
                      Heists[Index].Logo.IsGameTexture)
             {
-                var newLogo = new Sprite(Heists[Index].Logo.DictionaryName, Heists[Index].Logo.FileName, new Point(), new Size(512, 256));
+                var newLogo = new NativeSprite(Heists[Index].Logo.DictionaryName, Heists[Index].Logo.FileName, new Point(), new Size(512, 256));
                 newLogo.Position = new Point((int)res.Width - SafeSize.X - 512, SafeSize.Y);
                 newLogo.Color = Color.FromArgb(blackAlpha, 0, 0, 0);
                 newLogo.Draw();

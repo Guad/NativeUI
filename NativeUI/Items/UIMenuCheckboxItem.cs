@@ -1,11 +1,12 @@
-﻿using System;
+﻿using NativeUI.Elements;
+using System;
 using System.Drawing;
 
 namespace NativeUI
 {          
     public class UIMenuCheckboxItem : UIMenuItem
     {
-        protected Sprite _checkedSprite;
+        protected NativeSprite _checkedSprite;
         
         /// <summary>
         /// Triggered when the checkbox state is changed.
@@ -30,7 +31,7 @@ namespace NativeUI
         public UIMenuCheckboxItem(string text, bool check, string description) : base(text, description)
         {
             const int y = 0;
-            _checkedSprite = new Sprite("commonmenu", "shop_box_blank", new Point(410, y + 95), new Size(50, 50));
+            _checkedSprite = new NativeSprite("commonmenu", "shop_box_blank", new Point(410, y + 95), new Size(50, 50));
             Checked = check;
         }
 

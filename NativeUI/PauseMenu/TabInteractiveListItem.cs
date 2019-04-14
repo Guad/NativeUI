@@ -159,25 +159,25 @@ namespace NativeUI.PauseMenu
 
                 if (hasLeftBadge && !hasRightBadge)
                 {
-                    new Sprite(UIMenuItem.BadgeToSpriteLib(Items[c].LeftBadge),
+                    new NativeSprite(UIMenuItem.BadgeToSpriteLib(Items[c].LeftBadge),
                         UIMenuItem.BadgeToSpriteName(Items[c].LeftBadge, (Index == c && Focused)), SafeSize.AddPoints(new Point(-2, 1 + (itemSize.Height + 3) * i)), new Size(40, 40), 0f,
                         UIMenuItem.BadgeToColor(Items[c].LeftBadge, (Index == c && Focused))).Draw();
                 }
 
                 if (!hasLeftBadge && hasRightBadge)
                 {
-                    new Sprite(UIMenuItem.BadgeToSpriteLib(Items[c].RightBadge),
+                    new NativeSprite(UIMenuItem.BadgeToSpriteLib(Items[c].RightBadge),
                         UIMenuItem.BadgeToSpriteName(Items[c].RightBadge, (Index == c && Focused)), SafeSize.AddPoints(new Point(-2, 1 + (itemSize.Height + 3) * i)), new Size(40, 40), 0f,
                         UIMenuItem.BadgeToColor(Items[c].RightBadge, (Index == c && Focused))).Draw();
                 }
 
                 if (hasLeftBadge && hasRightBadge)
                 {
-                    new Sprite(UIMenuItem.BadgeToSpriteLib(Items[c].LeftBadge),
+                    new NativeSprite(UIMenuItem.BadgeToSpriteLib(Items[c].LeftBadge),
                         UIMenuItem.BadgeToSpriteName(Items[c].LeftBadge, (Index == c && Focused)), SafeSize.AddPoints(new Point(-2, 1 + (itemSize.Height + 3) * i)), new Size(40, 40), 0f,
                         UIMenuItem.BadgeToColor(Items[c].LeftBadge, (Index == c && Focused))).Draw();
 
-                    new Sprite(UIMenuItem.BadgeToSpriteLib(Items[c].RightBadge),
+                    new NativeSprite(UIMenuItem.BadgeToSpriteLib(Items[c].RightBadge),
                         UIMenuItem.BadgeToSpriteName(Items[c].RightBadge, (Index == c && Focused)), SafeSize.AddPoints(new Point(25, 1 + (itemSize.Height + 3) * i)), new Size(40, 40), 0f,
                         UIMenuItem.BadgeToColor(Items[c].RightBadge, (Index == c && Focused))).Draw();
                 }
@@ -201,7 +201,7 @@ namespace NativeUI.PauseMenu
                     {
                         textureName = ((UIMenuCheckboxItem)Items[c]).Checked ? "shop_box_tick" : "shop_box_blank";
                     }
-                    new Sprite("commonmenu", textureName, SafeSize.AddPoints(new Point(BottomRight.X - SafeSize.X - 60, -5 + (itemSize.Height + 3) * i)), new Size(50, 50)).Draw();
+                    new NativeSprite("commonmenu", textureName, SafeSize.AddPoints(new Point(BottomRight.X - SafeSize.X - 60, -5 + (itemSize.Height + 3) * i)), new Size(50, 50)).Draw();
                 }
                 else if (Items[c] is UIMenuListItem)
                 {
@@ -211,8 +211,8 @@ namespace NativeUI.PauseMenu
                     var basePos =
                         SafeSize.AddPoints(new Point(BottomRight.X - SafeSize.X - 30, yoffset + (itemSize.Height + 3) * i));
 
-                    var arrowLeft = new Sprite("commonmenu", "arrowleft", basePos, new Size(30, 30));
-                    var arrowRight = new Sprite("commonmenu", "arrowright", basePos, new Size(30, 30));
+                    var arrowLeft = new NativeSprite("commonmenu", "arrowleft", basePos, new Size(30, 30));
+                    var arrowRight = new NativeSprite("commonmenu", "arrowright", basePos, new Size(30, 30));
                     var itemText = new NativeText("", basePos, 0.35f, Color.White, Font.ChaletLondon, TextAlignment.Right);
 
                     string caption = convItem.Items[convItem.Index].ToString();
