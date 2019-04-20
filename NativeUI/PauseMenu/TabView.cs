@@ -282,7 +282,7 @@ namespace NativeUI.PauseMenu
                     var tabColor = Tabs[i].Active
                         ? Color.White
                         : hovering ? Color.FromArgb(100, 50, 50, 50) : Color.Black;
-                    new UIResRectangle(safe.AddPoints(new Point((tabWidth + 5) * i, 0)), new Size(tabWidth, 40),
+                    new NativeRectangle(safe.AddPoints(new Point((tabWidth + 5) * i, 0)), new Size(tabWidth, 40),
                         Color.FromArgb(Tabs[i].Active ? 255 : 200, tabColor)).Draw();
 
                     new NativeText(Tabs[i].Title.ToUpper(), safe.AddPoints(new Point((tabWidth / 2) + (tabWidth + 5) * i, 5)),
@@ -292,7 +292,7 @@ namespace NativeUI.PauseMenu
 
                     if (Tabs[i].Active)
                     {
-                        new UIResRectangle(safe.SubtractPoints(new Point(-((tabWidth + 5) * i), 10)),
+                        new NativeRectangle(safe.SubtractPoints(new Point(-((tabWidth + 5) * i), 10)),
                             new Size(tabWidth, 10), Color.DodgerBlue).Draw();
                     }
 

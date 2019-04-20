@@ -65,7 +65,7 @@ namespace NativeUI.PauseMenu
 
             if (DrawBg)
             {
-                new UIResRectangle(TopLeft, rectSize,
+                new NativeRectangle(TopLeft, rectSize,
                     Color.FromArgb((Focused || !FadeInWhenFocused) ? 200 : 120, 0, 0, 0)).Draw();
 
                 var tileSize = 100;

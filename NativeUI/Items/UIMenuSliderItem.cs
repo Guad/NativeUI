@@ -9,9 +9,9 @@ namespace NativeUI
         protected NativeSprite _arrowLeft;
         protected NativeSprite _arrowRight;
 
-        protected UIResRectangle _rectangleBackground;
-        protected UIResRectangle _rectangleSlider;
-        protected UIResRectangle _rectangleDivider;
+        protected NativeRectangle _rectangleBackground;
+        protected NativeRectangle _rectangleSlider;
+        protected NativeRectangle _rectangleDivider;
         
         protected int _value = 0;
         protected int _max = 100;
@@ -112,15 +112,15 @@ namespace NativeUI
             const int y = 0;
             _arrowLeft = new NativeSprite("commonmenutu", "arrowleft", new Point(0, 105 + y), new Size(15, 15));
             _arrowRight = new NativeSprite("commonmenutu", "arrowright", new Point(0, 105 + y), new Size(15, 15));
-            _rectangleBackground = new UIResRectangle(new Point(0, 0), new Size(150, 9), Color.FromArgb(255, 4, 32, 57));
-            _rectangleSlider = new UIResRectangle(new Point(0, 0), new Size(75, 9), Color.FromArgb(255, 57, 116, 200));
+            _rectangleBackground = new NativeRectangle(new Point(0, 0), new Size(150, 9), Color.FromArgb(255, 4, 32, 57));
+            _rectangleSlider = new NativeRectangle(new Point(0, 0), new Size(75, 9), Color.FromArgb(255, 57, 116, 200));
             if (divider)
             {
-                _rectangleDivider = new UIResRectangle(new Point(0, 0), new Size(2, 20), Color.WhiteSmoke);
+                _rectangleDivider = new NativeRectangle(new Point(0, 0), new Size(2, 20), Color.WhiteSmoke);
             }
             else
             {
-                _rectangleDivider = new UIResRectangle(new Point(0, 0), new Size(2, 20), Color.Transparent);
+                _rectangleDivider = new NativeRectangle(new Point(0, 0), new Size(2, 20), Color.Transparent);
             }
         }
 

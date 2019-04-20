@@ -48,7 +48,7 @@ namespace NativeUI
         private readonly UIContainer _mainMenu;
         private readonly NativeSprite _background;
 
-        private readonly UIResRectangle _descriptionBar;
+        private readonly NativeRectangle _descriptionBar;
         private readonly NativeSprite _descriptionRectangle;
         private readonly NativeText _descriptionText;
         private readonly NativeText _counterText;
@@ -71,8 +71,8 @@ namespace NativeUI
 
         private readonly List<InstructionalButton> _instructionalButtons = new List<InstructionalButton>();
         private readonly NativeSprite _upAndDownSprite;
-        private readonly UIResRectangle _extraRectangleUp;
-        private readonly UIResRectangle _extraRectangleDown;
+        private readonly NativeRectangle _extraRectangleUp;
+        private readonly NativeRectangle _extraRectangleDown;
 
         private readonly Scaleform _instructionalButtonsScaleform;
 
@@ -152,7 +152,7 @@ namespace NativeUI
         public Point Offset { get; }
 
         public NativeSprite BannerSprite { get; private set; }
-        public UIResRectangle BannerRectangle { get; private set; }
+        public NativeRectangle BannerRectangle { get; private set; }
         public string BannerTexture { get; private set; }
 
         #endregion
@@ -258,7 +258,7 @@ namespace NativeUI
             _mainMenu.Items.Add(Title = new NativeText(title, new Point(215 + Offset.X, 20 + Offset.Y), 1.15f, Color.White, Font.HouseScript, TextAlignment.Centered));
             if (!String.IsNullOrWhiteSpace(subtitle))
             {
-                _mainMenu.Items.Add(new UIResRectangle(new Point(0 + offset.X, 107 + Offset.Y), new Size(431, 37), Color.Black));
+                _mainMenu.Items.Add(new NativeRectangle(new Point(0 + offset.X, 107 + Offset.Y), new Size(431, 37), Color.Black));
                 _mainMenu.Items.Add(Subtitle = new NativeText(subtitle, new Point(8 + Offset.X, 110 + Offset.Y), 0.35f, Color.WhiteSmoke, 0, TextAlignment.Left));
 
                 if (subtitle.StartsWith("~"))
@@ -270,10 +270,10 @@ namespace NativeUI
             }
 
             _upAndDownSprite = new NativeSprite("commonmenu", "shop_arrows_upanddown", new Point(190 + Offset.X, 147 + 37 * (MaxItemsOnScreen + 1) + Offset.Y - 37 + _extraYOffset), new Size(50, 50));
-            _extraRectangleUp = new UIResRectangle(new Point(0 + Offset.X, 144 + 38 * (MaxItemsOnScreen + 1) + Offset.Y - 37 + _extraYOffset), new Size(431, 18), Color.FromArgb(200, 0, 0, 0));
-            _extraRectangleDown = new UIResRectangle(new Point(0 + Offset.X, 144 + 18 + 38 * (MaxItemsOnScreen + 1) + Offset.Y - 37 + _extraYOffset), new Size(431, 18), Color.FromArgb(200, 0, 0, 0));
+            _extraRectangleUp = new NativeRectangle(new Point(0 + Offset.X, 144 + 38 * (MaxItemsOnScreen + 1) + Offset.Y - 37 + _extraYOffset), new Size(431, 18), Color.FromArgb(200, 0, 0, 0));
+            _extraRectangleDown = new NativeRectangle(new Point(0 + Offset.X, 144 + 18 + 38 * (MaxItemsOnScreen + 1) + Offset.Y - 37 + _extraYOffset), new Size(431, 18), Color.FromArgb(200, 0, 0, 0));
 
-            _descriptionBar = new UIResRectangle(new Point(Offset.X, 123), new Size(431, 4), Color.Black);
+            _descriptionBar = new NativeRectangle(new Point(Offset.X, 123), new Size(431, 4), Color.Black);
             _descriptionRectangle = new NativeSprite("commonmenu", "gradient_bgd", new Point(Offset.X, 127), new Size(431, 30));
             _descriptionText = new NativeText("Description", new Point(Offset.X + 5, 125), 0.35f, Color.FromArgb(255, 255, 255, 255), Font.ChaletLondon, TextAlignment.Left);
 
@@ -399,7 +399,7 @@ namespace NativeUI
             _counterText.Position = new Point(425 + Offset.X + widthOffset, 110 + Offset.Y);
             if (_mainMenu.Items.Count >= 1)
             {
-                var tmp = (UIResRectangle)_mainMenu.Items[1];
+                var tmp = (NativeRectangle)_mainMenu.Items[1];
                 tmp.Size = new Size(431 + WidthOffset, 37);
             }
             if (BannerRectangle != null)
@@ -432,7 +432,7 @@ namespace NativeUI
         ///  Set the banner to your own Rectangle.
         /// </summary>
         /// <param name="rectangle">UIResRectangle object. Position and size does not matter.</param>
-        public void SetBannerType(UIResRectangle rectangle)
+        public void SetBannerType(NativeRectangle rectangle)
         {
             BannerSprite = null;
             BannerRectangle = rectangle;

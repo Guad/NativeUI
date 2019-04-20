@@ -30,7 +30,7 @@ namespace NativeUI.PauseMenu
 
             for (int i = 0; i < Dictionary.Count; i++)
             {
-                new UIResRectangle(new Point(TopLeft.X, TopLeft.Y + (40 * i)),
+                new NativeRectangle(new Point(TopLeft.X, TopLeft.Y + (40 * i)),
                     new Size(rectSize, 40), i % 2 == 0 ? Color.FromArgb(alpha, 0, 0, 0) : Color.FromArgb(blackAlpha, 0, 0, 0)).Draw();
 
                 var item = Dictionary.ElementAt(i);

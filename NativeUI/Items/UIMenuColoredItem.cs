@@ -36,7 +36,7 @@ namespace NativeUI
         protected void Init()
         {
             _selectedSprite = new NativeSprite("commonmenu", "gradient_nav", new Point(0, 0), new Size(431, 38), 0, HighlightColor);
-            _rectangle = new UIResRectangle(new Point(0, 0), new Size(431, 38), Color.FromArgb(150, 0, 0, 0));
+            _rectangle = new NativeRectangle(new Point(0, 0), new Size(431, 38), Color.FromArgb(150, 0, 0, 0));
             _text = new NativeText(Text, new Point(8, 0), 0.33f, Color.WhiteSmoke, GTA.Font.ChaletLondon, TextAlignment.Left);
             Description = Description;
 

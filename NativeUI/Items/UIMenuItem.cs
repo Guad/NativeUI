@@ -9,7 +9,7 @@ namespace NativeUI
     /// </summary>
     public class UIMenuItem
     {
-        protected UIResRectangle _rectangle;
+        protected NativeRectangle _rectangle;
         protected NativeText _text;
         protected NativeSprite _selectedSprite;
 
@@ -43,7 +43,7 @@ namespace NativeUI
         {
             Enabled = true;
 
-            _rectangle = new UIResRectangle(new Point(0, 0), new Size(431, 38), Color.FromArgb(20, 255, 255, 255)); // Color.FromArgb(150, 0, 0, 0)
+            _rectangle = new NativeRectangle(new Point(0, 0), new Size(431, 38), Color.FromArgb(20, 255, 255, 255)); // Color.FromArgb(150, 0, 0, 0)
             _text = new NativeText(text, new Point(8, 0), 0.33f, Color.WhiteSmoke, GTA.Font.ChaletLondon, TextAlignment.Left);
             Description = description;
             _selectedSprite = new NativeSprite("commonmenu", "gradient_nav", new Point(0, 0), new Size(431, 38));
