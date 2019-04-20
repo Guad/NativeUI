@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BigMessage.cs" />
+    <Compile Include="Elements\NativeRectangle.cs" />
     <Compile Include="Elements\NativeSprite.cs" />
     <Compile Include="Elements\NativeText.cs" />
     <Compile Include="Extensions\Point.cs" />
