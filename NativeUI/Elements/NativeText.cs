@@ -1,6 +1,4 @@
-using GTA;
 using GTA.Native;
-using NativeUI.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -20,7 +18,7 @@ namespace NativeUI.Elements
     /// <summary>
     /// New Design for the NativeUI texts.
     /// </summary>
-    public class NativeText : UIElement
+    public class NativeText : NativeElement
     {
         #region Consistent Values
 
@@ -34,17 +32,9 @@ namespace NativeUI.Elements
         #region Private Properties
 
         /// <summary>
-        /// Internal absolute X-Y position.
-        /// </summary>
-        private Point _Position = Point.Empty;
-        /// <summary>
-        /// Internal relative X-Y position.
-        /// </summary>
-        private PointF _Relative = PointF.Empty;
-        /// <summary>
         /// The raw word wrap value.
         /// </summary>
-        private float _WordWrap = 0f;
+        private float InternalWordWrap = 0f;
         /// <summary>
         /// The already calculated word wrapping.
         /// </summary>
@@ -66,10 +56,6 @@ namespace NativeUI.Elements
 
         #region Public Properties
 
-        /// <summary>
-        /// If the text is enabled or not.
-        /// </summary>
-        public bool Enabled { get; set; } = true;
         /// <summary>
         /// The UTF-8 string to draw on the screen.
         /// </summary>
@@ -98,22 +84,6 @@ namespace NativeUI.Elements
             }
         }
         /// <summary>
-        /// The position of the text
-        /// </summary>
-        public Point Position
-        {
-            get => _Position;
-            set
-            {
-                _Position = value;
-                _Relative = Position.ToRelative(out _, out Width);
-            }
-        }
-        /// <summary>
-        /// The color of the text.
-        /// </summary>
-        public Color Color { get; set; } = Color.White;
-        /// <summary>
         /// The Internal GTA Font to be used.
         /// </summary>
         public GTA.Font Font { get; set; } = GTA.Font.ChaletLondon;
@@ -141,11 +111,11 @@ namespace NativeUI.Elements
         {
             get
             {
-                return _WordWrap;
+                return InternalWordWrap;
             }
             set
             {
-                _WordWrap = value;
+                InternalWordWrap = value;
                 CalculatedWrap = (Position.X + value) / Width;
             }
         }
@@ -165,26 +135,21 @@ namespace NativeUI.Elements
         public NativeText(string caption, Point position, float scale, Color color, GTA.Font font, TextAlignment alignment)
         {
             Caption = caption;
-            Position = position;
             Scale = scale;
             Color = color;
             Font = font;
             Alignment = alignment;
+            Position = position;
         }
 
         #endregion
 
         #region Drawing
-
-        /// <summary>
-        /// Draws the text on screen.
-        /// </summary>
-        public void Draw() => Draw(Size.Empty);
-        
+                
         /// <summary>
         /// Draws the text on screen with the specified offset.
         /// </summary>
-        public void Draw(Size offset)
+        public override void Draw()
         {
             // Set some basics
             Function.Call(Hash.SET_TEXT_FONT, (int)Font);
@@ -201,14 +166,14 @@ namespace NativeUI.Elements
                     break;
                 case TextAlignment.Right:
                     Function.Call(Hash.SET_TEXT_RIGHT_JUSTIFY, true);
-                    Function.Call(Hash.SET_TEXT_WRAP, 0, _Relative.X);
+                    Function.Call(Hash.SET_TEXT_WRAP, 0, RelativePosition.X);
                     break;
             }
 
             // Set the correct word wrap acording to our calculations
             if (WordWrap != 0)
             {
-                Function.Call(Hash.SET_TEXT_WRAP, _Relative.X, CalculatedWrap);
+                Function.Call(Hash.SET_TEXT_WRAP, RelativePosition.X, CalculatedWrap);
             }
 
             // Time to draw everything!
@@ -220,7 +185,7 @@ namespace NativeUI.Elements
                 Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, Chunk);
             }
             // And draw it
-            Function.Call(Hash._DRAW_TEXT, _Relative.X, _Relative.Y);
+            Function.Call(Hash._DRAW_TEXT, RelativePosition.X, RelativePosition.Y);
         }
 
         #endregion
