@@ -63,11 +63,11 @@ namespace NativeUI.Elements
             // For now, the calculations at the top do not work and need tweaking
             // Calculate the width of the control and make the X and Y position
             float Width = 1080f * ((float)Game.ScreenResolution.Width / Game.ScreenResolution.Height);
-            float X = (Position.X / Width) + (_RelativeSize.Width * 0.5f);
-            float Y = (Position.Y / 1080f) + (_RelativeSize.Height * 0.5f);
+            float X = (Position.X / Width) + (RelativeSize.Width * 0.5f);
+            float Y = (Position.Y / 1080f) + (RelativeSize.Height * 0.5f);
 
             // Finally, draw the sprite
-            Function.Call(Hash.DRAW_SPRITE, TextureDict, TextureName, X, Y, _RelativeSize.Width, _RelativeSize.Height, Heading, Color.R, Color.G, Color.B, Color.A);
+            Function.Call(Hash.DRAW_SPRITE, TextureDict, TextureName, X, Y, RelativeSize.Width, RelativeSize.Height, Heading, Color.R, Color.G, Color.B, Color.A);
         }
 
         #endregion
