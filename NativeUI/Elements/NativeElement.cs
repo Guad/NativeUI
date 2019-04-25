@@ -70,9 +70,9 @@ namespace NativeUI.Elements
 
         #region Drawing
 
-        public virtual void Draw(Size offset) => Draw();
+        public virtual void Draw(Size offset) => throw new System.NotImplementedException();
 
-        public virtual void Draw() => throw new System.NotImplementedException();
+        public virtual void Draw() => Draw(Size.Empty);
 
         #endregion
     }
