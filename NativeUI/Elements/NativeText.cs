@@ -2,6 +2,7 @@ using GTA.Native;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Text;
 
 namespace NativeUI.Elements
 {
@@ -66,19 +67,21 @@ namespace NativeUI.Elements
             {
                 _Caption = value;
                 Chunks.Clear(); // Wipe the list
-                double TotalParts = Math.Ceiling(value.Length / (float)ChunkSize); // Get the number of parts that we need
+                int ByteCount = Encoding.UTF8.GetByteCount(value);
+                int TotalParts = (int)Math.Ceiling(ByteCount / (float)ChunkSize); // Get the number of parts that we need
                 if (TotalParts == 1) // If we only need one part
                 {
                     Chunks.Add(value); // Add the complete string
                 }
                 else // Otherwise
                 {
+                    byte[] bytes = Encoding.UTF8.GetBytes(value);
                     for (int i = 0; i < TotalParts; i++) // Iterate over the number of parts that we need
                     {
                         int Start = i * ChunkSize; // Calculate the start
-                        // If the Start + Aditional Chunk is higher than the length of the string, add the characters left
-                        int End = (Start + ChunkSize) > value.Length ? value.Length - Start : ChunkSize;
-                        Chunks.Add(value.Substring(Start, End)); // Finally add the string
+                                                   // If the Start + Aditional Chunk is higher than the length of the string, add the characters left
+                        int Count = Math.Min(ChunkSize, ByteCount - Start);
+                        Chunks.Add(Encoding.UTF8.GetString(bytes, Start, Count)); // Finally add the string
                     }
                 }
             }
