@@ -428,6 +428,20 @@ namespace NativeUI
             BannerSprite.Position = new Point(Offset.X, Offset.Y);
         }
 
+        [Obsolete]
+        public void SetBannerType(Sprite spriteBanner)
+        {
+            NativeSprite NewSprite = new NativeSprite(spriteBanner.TextureDict, spriteBanner.TextureName)
+            {
+                Size = spriteBanner.Size,
+                Position = spriteBanner.Position,
+                Color = spriteBanner.Color,
+                Enabled = spriteBanner.Visible,
+                Heading = spriteBanner.Heading
+            };
+            SetBannerType(NewSprite);
+        }
+
         /// <summary>
         ///  Set the banner to your own Rectangle.
         /// </summary>
