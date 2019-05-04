@@ -4,16 +4,23 @@ using System.IO;
 using System.Reflection;
 using GTA;
 using GTA.Native;
+using NativeUI.Elements;
 
 namespace NativeUI
 {
     [Obsolete("Use NativeUI.Elements.NativeSprite instead")]
-    public class Sprite
+    public class Sprite : ISprite
     {
-        public Point Position;
-        public Size Size;
-        public Color Color;
-        public bool Visible;
+        public Point Position { get; set; }
+        public Size Size { get; set; }
+        public Color Color { get; set; }
+        public bool Enabled { get; set; }
+        [Obsolete("Use Sprite.Enabled instead")]
+        public bool Visible
+        {
+            get => Enabled;
+            set => Enabled = value;
+        }
         public float Heading;
 
         public string TextureDict
@@ -63,6 +70,8 @@ namespace NativeUI
         public Sprite(string textureDict, string textureName, Point position, Size size) : this(textureDict, textureName, position, size, 0f, Color.FromArgb(255, 255, 255, 255))
         {
         }
+
+        public void Draw(Size offset) => Draw(Size.Empty);
 
 
         /// <summary>

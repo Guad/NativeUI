@@ -4,7 +4,9 @@ using GTA.Native;
 
 namespace NativeUI.Elements
 {
-    public class NativeSprite : NativeElement
+    public interface ISprite : UIElement { }
+
+    public class NativeSprite : NativeElement, ISprite
     {
         #region Public Properties
 

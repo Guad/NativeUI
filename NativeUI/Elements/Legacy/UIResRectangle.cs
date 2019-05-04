@@ -2,6 +2,7 @@
 using System.Drawing;
 using GTA;
 using GTA.Native;
+using NativeUI.Elements;
 
 namespace NativeUI
 {
@@ -9,7 +10,7 @@ namespace NativeUI
     /// A rectangle in 1080 pixels height system.
     /// </summary>
     [Obsolete("Use NativeUI.Elements.NativeRectangle instead")]
-    public class UIResRectangle : UIRectangle
+    public class UIResRectangle : UIRectangle, IRectangle
     {
         public UIResRectangle()
         { }

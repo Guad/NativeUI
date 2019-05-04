@@ -1,3 +1,4 @@
+using GTA;
 using GTA.Native;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,8 @@ using System.Text;
 
 namespace NativeUI.Elements
 {
+    public interface IText : UIElement { }
+
     /// <summary>
     /// The alignment of the text to draw.
     /// </summary>
@@ -19,7 +22,7 @@ namespace NativeUI.Elements
     /// <summary>
     /// New Design for the NativeUI texts.
     /// </summary>
-    public class NativeText : NativeElement
+    public class NativeText : NativeElement, IText
     {
         #region Consistent Values
 

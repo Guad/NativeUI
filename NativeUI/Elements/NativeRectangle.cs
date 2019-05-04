@@ -3,7 +3,9 @@ using GTA.Native;
 
 namespace NativeUI.Elements
 {
-    public class NativeRectangle : NativeElement
+    public interface IRectangle : ISprite { }
+
+    public class NativeRectangle : NativeElement, IRectangle
     {
         #region Constructors
 
