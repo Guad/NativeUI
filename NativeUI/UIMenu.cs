@@ -46,12 +46,12 @@ namespace NativeUI
     {
         #region Private Fields
         private readonly UIContainer _mainMenu;
-        private readonly NativeSprite _background;
+        private readonly ISprite _background;
 
-        private readonly NativeRectangle _descriptionBar;
-        private readonly NativeSprite _descriptionRectangle;
-        private readonly NativeText _descriptionText;
-        private readonly NativeText _counterText;
+        private readonly IRectangle _descriptionBar;
+        private readonly ISprite _descriptionRectangle;
+        private readonly IText _descriptionText;
+        private readonly IText _counterText;
 
         private int _activeItem = 1000;
 
@@ -70,9 +70,9 @@ namespace NativeUI
             new Dictionary<MenuControls, Tuple<List<Keys>, List<Tuple<Control, int>>>>();
 
         private readonly List<InstructionalButton> _instructionalButtons = new List<InstructionalButton>();
-        private readonly NativeSprite _upAndDownSprite;
-        private readonly NativeRectangle _extraRectangleUp;
-        private readonly NativeRectangle _extraRectangleDown;
+        private readonly ISprite _upAndDownSprite;
+        private readonly IRectangle _extraRectangleUp;
+        private readonly IRectangle _extraRectangleDown;
 
         private readonly Scaleform _instructionalButtonsScaleform;
 
@@ -151,8 +151,8 @@ namespace NativeUI
 
         public Point Offset { get; }
 
-        public NativeSprite BannerSprite { get; private set; }
-        public NativeRectangle BannerRectangle { get; private set; }
+        public ISprite BannerSprite { get; private set; }
+        public IRectangle BannerRectangle { get; private set; }
         public string BannerTexture { get; private set; }
 
         #endregion
@@ -421,7 +421,7 @@ namespace NativeUI
         /// Set the banner to your own Sprite object.
         /// </summary>
         /// <param name="spriteBanner">Sprite object. The position and size does not matter.</param>
-        public void SetBannerType(NativeSprite spriteBanner)
+        public void SetBannerType(ISprite spriteBanner)
         {
             BannerSprite = spriteBanner;
             BannerSprite.Size = new Size(431 + WidthOffset, 107);
@@ -446,7 +446,7 @@ namespace NativeUI
         ///  Set the banner to your own Rectangle.
         /// </summary>
         /// <param name="rectangle">UIResRectangle object. Position and size does not matter.</param>
-        public void SetBannerType(NativeRectangle rectangle)
+        public void SetBannerType(IRectangle rectangle)
         {
             BannerSprite = null;
             BannerRectangle = rectangle;
@@ -1424,13 +1424,13 @@ namespace NativeUI
         /// <summary>
         /// Returns the title object.
         /// </summary>
-        public NativeText Title { get; }
+        public IText Title { get; }
 
 
         /// <summary>
         /// Returns the subtitle object.
         /// </summary>
-        public NativeText Subtitle { get; }
+        public IText Subtitle { get; }
 
 
         /// <summary>

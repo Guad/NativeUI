@@ -34,7 +34,7 @@ namespace NativeUI
             }
         }
 
-        public string TextureName;
+        public string TextureName { get; set; }
         private string _textureDict;
 
         /// <summary>

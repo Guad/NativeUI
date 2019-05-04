@@ -256,7 +256,7 @@ namespace NativeUI
             _menuList.ForEach(m => m.SetBannerType(bannerType));
         }
 
-        public void SetBannerType(NativeRectangle bannerType)
+        public void SetBannerType(IRectangle bannerType)
         {
             _menuList.ForEach(m => m.SetBannerType(bannerType));
         }

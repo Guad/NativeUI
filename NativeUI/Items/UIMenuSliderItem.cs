@@ -6,12 +6,12 @@ namespace NativeUI
 {
     public class UIMenuSliderItem : UIMenuItem
     {
-        protected NativeSprite _arrowLeft;
-        protected NativeSprite _arrowRight;
+        protected ISprite _arrowLeft;
+        protected ISprite _arrowRight;
 
-        protected NativeRectangle _rectangleBackground;
-        protected NativeRectangle _rectangleSlider;
-        protected NativeRectangle _rectangleDivider;
+        protected IRectangle _rectangleBackground;
+        protected IRectangle _rectangleSlider;
+        protected IRectangle _rectangleDivider;
         
         protected int _value = 0;
         protected int _max = 100;

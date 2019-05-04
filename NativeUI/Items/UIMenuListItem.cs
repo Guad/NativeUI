@@ -9,9 +9,9 @@ namespace NativeUI
 {
     public class UIMenuListItem : UIMenuItem, IListItem
     {
-        protected NativeText _itemText;
-        protected NativeSprite _arrowLeft;
-        protected NativeSprite _arrowRight;
+        protected IText _itemText;
+        protected ISprite _arrowLeft;
+        protected ISprite _arrowRight;
 
         protected int _index;
         protected List<object> _items;

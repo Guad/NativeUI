@@ -7,7 +7,12 @@ using System.Text;
 
 namespace NativeUI.Elements
 {
-    public interface IText : UIElement { }
+    public interface IText : UIElement
+    {
+        string Caption { get; set; }
+        GTA.Font Font { get; set; }
+        float Scale { get; set; }
+    }
 
     /// <summary>
     /// The alignment of the text to draw.

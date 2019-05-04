@@ -4,7 +4,12 @@ using GTA.Native;
 
 namespace NativeUI.Elements
 {
-    public interface ISprite : UIElement { }
+    public interface ISprite : UIElement
+    {
+        Size Size { get; set; }
+        string TextureDict { get; set; }
+        string TextureName { get; set; }
+    }
 
     public class NativeSprite : NativeElement, ISprite
     {

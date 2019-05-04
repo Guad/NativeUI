@@ -1,9 +1,13 @@
 ﻿using System.Drawing;
+using GTA;
 using GTA.Native;
 
 namespace NativeUI.Elements
 {
-    public interface IRectangle : ISprite { }
+    public interface IRectangle : UIElement
+    {
+        Size Size { get; set; }
+    }
 
     public class NativeRectangle : NativeElement, IRectangle
     {

@@ -15,9 +15,9 @@ namespace NativeUI
 
         public delegate string DynamicListItemChangeCallback(UIMenuDynamicListItem sender, ChangeDirection direction);
 
-        protected NativeText _itemText;
-        protected NativeSprite _arrowLeft;
-        protected NativeSprite _arrowRight;
+        protected IText _itemText;
+        protected ISprite _arrowLeft;
+        protected ISprite _arrowRight;
 
         public string CurrentListItem { get; internal set; }
         public DynamicListItemChangeCallback Callback { get; set; }

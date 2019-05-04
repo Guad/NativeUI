@@ -9,14 +9,14 @@ namespace NativeUI
     /// </summary>
     public class UIMenuItem
     {
-        protected NativeRectangle _rectangle;
-        protected NativeText _text;
-        protected NativeSprite _selectedSprite;
+        protected IRectangle _rectangle;
+        protected IText _text;
+        protected ISprite _selectedSprite;
 
-        protected NativeSprite _badgeLeft;
-        protected NativeSprite _badgeRight;
+        protected ISprite _badgeLeft;
+        protected ISprite _badgeRight;
 
-        protected NativeText _labelText;
+        protected IText _labelText;
 
         private readonly Color _disabledColor = Color.FromArgb(163, 159, 148); // Why allocating memory for same color every time?
 
