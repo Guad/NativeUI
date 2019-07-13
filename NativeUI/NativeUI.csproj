@@ -33,9 +33,6 @@
     <DocumentationFile>bin\x64\Release\NativeUI.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ScriptHookVDotNet3">
-      <HintPath>..\..\ChaosMod\lib\ScriptHookVDotNet3.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -80,6 +77,12 @@
   <ItemGroup>
     <None Include="NativeUI.nuspec" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\shvdn\ScriptHookVDotNet.csproj">
+      <Project>{61165c1a-6bfe-4776-b371-5a3fdb1a2ed7}</Project>
+      <Name>ScriptHookVDotNet</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

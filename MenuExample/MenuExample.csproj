@@ -32,9 +32,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ScriptHookVDotNet3">
-      <HintPath>..\..\ChaosMod\lib\ScriptHookVDotNet3.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
@@ -52,6 +49,10 @@
     <ProjectReference Include="..\NativeUI\NativeUI.csproj">
       <Project>{f3e16ed9-dbf7-4e7b-b04b-9b24b11891d3}</Project>
       <Name>NativeUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\shvdn\ScriptHookVDotNet.csproj">
+      <Project>{61165c1a-6bfe-4776-b371-5a3fdb1a2ed7}</Project>
+      <Name>ScriptHookVDotNet</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
