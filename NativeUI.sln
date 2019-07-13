@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.22823.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29025.244
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NativeUI", "NativeUI\NativeUI.csproj", "{F3E16ED9-DBF7-4E7B-B04B-9B24B11891D3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MenuExample", "MenuExample\MenuExample.csproj", "{79D9A09F-1999-4148-9BA0-20AEBA9B3C8B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptHookVDotNet", "shvdn\ScriptHookVDotNet.csproj", "{61165C1A-6BFE-4776-B371-5A3FDB1A2ED7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{79D9A09F-1999-4148-9BA0-20AEBA9B3C8B}.Debug|x64.Build.0 = Debug|x64
 		{79D9A09F-1999-4148-9BA0-20AEBA9B3C8B}.Release|x64.ActiveCfg = Release|x64
 		{79D9A09F-1999-4148-9BA0-20AEBA9B3C8B}.Release|x64.Build.0 = Release|x64
+		{61165C1A-6BFE-4776-B371-5A3FDB1A2ED7}.Debug|x64.ActiveCfg = Release|x64
+		{61165C1A-6BFE-4776-B371-5A3FDB1A2ED7}.Debug|x64.Build.0 = Release|x64
+		{61165C1A-6BFE-4776-B371-5A3FDB1A2ED7}.Release|x64.ActiveCfg = Release|x64
+		{61165C1A-6BFE-4776-B371-5A3FDB1A2ED7}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
