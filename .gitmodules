@@ -1,0 +1,3 @@
+[submodule "shvdn"]
+	path = shvdn
+	url = https://github.com/crosire/scripthookvdotnet.git
