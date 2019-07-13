@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using GTA;
 using GTA.Native;
-using Font = GTA.Font;
+using Font = GTA.UI.Font;
+using Alignment = GTA.UI.Alignment;
 
 namespace NativeUI.PauseMenu
 {
@@ -86,19 +87,19 @@ namespace NativeUI.PauseMenu
             if (Items.Count == 0) return;
 
 
-            if (Game.IsControlJustPressed(0, Control.FrontendAccept) && Focused && Items[Index] is UIMenuCheckboxItem)
+            if (Game.IsControlJustPressed(Control.FrontendAccept) && Focused && Items[Index] is UIMenuCheckboxItem)
             {
                 Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
                 ((UIMenuCheckboxItem)Items[Index]).Checked = !((UIMenuCheckboxItem)Items[Index]).Checked;
                 ((UIMenuCheckboxItem)Items[Index]).CheckboxEventTrigger();
             }
-            else if (Game.IsControlJustPressed(0, Control.FrontendAccept) && Focused)
+            else if (Game.IsControlJustPressed(Control.FrontendAccept) && Focused)
             {
                 Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
                 Items[Index].ItemActivate(null);
             }
 
-            if (Game.IsControlJustPressed(0, Control.FrontendLeft) && Focused && Items[Index] is UIMenuListItem)
+            if (Game.IsControlJustPressed(Control.FrontendLeft) && Focused && Items[Index] is UIMenuListItem)
             {
                 var it = (UIMenuListItem)Items[Index];
                 it.Index--;
@@ -106,7 +107,7 @@ namespace NativeUI.PauseMenu
                 it.ListChangedTrigger(it.Index);
             }
 
-            if (Game.IsControlJustPressed(0, Control.FrontendRight) && Focused && Items[Index] is UIMenuListItem)
+            if (Game.IsControlJustPressed(Control.FrontendRight) && Focused && Items[Index] is UIMenuListItem)
             {
                 var it = (UIMenuListItem)Items[Index];
                 it.Index++;
@@ -114,13 +115,13 @@ namespace NativeUI.PauseMenu
                 it.ListChangedTrigger(it.Index);
             }
 
-            if (Game.IsControlJustPressed(0, Control.FrontendUp) || Game.IsControlJustPressed(0, Control.MoveUpOnly) || Game.IsControlJustPressed(0, Control.CursorScrollUp))
+            if (Game.IsControlJustPressed(Control.FrontendUp) || Game.IsControlJustPressed(Control.MoveUpOnly) || Game.IsControlJustPressed(Control.CursorScrollUp))
             {
                 Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
                 MoveUp();
             }
 
-            else if (Game.IsControlJustPressed(0, Control.FrontendDown) || Game.IsControlJustPressed(0, Control.MoveDownOnly) || Game.IsControlJustPressed(0, Control.CursorScrollDown))
+            else if (Game.IsControlJustPressed(Control.FrontendDown) || Game.IsControlJustPressed(Control.MoveDownOnly) || Game.IsControlJustPressed(Control.CursorScrollDown))
             {
                 Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1);
                 MoveDown();
@@ -186,7 +187,7 @@ namespace NativeUI.PauseMenu
                     new UIResText(Items[c].RightLabel,
                         SafeSize.AddPoints(new Point(BottomRight.X - SafeSize.X - 5, 5 + (itemSize.Height + 3) * i)),
                         0.35f, Color.FromArgb(fullAlpha, (Index == c && Focused) ? Color.Black : Color.White),
-                        Font.ChaletLondon, UIResText.Alignment.Right).Draw();
+                        Font.ChaletLondon, Alignment.Right).Draw();
                 }
 
                 if (Items[c] is UIMenuCheckboxItem)
@@ -213,8 +214,8 @@ namespace NativeUI.PauseMenu
                     var arrowLeft = new Sprite("commonmenu", "arrowleft", basePos, new Size(30, 30));
                     var arrowRight = new Sprite("commonmenu", "arrowright", basePos, new Size(30, 30));
                     var itemText = new UIResText("", basePos, 0.35f, Color.White, Font.ChaletLondon,
-                        UIResText.Alignment.Left)
-                    { TextAlignment = UIResText.Alignment.Right };
+                        Alignment.Left)
+                    { TextAlignment = Alignment.Right };
 
                     string caption = convItem.Items[convItem.Index].ToString();
                     float offset = StringMeasurer.MeasureString(caption, itemText.Font, itemText.Scale);
@@ -244,7 +245,7 @@ namespace NativeUI.PauseMenu
                     itemText.Draw();
                 }
 
-                if (Focused && hovering && Game.IsControlJustPressed(0, Control.CursorAccept))
+                if (Focused && hovering && Game.IsControlJustPressed(Control.CursorAccept))
                 {
                     bool open = Index == c;
                     Index = (1000 - (1000 % Items.Count) + c) % Items.Count;

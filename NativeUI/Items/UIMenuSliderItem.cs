@@ -148,8 +148,8 @@ namespace NativeUI
 
             _arrowLeft.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
             _arrowRight.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
-            int offset = 176 + Offset.X + _rectangleBackground.Size.Width - _rectangleSlider.Size.Width;
-            _rectangleSlider.Position = new Point((int)(offset + (_value / (float)_max * 73)), _rectangleSlider.Position.Y);
+            float offset = 176 + Offset.X + _rectangleBackground.Size.Width - _rectangleSlider.Size.Width;
+            _rectangleSlider.Position = new PointF((int)(offset + (_value / (float)_max * 73)), _rectangleSlider.Position.Y);
             if (Selected)
             {
                 _arrowLeft.Draw();

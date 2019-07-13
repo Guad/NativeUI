@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using GTA;
-using Font = GTA.Font;
+using GTA.UI;
+using Font = GTA.UI.Font;
+using Alignment = GTA.UI.Alignment;
 
 namespace NativeUI
 {
@@ -20,12 +22,12 @@ namespace NativeUI
             Point safe = UIMenu.GetSafezoneBounds();
 
             UIResText.Draw(Label, (int)res.Width - safe.X - 180, (int)res.Height - safe.Y - (30 + (4 * interval)), Font.ChaletLondon, 0.3f, Color.White,
-                UIResText.Alignment.Right, false, false, 0);
+                Alignment.Right, false, false, 0);
             Sprite.Draw("timerbars", "all_black_bg", (int)res.Width - safe.X - 298, (int)res.Height - safe.Y - (40 + (4 * interval)), 300, 37, 0f, Color.FromArgb(180, 255, 255, 255));
-
-            UI.HideHudComponentThisFrame(HudComponent.AreaName);
-            UI.HideHudComponentThisFrame(HudComponent.StreetName);
-            UI.HideHudComponentThisFrame(HudComponent.VehicleName);
+			
+            Hud.HideComponentThisFrame(HudComponent.AreaName);
+            Hud.HideComponentThisFrame(HudComponent.StreetName);
+            Hud.HideComponentThisFrame(HudComponent.VehicleName);
         }
     }
 
@@ -45,7 +47,7 @@ namespace NativeUI
 
             base.Draw(interval);
             UIResText.Draw(Text, (int)res.Width - safe.X - 10, (int)res.Height - safe.Y - (42 + (4 * interval)), Font.ChaletLondon, 0.5f, Color.White, 
-                UIResText.Alignment.Right, false, false, 0);
+                Alignment.Right, false, false, 0);
         }
     }
 

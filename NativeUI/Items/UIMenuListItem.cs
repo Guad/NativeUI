@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using GTA;
-using Font = GTA.Font;
+using Font = GTA.UI.Font;
+using Alignment = GTA.UI.Alignment;
 
 namespace NativeUI
 {
@@ -69,7 +69,7 @@ namespace NativeUI
             _arrowLeft = new Sprite("commonmenu", "arrowleft", new Point(110, 105 + y), new Size(30, 30));
             _arrowRight = new Sprite("commonmenu", "arrowright", new Point(280, 105 + y), new Size(30, 30));
             _itemText = new UIResText("", new Point(290, y + 104), 0.35f, Color.White, Font.ChaletLondon,
-                UIResText.Alignment.Left) {TextAlignment = UIResText.Alignment.Right};
+                Alignment.Left) {TextAlignment = Alignment.Right};
             Index = index;
         }
 
@@ -128,16 +128,16 @@ namespace NativeUI
             _arrowLeft.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
             _arrowRight.Color = Enabled ? Selected ? Color.Black : Color.WhiteSmoke : Color.FromArgb(163, 159, 148);
 
-            _arrowLeft.Position = new Point(375 - (int)offset + Offset.X + Parent.WidthOffset, _arrowLeft.Position.Y);
+            _arrowLeft.Position = new PointF(375 - (int)offset + Offset.X + Parent.WidthOffset, _arrowLeft.Position.Y);
             if (Selected)
             {
                 _arrowLeft.Draw();
                 _arrowRight.Draw();
-                _itemText.Position = new Point(403 + Offset.X + Parent.WidthOffset, _itemText.Position.Y);
+                _itemText.Position = new PointF(403 + Offset.X + Parent.WidthOffset, _itemText.Position.Y);
             }
             else
             {
-                _itemText.Position = new Point(418 + Offset.X + Parent.WidthOffset, _itemText.Position.Y);
+                _itemText.Position = new PointF(418 + Offset.X + Parent.WidthOffset, _itemText.Position.Y);
             }
             _itemText.Draw();
         }

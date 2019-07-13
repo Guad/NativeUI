@@ -1,27 +1,27 @@
 ﻿using System;
 using System.Drawing;
-using GTA;
 using GTA.Native;
-using Font = GTA.Font;
+using Font = GTA.UI.Font;
+using Alignment = GTA.UI.Alignment;
 
 namespace NativeUI
 {
     /// <summary>
     /// A Text object in the 1080 pixels height base system.
     /// </summary>
-    public class UIResText : UIText
+    public class UIResText : GTA.UI.TextElement
     {
-        public UIResText(string caption, Point position, float scale) : base(caption, position, scale)
+        public UIResText(string caption, PointF position, float scale) : base(caption, position, scale)
         {
             TextAlignment = Alignment.Left;
         }
 
-        public UIResText(string caption, Point position, float scale, Color color) : base(caption, position, scale, color)
+        public UIResText(string caption, PointF position, float scale, Color color) : base(caption, position, scale, color)
         {
             TextAlignment = Alignment.Left;
         }
 
-        public UIResText(string caption, Point position, float scale, Color color, Font font, Alignment justify) : base(caption, position, scale, color, font, false)
+        public UIResText(string caption, PointF position, float scale, Color color, Font font, Alignment justify) : base(caption, position, scale, color, font, justify)
         {
             TextAlignment = justify;
         }
@@ -54,7 +54,7 @@ namespace NativeUI
             for (int i = 0; i < input.Length; i += maxByteLengthPerString)
             {
                 string substr = (input.Substring(i, Math.Min(maxByteLengthPerString, input.Length - i)));
-                Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, substr);
+                Function.Call(Hash.ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME, substr);
             }
         }
 
@@ -76,7 +76,7 @@ namespace NativeUI
             var utf8ByteCount = enc.GetByteCount(input);
             if (utf8ByteCount < maxByteLengthPerString)
             {
-                Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, input);
+                Function.Call(Hash.ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME, input);
                 return;
             }
 
@@ -88,13 +88,13 @@ namespace NativeUI
                 if (enc.GetByteCount(input.Substring(startIndex, length)) > maxByteLengthPerString)
                 {
                     string substr = (input.Substring(startIndex, length - 1));
-                    Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, substr);
+                    Function.Call(Hash.ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME, substr);
 
                     i -= 1;
                     startIndex = (startIndex + length - 1);
                 }
             }
-            Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, input.Substring(startIndex, input.Length - startIndex));
+            Function.Call(Hash.ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME, input.Substring(startIndex, input.Length - startIndex));
         }
 
         public static float MeasureStringWidth(string str, Font font, float scale)
@@ -116,10 +116,11 @@ namespace NativeUI
 
         public Size WordWrap { get; set; }
 
-        public override void Draw(Size offset)
+        public override void Draw(SizeF offset)
         {
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
+			var res = GTA.UI.Screen.Resolution;
+			int screenw = res.Width;
+            int screenh = res.Height;
             const float height = 1080f;
             float ratio = (float)screenw / screenh;
             var width = height * ratio;
@@ -136,7 +137,7 @@ namespace NativeUI
                 Function.Call(Hash.SET_TEXT_OUTLINE);
             switch (TextAlignment)
             {
-                case Alignment.Centered:
+                case Alignment.Center:
                     Function.Call(Hash.SET_TEXT_CENTRE, true);
                     break;
                 case Alignment.Right:
@@ -151,16 +152,17 @@ namespace NativeUI
                 Function.Call(Hash.SET_TEXT_WRAP, x, xsize);
             }
 
-            Function.Call(Hash._SET_TEXT_ENTRY, "jamyfafi");
+            Function.Call(Hash.BEGIN_TEXT_COMMAND_DISPLAY_TEXT, "jamyfafi");
             AddLongString(Caption);
 
-            Function.Call(Hash._DRAW_TEXT, x, y);
+            Function.Call(Hash.END_TEXT_COMMAND_DISPLAY_TEXT, x, y);
         }
 
         public static void Draw(string caption, int xPos, int yPos, Font font, float scale, Color color, Alignment alignment, bool dropShadow, bool outline, int wordWrap)
         {
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
+			var res = GTA.UI.Screen.Resolution;
+			int screenw = res.Width;
+            int screenh = res.Height;
             const float height = 1080f;
             float ratio = (float)screenw / screenh;
             var width = height * ratio;
@@ -177,7 +179,7 @@ namespace NativeUI
                 Function.Call(Hash.SET_TEXT_OUTLINE);
             switch (alignment)
             {
-                case Alignment.Centered:
+                case Alignment.Center:
                     Function.Call(Hash.SET_TEXT_CENTRE, true);
                     break;
                 case Alignment.Right:
@@ -192,17 +194,10 @@ namespace NativeUI
                 Function.Call(Hash.SET_TEXT_WRAP, x, xsize);
             }
 
-            Function.Call(Hash._SET_TEXT_ENTRY, "jamyfafi");
+            Function.Call(Hash.BEGIN_TEXT_COMMAND_DISPLAY_TEXT, "jamyfafi");
             AddLongString(caption);
 
-            Function.Call(Hash._DRAW_TEXT, x, y);
-        }
-
-        public enum Alignment
-        {
-            Left,
-            Centered,
-            Right,
+            Function.Call(Hash.END_TEXT_COMMAND_DISPLAY_TEXT, x, y);
         }
     }
 }

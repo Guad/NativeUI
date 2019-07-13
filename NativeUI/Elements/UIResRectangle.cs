@@ -7,22 +7,23 @@ namespace NativeUI
     /// <summary>
     /// A rectangle in 1080 pixels height system.
     /// </summary>
-    public class UIResRectangle : UIRectangle
-    {
+    public class UIResRectangle : GTA.UI.ContainerElement
+	{
         public UIResRectangle()
         { }
 
-        public UIResRectangle(Point pos, Size size) : base(pos, size)
+        public UIResRectangle(PointF pos, Size size) : base(pos, size)
         { }
 
-        public UIResRectangle(Point pos, Size size, Color color) : base(pos, size, color)
+        public UIResRectangle(PointF pos, Size size, Color color) : base(pos, size, color)
         { }
         
-        public override void Draw(Size offset)
+        public override void Draw(SizeF offset)
         {
             if (!Enabled) return;
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
+			var res = GTA.UI.Screen.Resolution;
+            int screenw = res.Width;
+            int screenh = res.Height;
             const float height = 1080f;
             float ratio = (float)screenw / screenh;
             var width = height * ratio;
@@ -36,9 +37,10 @@ namespace NativeUI
         }
 
         public static void Draw(int xPos, int yPos, int boxWidth, int boxHeight, Color color)
-        {
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
+		{
+			var res = GTA.UI.Screen.Resolution;
+			int screenw = res.Width;
+            int screenh = res.Height;
             const float height = 1080f;
             float ratio = (float)screenw / screenh;
             var width = height * ratio;
