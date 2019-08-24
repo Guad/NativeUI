@@ -268,27 +268,15 @@ namespace NativeUI
         /// <summary>
         /// Returns the 1080pixels-based screen resolution while mantaining current aspect ratio.
         /// </summary>
-        /// <returns></returns>
-        public static SizeF GetScreenResolutionMaintainRatio()
-        {
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
-            const float height = 1080f;
-            float ratio = (float)screenw / screenh;
-            var width = height * ratio;
+        [Obsolete("Use Screen.ResolutionMantainRatio instead.", true)]
+        public static SizeF GetScreenResolutionMaintainRatio() => Screen.ResolutionMantainRatio;
 
-            return new SizeF(width, height);
-        }
-        
         /// <summary>
-        /// Old GetScreenResolutionMantainRatio Method to support old versions
+        /// Screen.ResolutionMantainRatio for providing backwards compatibility.
         /// </summary>
         /// <returns></returns>
-        [Obsolete("Use GetScreenResolutionMaintainRatio")]
-        public static SizeF GetScreenResolutionMantainRatio()
-        {
-            return GetScreenResolutionMaintainRatio();
-        }
+        [Obsolete("Use Screen.ResolutionMantainRatio instead.", true)]
+        public static SizeF GetScreenResolutionMantainRatio() => Screen.ResolutionMantainRatio;
 
         /// <summary>
         /// Chech whether the mouse is inside the specified rectangle.
@@ -298,7 +286,7 @@ namespace NativeUI
         /// <returns></returns>
         public static bool IsMouseInBounds(Point topLeft, Size boxSize)
         {
-            var res = GetScreenResolutionMaintainRatio();
+            var res = Screen.ResolutionMantainRatio;
 
             int mouseX = (int)Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)Control.CursorX) * res.Width);
             int mouseY = (int)Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)Control.CursorY) * res.Height);
@@ -930,7 +918,7 @@ namespace NativeUI
         {
             Function.Call((Hash)0x54CE8AC98E120CAB, "jamyfafi");
             UIResText.AddLongString(item.Text);
-            var res = GetScreenResolutionMaintainRatio();
+            var res = Screen.ResolutionMantainRatio;
             var screenw = res.Width;
             var screenh = res.Height;
             const float height = 1080f;
@@ -1109,7 +1097,7 @@ namespace NativeUI
                 GameplayCamera.RelativeHeading += 5f;
                 Function.Call(Hash._0x8DB8CFFD58B62552, 6);
             }
-            else if (IsMouseInBounds(new Point(Convert.ToInt32(GetScreenResolutionMaintainRatio().Width - 30f), 0), new Size(30, 1080)) && MouseEdgeEnabled)
+            else if (IsMouseInBounds(new Point(Convert.ToInt32(Screen.ResolutionMantainRatio.Width - 30f), 0), new Size(30, 1080)) && MouseEdgeEnabled)
             {
                 GameplayCamera.RelativeHeading -= 5f;
                 Function.Call(Hash._0x8DB8CFFD58B62552, 7);
@@ -1314,7 +1302,7 @@ namespace NativeUI
                 UpdateScaleform();
                 if (ParentMenu != null || !value) return;
                 if (!ResetCursorOnOpen) return;
-                Cursor.Position = new Point(Screen.PrimaryScreen.Bounds.Width / 2, Screen.PrimaryScreen.Bounds.Height / 2);
+                Cursor.Position = new Point(System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width / 2, System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height / 2);
                 Function.Call(Hash._0x8DB8CFFD58B62552, 1);
             }
         }

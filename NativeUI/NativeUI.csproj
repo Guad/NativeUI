@@ -66,6 +66,7 @@
     <Compile Include="PointExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Elements\Sprite.cs" />
+    <Compile Include="Screen.cs" />
     <Compile Include="StringMeasurer.cs" />
     <Compile Include="Elements\TimerBars.cs" />
     <Compile Include="UIMenu.cs" />
