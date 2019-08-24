@@ -986,7 +986,7 @@ namespace NativeUI
             if (!Visible) return;
 
             if (ControlDisablingEnabled)
-                DisEnableControls(false);
+                Controls.Toggle(false);
 
             if (_buttonsEnabled)
             {
