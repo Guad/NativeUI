@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BigMessage.cs" />
+    <Compile Include="Controls.cs" />
     <Compile Include="InstructionalButton.cs" />
     <Compile Include="Items\IListItem.cs" />
     <Compile Include="Items\UIMenuDynamicListItem.cs" />

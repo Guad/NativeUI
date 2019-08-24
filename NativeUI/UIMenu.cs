@@ -78,46 +78,7 @@ namespace NativeUI
         private readonly int _extraYOffset;
 
         private static readonly MenuControls[] _menuControls = Enum.GetValues(typeof(MenuControls)).Cast<MenuControls>().ToArray();
-
-        private static readonly List<Control> _necessaryControlsForKeyboard = new List<Control>
-        {
-            Control.FrontendAccept,
-            Control.FrontendAxisX,
-            Control.FrontendAxisY,
-            Control.FrontendDown,
-            Control.FrontendUp,
-            Control.FrontendLeft,
-            Control.FrontendRight,
-            Control.FrontendCancel,
-            Control.FrontendSelect,
-            Control.CursorScrollDown,
-            Control.CursorScrollUp,
-            Control.CursorX,
-            Control.CursorY,
-            Control.MoveUpDown,
-            Control.MoveLeftRight,
-            Control.Sprint,
-            Control.Jump,
-            Control.Enter,
-            Control.VehicleExit,
-            Control.VehicleAccelerate,
-            Control.VehicleBrake,
-            Control.VehicleMoveLeftRight,
-            Control.VehicleFlyYawLeft,
-            Control.FlyLeftRight,
-            Control.FlyUpDown,
-            Control.VehicleFlyYawRight,
-            Control.VehicleHandbrake,
-        };
-        private static readonly List<Control> _necessaryControlsForController = _necessaryControlsForKeyboard.Concat(new Control[]
-        {
-            Control.LookUpDown,
-            Control.LookLeftRight,
-            Control.Aim,
-            Control.Attack,
-        })
-        .ToList();
-
+        
         // Draw Variables
         private Point Safe { get; set; }
         private Size BackgroundSize { get; set; }
@@ -297,29 +258,12 @@ namespace NativeUI
 
         #region Static Methods
         /// <summary>
-        /// Enable or disable all controls but the necessary to operate a menu.
+        /// Toggles the availability of the controls.
+        /// It does not disable the basic movement and frontend controls.
         /// </summary>
-        /// <param name="enable"></param>
-        public static void DisEnableControls(bool enable)
-        {
-            if (enable)
-                Game.EnableAllControlsThisFrame(2);
-            else
-                Game.DisableAllControlsThisFrame(2);
-            //Controls we want
-            // -Frontend
-            // -Mouse
-            // -Walk/Move
-            // -
-
-            if (enable) return;
-            var list = (IsUsingController ? _necessaryControlsForController : _necessaryControlsForKeyboard);
-
-            foreach (var control in list)
-            {
-                Function.Call(Hash.ENABLE_CONTROL_ACTION, 0, (int)control);
-            }
-        }
+        /// <param name="toggle">If we want to enable or disable the controls.</param>
+        [Obsolete("Use Controls.Toggle instead.", true)]
+        public static void DisEnableControls(bool toggle) => Controls.Toggle(toggle);
 
         /// <summary>
         /// Returns the 1080pixels-based screen resolution while mantaining current aspect ratio.
