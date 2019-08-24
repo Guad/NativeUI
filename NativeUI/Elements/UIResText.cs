@@ -114,7 +114,19 @@ namespace NativeUI
             return Function.Call<float>((Hash)0x85F061DA64ED2F67, (int)font) * scale;
         }
 
-        public Size WordWrap { get; set; }
+        /// <summary>
+        /// Width of the text wrap box. Set to zero to disable.
+        /// </summary>
+        public int Wrap { get; set; } = 0;
+        /// <summary>
+        /// Size of the text wrap box.
+        /// </summary>
+        [Obsolete("Use UIResText.Wrap instead.", true)]
+        public Size WordWrap
+        {
+            get => new Size(Wrap, 0);
+            set => Wrap = value.Width;
+        }
 
         public override void Draw(Size offset)
         {
@@ -145,9 +157,9 @@ namespace NativeUI
                     break;
             }
 
-            if (WordWrap.Width != 0)
+            if (Wrap != 0)
             {
-                float xsize = (Position.X + WordWrap.Width) / width;
+                float xsize = (Position.X + Wrap) / width;
                 Function.Call(Hash.SET_TEXT_WRAP, x, xsize);
             }
 
