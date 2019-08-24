@@ -38,7 +38,7 @@ namespace NativeUI.PauseMenu
 
                 new UIResText(Text, SafeSize.AddPoints(new Point(40, 150)), 0.4f, Color.FromArgb(alpha, Color.White))
                 {
-                    WordWrap = new Size((int)ww, 0)
+                    Wrap = ww
                 }.Draw();
             }
         }

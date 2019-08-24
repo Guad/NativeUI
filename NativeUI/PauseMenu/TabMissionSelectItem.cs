@@ -209,7 +209,7 @@ namespace NativeUI.PauseMenu
                     new Point((int)res.Width - SafeSize.X - 508, SafeSize.Y + 256 + 45 + 40 * propLen + 4), 0.35f,
                     Color.FromArgb(fullAlpha, Color.White))
                 {
-                    WordWrap = new Size(508, 0),
+                    Wrap = 508,
                 }.Draw();
 
                 new UIResRectangle(new Point((int) res.Width - SafeSize.X - 512, SafeSize.Y + 256 + 44 + 40*propLen),
