@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -290,22 +290,8 @@ namespace NativeUI
         /// <summary>
         /// Returns the safezone bounds in pixel, relative to the 1080pixel based system.
         /// </summary>
-        /// <returns></returns>
-        public static Point GetSafezoneBounds()
-        {
-            float t = Function.Call<float>(Hash.GET_SAFE_ZONE_SIZE); // Safezone size.
-            double g = Math.Round(Convert.ToDouble(t), 2);
-            g = (g * 100) - 90;
-            g = 10 - g;
-
-            const float hmp = 5.4f;
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
-            float ratio = (float)screenw / screenh;
-            float wmp = ratio * hmp;
-
-            return new Point((int)Math.Round(g * wmp), (int)Math.Round(g * hmp));
-        }
+        [Obsolete("Use Screen.SafezoneBounds instead.", true)]
+        public static Point GetSafezoneBounds() => Screen.SafezoneBounds;
 
         #endregion
 

@@ -30,6 +30,33 @@ namespace NativeUI
         }
 
         /// <summary>
+        /// Safezone bounds relative to the 1080pixel based resolution.
+        /// </summary>
+        public static Point SafezoneBounds
+        {
+            get
+            {
+                // Get the size of the safezone as a float
+                float t = Function.Call<float>(Hash.GET_SAFE_ZONE_SIZE);
+                // Round the value with a max of 2 decimal places and do some calculations
+                double g = Math.Round(Convert.ToDouble(t), 2);
+                g = (g * 100) - 90;
+                g = 10 - g;
+
+                // Then, get the screen resolution
+                int screenw = Game.ScreenResolution.Width;
+                int screenh = Game.ScreenResolution.Height;
+                // Calculate the ratio
+                float ratio = (float)screenw / screenh;
+                // And this thing (that I don't know what it does)
+                float wmp = ratio * 5.4f;
+
+                // Finally, return a new point with the correct resolution
+                return new Point((int)Math.Round(g * wmp), (int)Math.Round(g * 5.4f));
+            }
+        }
+
+        /// <summary>
         /// Chech whether the mouse is inside the specified rectangle.
         /// </summary>
         /// <param name="topLeft">Start point of the rectangle at the top left.</param>
