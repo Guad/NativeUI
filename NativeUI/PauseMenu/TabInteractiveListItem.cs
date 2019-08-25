@@ -144,7 +144,7 @@ namespace NativeUI.PauseMenu
             int i = 0;
             for (int c = _minItem; c < Math.Min(Items.Count, _maxItem); c++)
             {
-                var hovering = UIMenu.IsMouseInBounds(SafeSize.AddPoints(new Point(0, (itemSize.Height + 3) * i)),
+                var hovering = Screen.IsMouseInBounds(SafeSize.AddPoints(new Point(0, (itemSize.Height + 3) * i)),
                     itemSize);
 
                 var hasLeftBadge = Items[c].LeftBadge != UIMenuItem.BadgeStyle.None;

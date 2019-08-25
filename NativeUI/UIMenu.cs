@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -920,9 +920,9 @@ namespace NativeUI
 
             int labelSizeX = 5 + labelSize + 10;
             int arrowSizeX = 431 - labelSizeX;
-            return IsMouseInBounds(topLeft, new Size(labelSizeX, 38))
+            return Screen.IsMouseInBounds(topLeft, new Size(labelSizeX, 38))
                 ? 1
-                : IsMouseInBounds(new Point(topLeft.X + labelSizeX, topLeft.Y), new Size(arrowSizeX, 38)) ? 2 : 0;
+                : Screen.IsMouseInBounds(new Point(topLeft.X + labelSizeX, topLeft.Y), new Size(arrowSizeX, 38)) ? 2 : 0;
 
         }
 
@@ -1084,12 +1084,12 @@ namespace NativeUI
             if (MenuItems.Count > MaxItemsOnScreen + 1)
                 limit = _maxItem;
 
-            if (IsMouseInBounds(new Point(0, 0), new Size(30, 1080)) && MouseEdgeEnabled)
+            if (Screen.IsMouseInBounds(new Point(0, 0), new Size(30, 1080)) && MouseEdgeEnabled)
             {
                 GameplayCamera.RelativeHeading += 5f;
                 Function.Call(Hash._0x8DB8CFFD58B62552, 6);
             }
-            else if (IsMouseInBounds(new Point(Convert.ToInt32(Screen.ResolutionMantainRatio.Width - 30f), 0), new Size(30, 1080)) && MouseEdgeEnabled)
+            else if (Screen.IsMouseInBounds(new Point(Convert.ToInt32(Screen.ResolutionMantainRatio.Width - 30f), 0), new Size(30, 1080)) && MouseEdgeEnabled)
             {
                 GameplayCamera.RelativeHeading -= 5f;
                 Function.Call(Hash._0x8DB8CFFD58B62552, 7);
@@ -1107,7 +1107,7 @@ namespace NativeUI
                 int xsize = 431 + WidthOffset;
                 const int ysize = 38;
                 UIMenuItem uiMenuItem = MenuItems[i];
-                if (IsMouseInBounds(new Point(xpos, ypos), new Size(xsize, ysize)))
+                if (Screen.IsMouseInBounds(new Point(xpos, ypos), new Size(xsize, ysize)))
                 {
                     uiMenuItem.Hovered = true;
                     int res = IsMouseInListItemArrows(MenuItems[i], new Point(xpos, yposSelected),
@@ -1155,7 +1155,7 @@ namespace NativeUI
             int extraY = 144 + 38 * (MaxItemsOnScreen + 1) + Offset.Y - 37 + _extraYOffset + safezoneOffset.Y;
             int extraX = safezoneOffset.X + Offset.X;
             if (Size <= MaxItemsOnScreen + 1) return;
-            if (IsMouseInBounds(new Point(extraX, extraY), new Size(431 + WidthOffset, 18)))
+            if (Screen.IsMouseInBounds(new Point(extraX, extraY), new Size(431 + WidthOffset, 18)))
             {
                 _extraRectangleUp.Color = Color.FromArgb(255, 30, 30, 30);
                 if (Game.IsControlJustPressed(0, Control.Attack))
@@ -1169,7 +1169,7 @@ namespace NativeUI
             else
                 _extraRectangleUp.Color = Color.FromArgb(200, 0, 0, 0);
 
-            if (IsMouseInBounds(new Point(extraX, extraY + 18), new Size(431 + WidthOffset, 18)))
+            if (Screen.IsMouseInBounds(new Point(extraX, extraY + 18), new Size(431 + WidthOffset, 18)))
             {
                 _extraRectangleDown.Color = Color.FromArgb(255, 30, 30, 30);
                 if (Game.IsControlJustPressed(0, Control.Attack))

@@ -275,7 +275,7 @@ namespace NativeUI.PauseMenu
                     Game.EnableControlThisFrame(0, Control.CursorX);
                     Game.EnableControlThisFrame(0, Control.CursorY);
 
-                    var hovering = UIMenu.IsMouseInBounds(safe.AddPoints(new Point((tabWidth + 5) * i, 0)),
+                    var hovering = Screen.IsMouseInBounds(safe.AddPoints(new Point((tabWidth + 5) * i, 0)),
                         new Size(tabWidth, 40));
 
                     var tabColor = Tabs[i].Active
