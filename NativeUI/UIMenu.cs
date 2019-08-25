@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -257,6 +257,7 @@ namespace NativeUI
         #endregion
 
         #region Static Methods
+
         /// <summary>
         /// Toggles the availability of the controls.
         /// It does not disable the basic movement and frontend controls.
@@ -274,7 +275,6 @@ namespace NativeUI
         /// <summary>
         /// Screen.ResolutionMantainRatio for providing backwards compatibility.
         /// </summary>
-        /// <returns></returns>
         [Obsolete("Use Screen.ResolutionMantainRatio instead.", true)]
         public static SizeF GetScreenResolutionMantainRatio() => Screen.ResolutionMantainRatio;
 
@@ -443,7 +443,7 @@ namespace NativeUI
         {
             DrawWidth = new Size(431 + WidthOffset, 107);
 
-            Safe = GetSafezoneBounds();
+            Safe = Screen.SafezoneBounds;
 
             BackgroundSize = Size > MaxItemsOnScreen + 1 ? new Size(431 + WidthOffset, 38 * (MaxItemsOnScreen + 1)) : new Size(431 + WidthOffset, 38 * Size);
 
@@ -1063,7 +1063,7 @@ namespace NativeUI
                 return;
             }
 
-            Point safezoneOffset = GetSafezoneBounds();
+            Point safezoneOffset = Screen.SafezoneBounds;
             Function.Call(Hash._SHOW_CURSOR_THIS_FRAME);
             int limit = MenuItems.Count - 1;
             int counter = 0;

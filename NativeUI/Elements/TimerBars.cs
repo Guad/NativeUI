@@ -17,7 +17,7 @@ namespace NativeUI
         public virtual void Draw(int interval)
         {
             SizeF res = Screen.ResolutionMantainRatio;
-            Point safe = UIMenu.GetSafezoneBounds();
+            Point safe = Screen.SafezoneBounds;
 
             UIResText.Draw(Label, (int)res.Width - safe.X - 180, (int)res.Height - safe.Y - (30 + (4 * interval)), Font.ChaletLondon, 0.3f, Color.White,
                 UIResText.Alignment.Right, false, false, 0);
@@ -41,7 +41,7 @@ namespace NativeUI
         public override void Draw(int interval)
         {
             SizeF res = Screen.ResolutionMantainRatio;
-            Point safe = UIMenu.GetSafezoneBounds();
+            Point safe = Screen.SafezoneBounds;
 
             base.Draw(interval);
             UIResText.Draw(Text, (int)res.Width - safe.X - 10, (int)res.Height - safe.Y - (42 + (4 * interval)), Font.ChaletLondon, 0.5f, Color.White, 
@@ -68,7 +68,7 @@ namespace NativeUI
         public override void Draw(int interval)
         {
             SizeF res = Screen.ResolutionMantainRatio;
-            Point safe = UIMenu.GetSafezoneBounds();
+            Point safe = Screen.SafezoneBounds;
 
             base.Draw(interval);
 
