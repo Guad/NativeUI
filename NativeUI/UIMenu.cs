@@ -270,13 +270,13 @@ namespace NativeUI
         /// Returns the 1080pixels-based screen resolution while mantaining current aspect ratio.
         /// </summary>
         [Obsolete("Use Screen.ResolutionMantainRatio instead.", true)]
-        public static SizeF GetScreenResolutionMaintainRatio() => Screen.ResolutionMantainRatio;
+        public static SizeF GetScreenResolutionMaintainRatio() => Screen.ResolutionMaintainRatio;
 
         /// <summary>
         /// Screen.ResolutionMantainRatio for providing backwards compatibility.
         /// </summary>
         [Obsolete("Use Screen.ResolutionMantainRatio instead.", true)]
-        public static SizeF GetScreenResolutionMantainRatio() => Screen.ResolutionMantainRatio;
+        public static SizeF GetScreenResolutionMantainRatio() => Screen.ResolutionMaintainRatio;
 
         /// <summary>
         /// Chech whether the mouse is inside the specified rectangle.
@@ -896,7 +896,7 @@ namespace NativeUI
         {
             Function.Call((Hash)0x54CE8AC98E120CAB, "jamyfafi");
             UIResText.AddLongString(item.Text);
-            var res = Screen.ResolutionMantainRatio;
+            var res = Screen.ResolutionMaintainRatio;
             var screenw = res.Width;
             var screenh = res.Height;
             const float height = 1080f;
@@ -1075,7 +1075,7 @@ namespace NativeUI
                 GameplayCamera.RelativeHeading += 5f;
                 Function.Call(Hash._0x8DB8CFFD58B62552, 6);
             }
-            else if (Screen.IsMouseInBounds(new Point(Convert.ToInt32(Screen.ResolutionMantainRatio.Width - 30f), 0), new Size(30, 1080)) && MouseEdgeEnabled)
+            else if (Screen.IsMouseInBounds(new Point(Convert.ToInt32(Screen.ResolutionMaintainRatio.Width - 30f), 0), new Size(30, 1080)) && MouseEdgeEnabled)
             {
                 GameplayCamera.RelativeHeading -= 5f;
                 Function.Call(Hash._0x8DB8CFFD58B62552, 7);

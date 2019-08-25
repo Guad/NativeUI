@@ -213,7 +213,7 @@ namespace NativeUI.PauseMenu
             Function.Call(Hash._SHOW_CURSOR_THIS_FRAME);
 
 
-            var res = Screen.ResolutionMantainRatio;
+            var res = Screen.ResolutionMaintainRatio;
             var safe = new Point(300, 180);
             if (!HideTabs)
             {

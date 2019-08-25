@@ -23,7 +23,7 @@ namespace NativeUI.PauseMenu
         {
             base.Draw();
 
-            var res = Screen.ResolutionMantainRatio;
+            var res = Screen.ResolutionMaintainRatio;
 
             var alpha = (Focused || !CanBeFocused) ? 255 : 200;
 

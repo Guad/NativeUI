@@ -13,7 +13,7 @@ namespace NativeUI
         /// <summary>
         /// The 1080pixels-based screen resolution while mantaining current aspect ratio.
         /// </summary>
-        public static SizeF ResolutionMantainRatio
+        public static SizeF ResolutionMaintainRatio
         {
             get
             {
@@ -65,7 +65,7 @@ namespace NativeUI
         public static bool IsMouseInBounds(Point topLeft, Size boxSize)
         {
             // Get the resolution while maintaining the ratio.
-            SizeF res = ResolutionMantainRatio;
+            SizeF res = ResolutionMaintainRatio;
             // Then, get the position of mouse on the screen while relative to the current resolution
             int mouseX = (int)Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)Control.CursorX) * res.Width);
             int mouseY = (int)Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)Control.CursorY) * res.Height);
