@@ -86,7 +86,7 @@ namespace NativeUI
         public static int GetLineCount(string text, Point position, GTA.Font font, float scale, int wrap)
         {
             // Tell the game that we are going to request the number of lines
-            Function.Call(Hash._SET_TEXT_GXT_ENTRY, "STRING"); // _BEGIN_TEXT_COMMAND_LINE_COUNT
+            Function.Call(Hash._SET_TEXT_GXT_ENTRY, "CELL_EMAIL_BCON"); // _BEGIN_TEXT_COMMAND_LINE_COUNT
             // Add the text that has been sent to us
             UIResText.AddLongStringForUtf8(text); // ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME
 
