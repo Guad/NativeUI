@@ -1,4 +1,4 @@
-using GTA;
+﻿using GTA;
 using GTA.Native;
 using System;
 using System.Drawing;
@@ -93,8 +93,8 @@ namespace NativeUI
             // Get the resolution with the correct aspect ratio
             SizeF res = ResolutionMaintainRatio;
             // Calculate the x and y positions
-            float x = res.Width / position.X;
-            float y = res.Height / position.Y;
+            float x = position.X / res.Width;
+            float y = position.Y / res.Height;
 
             // Set the properties for the text
             Function.Call(Hash.SET_TEXT_FONT, (int)font);
@@ -104,13 +104,14 @@ namespace NativeUI
             if (wrap > 0)
             {
                 // Calculate the wrap size
-                float end = (x + wrap) / res.Width;
+                float start = position.X / res.Width;
+                float end = start + (wrap / res.Width);
                 // And apply it
                 Function.Call(Hash.SET_TEXT_WRAP, x, end);
             }
 
             // Finally, return the number of lines being made by the string
-            return Function.Call<int>((Hash)0x9040DFB09BE75706, x, y); // _GET_TEXT_SCREEN_LINE_COUNT
+            return Function.Call<int>(Hash._0x9040DFB09BE75706, x, y); // _GET_TEXT_SCREEN_LINE_COUNT
         }
     }
 }
