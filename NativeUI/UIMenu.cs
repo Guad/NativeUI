@@ -464,7 +464,7 @@ namespace NativeUI
                 _descriptionText.Caption = descCaption;
                 _descriptionText.Wrap = 400;
 
-                int numLines = Screen.GetLineCount(descCaption, _descriptionRectangle.Position, _descriptionText.Font, _descriptionText.Scale, _descriptionText.Position.X + 400);
+                int numLines = Screen.GetLineCount(descCaption, _descriptionText.Position, _descriptionText.Font, _descriptionText.Scale, 400);
 
                 _descriptionRectangle.Size = new Size(431 + WidthOffset, (numLines * 25) + 15);
             }
