@@ -105,6 +105,7 @@ namespace NativeUI
         public bool MouseEdgeEnabled = true;
         public bool ControlDisablingEnabled = true;
         public bool ResetCursorOnOpen = true;
+        [Obsolete("The description is now formated automatically by the game.")]
         public bool FormatDescriptions = true;
         public bool MouseControlsEnabled = true;
         public bool ScaleWithSafezone = true;
@@ -460,14 +461,13 @@ namespace NativeUI
                 RecaulculateDescriptionPosition();
 
                 string descCaption = MenuItems[_activeItem % (MenuItems.Count)].Description;
+                _descriptionText.Caption = descCaption;
+                _descriptionText.Wrap = 400;
 
-                if (FormatDescriptions) _descriptionText.Caption = FormatDescription(descCaption);
-                else _descriptionText.Caption = descCaption;
-
-                int numLines = _descriptionText.Caption.Split('\n').Length;
+                int numLines = Screen.GetLineCount(descCaption, _descriptionRectangle.Position, _descriptionText.Font, _descriptionText.Scale, _descriptionText.Position.X + 400);
 
                 _descriptionRectangle.Size = new Size(431 + WidthOffset, (numLines * 25) + 15);
-            }         
+            }
         }
 
         /// <summary>
@@ -910,35 +910,6 @@ namespace NativeUI
                 ? 1
                 : Screen.IsMouseInBounds(new Point(topLeft.X + labelSizeX, topLeft.Y), new Size(arrowSizeX, 38)) ? 2 : 0;
 
-        }
-
-        /// <summary>
-        /// Formats the input string so it doesn't go out of bounds of the description box.
-        /// </summary>
-        /// <param name="input">String to format.</param>
-        /// <returns></returns>
-        private string FormatDescription(string input)
-        {
-            int maxPixelsPerLine = 425 + WidthOffset;
-            int aggregatePixels = 0;
-            string output = "";
-            string[] words = input.Split(' ');
-            foreach (string word in words)
-            {
-                int offset = (int) StringMeasurer.MeasureString(word, (Font)0, 0.35f);
-                aggregatePixels += offset;
-                if (aggregatePixels > maxPixelsPerLine)
-                {
-                    output += "\n" + word + " ";
-                    aggregatePixels = offset + StringMeasurer.MeasureString(" ");
-                }
-                else
-                {
-                    output += word + " ";
-                    aggregatePixels += StringMeasurer.MeasureString(" ");
-                }
-            }
-            return output;
         }
 
         #endregion
