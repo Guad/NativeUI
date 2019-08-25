@@ -83,7 +83,7 @@ namespace NativeUI
         /// <param name="position">The position of the text.</param>
         /// <param name="font">The font to use.</param>
         /// <returns>The number of lines used.</returns>
-        public static int GetLineCount(string text, PointF position, GTA.Font font, float scale)
+        public static int GetLineCount(string text, Point position, GTA.Font font, float scale)
         {
             // Tell the game that we are going to request the number of lines
             Function.Call(Hash._SET_TEXT_GXT_ENTRY, "STRING"); // _BEGIN_TEXT_COMMAND_LINE_COUNT
@@ -94,8 +94,14 @@ namespace NativeUI
             Function.Call(Hash.SET_TEXT_FONT, (int)font);
             Function.Call(Hash.SET_TEXT_SCALE, 1f, scale);
 
+            // Get the resolution with the correct aspect ratio
+            SizeF res = ResolutionMaintainRatio;
+            // Calculate the x and y positions
+            float x = res.Width / position.X;
+            float y = res.Height / position.Y;
+
             // Finally, return the number of lines being made by the string
-            return Function.Call<int>((Hash)0x9040DFB09BE75706, position.X, position.Y); // _GET_TEXT_SCREEN_LINE_COUNT
+            return Function.Call<int>((Hash)0x9040DFB09BE75706, x, y); // _GET_TEXT_SCREEN_LINE_COUNT
         }
     }
 }
