@@ -1,4 +1,4 @@
-﻿using GTA;
+using GTA;
 using GTA.Native;
 using System;
 using System.Drawing;
@@ -88,7 +88,7 @@ namespace NativeUI
             // Tell the game that we are going to request the number of lines
             Function.Call(Hash._SET_TEXT_GXT_ENTRY, "STRING"); // _BEGIN_TEXT_COMMAND_LINE_COUNT
             // Add the text that has been sent to us
-            Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, text); // ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME
+            UIResText.AddLongStringForUtf8(text); // ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME
 
             // Get the resolution with the correct aspect ratio
             SizeF res = ResolutionMaintainRatio;
