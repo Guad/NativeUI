@@ -58,7 +58,7 @@ namespace NativeUI
             }
         }
 
-        private static void AddLongStringForUtf8(string input)
+        internal static void AddLongStringForUtf8(string input)
         {
             const int maxByteLengthPerString = 99;
 
