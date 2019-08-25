@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -281,19 +281,11 @@ namespace NativeUI
         /// <summary>
         /// Chech whether the mouse is inside the specified rectangle.
         /// </summary>
-        /// <param name="topLeft">top left point of your rectangle.</param>
+        /// <param name="topLeft">Start point of the rectangle at the top left.</param>
         /// <param name="boxSize">size of your rectangle.</param>
-        /// <returns></returns>
-        public static bool IsMouseInBounds(Point topLeft, Size boxSize)
-        {
-            var res = Screen.ResolutionMantainRatio;
-
-            int mouseX = (int)Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)Control.CursorX) * res.Width);
-            int mouseY = (int)Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)Control.CursorY) * res.Height);
-
-            return (mouseX >= topLeft.X && mouseX <= topLeft.X + boxSize.Width)
-                   && (mouseY > topLeft.Y && mouseY < topLeft.Y + boxSize.Height);
-        }
+        /// <returns>true if the mouse is inside of the specified bounds, false otherwise.</returns>
+        [Obsolete("Use Screen.IsMouseInBounds instead.", true)]
+        public static bool IsMouseInBounds(Point topLeft, Size boxSize) => Screen.IsMouseInBounds(topLeft, boxSize);
 
         /// <summary>
         /// Returns the safezone bounds in pixel, relative to the 1080pixel based system.

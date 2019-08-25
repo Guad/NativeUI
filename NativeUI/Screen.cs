@@ -1,4 +1,6 @@
 ﻿using GTA;
+using GTA.Native;
+using System;
 using System.Drawing;
 
 namespace NativeUI
@@ -25,6 +27,26 @@ namespace NativeUI
                 // Finally, return a SizeF
                 return new SizeF(width, 1080f);
             }
+        }
+
+        /// <summary>
+        /// Chech whether the mouse is inside the specified rectangle.
+        /// </summary>
+        /// <param name="topLeft">Start point of the rectangle at the top left.</param>
+        /// <param name="boxSize">size of your rectangle.</param>
+        /// <returns>true if the mouse is inside of the specified bounds, false otherwise.</returns>
+        public static bool IsMouseInBounds(Point topLeft, Size boxSize)
+        {
+            // Get the resolution while maintaining the ratio.
+            SizeF res = ResolutionMantainRatio;
+            // Then, get the position of mouse on the screen while relative to the current resolution
+            int mouseX = (int)Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)Control.CursorX) * res.Width);
+            int mouseY = (int)Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)Control.CursorY) * res.Height);
+            // And check if the mouse is on the rectangle bounds
+            bool isX = mouseX >= topLeft.X && mouseX <= topLeft.X + boxSize.Width;
+            bool isY = mouseY > topLeft.Y && mouseY < topLeft.Y + boxSize.Height;
+            // Finally, return the result of the checks
+            return isX && isY;
         }
     }
 }
