@@ -7,14 +7,35 @@ using GTA.Native;
 
 namespace NativeUI
 {
+    /// <summary>
+    /// Class for drawing sprites.
+    /// </summary>
     public class Sprite
     {
-        public Point Position;
-        public Size Size;
-        public Color Color;
-        public bool Visible;
+        /// <summary>
+        /// The screen position.
+        /// </summary>
+        public Point Position { get; set; }
+        /// <summary>
+        /// The size of the sprite.
+        /// </summary>
+        public Size Size { get; set; }
+        /// <summary>
+        /// The color or tint to use on the texture.
+        /// </summary>
+        public Color Color { get; set; }
+        /// <summary>
+        /// If the sprite should be drawn during the next game tick.
+        /// </summary>
+        public bool Visible { get; set; }
+        /// <summary>
+        /// The rotation of the sprite.
+        /// </summary>
         public float Heading;
 
+        /// <summary>
+        /// The texture dictionary to load from.
+        /// </summary>
         public string TextureDict
         {
             get { return _textureDict; }
@@ -25,7 +46,9 @@ namespace NativeUI
                     //Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, value, true);
             }
         }
-
+        /// <summary>
+        /// The name of the texture inside of the dictionary to use.
+        /// </summary>
         public string TextureName;
         private string _textureDict;
 
