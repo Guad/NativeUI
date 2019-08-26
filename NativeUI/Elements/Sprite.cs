@@ -15,11 +15,44 @@ namespace NativeUI
         /// <summary>
         /// The screen position.
         /// </summary>
-        public Point Position { get; set; }
+        private PointF RelativePosition { get; set; }
         /// <summary>
         /// The size of the sprite.
         /// </summary>
-        public Size Size { get; set; }
+        private SizeF RelativeSize { get; set; }
+        /// <summary>
+        /// The screen position.
+        /// </summary>
+        private Point InternalPosition { get; set; }
+        /// <summary>
+        /// The size of the sprite.
+        /// </summary>
+        private Size InternalSize { get; set; }
+        
+        /// <summary>
+        /// The screen position.
+        /// </summary>
+        public Point Position
+        {
+            get => InternalPosition;
+            set
+            {
+                InternalPosition = value;
+                Recalculate();
+            }
+        }
+        /// <summary>
+        /// The size of the sprite.
+        /// </summary>
+        public Size Size
+        {
+            get => InternalSize;
+            set
+            {
+                InternalSize = value;
+                Recalculate();
+            }
+        }
         /// <summary>
         /// The color or tint to use on the texture.
         /// </summary>
@@ -53,6 +86,8 @@ namespace NativeUI
             Heading = heading;
             Color = color;
             Visible = true;
+
+            Recalculate();
         }
 
         /// <summary>
@@ -60,6 +95,25 @@ namespace NativeUI
         /// </summary>
         public Sprite(string dict, string texture, Point position, Size size) : this(dict, texture, position, size, 0f, Color.White)
         {
+        }
+
+        /// <summary>
+        /// Recalculates the position (X and Y) and size (width and height) of the sprite.
+        /// </summary>
+        private void Recalculate()
+        {
+            // Get the 1080p based screen resolution while maintaining the aspect ratio
+            SizeF res = Screen.ResolutionMaintainRatio;
+
+            // Calculate the width, height, x and y positions
+            float width = (Size.Width / res.Width);
+            float height = (Size.Height / res.Height);
+            float x = (Position.X / res.Width) + width * 0.5f;
+            float y = (Position.Y / res.Height) + height * 0.5f;
+
+            // Finally, set the values
+            RelativePosition = new PointF(x, y);
+            RelativeSize = new SizeF(width, height);
         }
 
         /// <summary>
@@ -78,17 +132,9 @@ namespace NativeUI
             {
                 Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, TextureDict, true);
             }
-            
-            // Get the 1080p based screen resolution while maintaining the aspect ratio
-            SizeF res = Screen.ResolutionMaintainRatio;
-            // Calculate the width, height, x and y positions
-            float w = (Size.Width / res.Width);
-            float h = (Size.Height / res.Height);
-            float x = (Position.X / res.Width) + w * 0.5f;
-            float y = (Position.Y / res.Height) + h * 0.5f;
 
             // Finally, call DRAW_SPRITE to draw it with the information that we already have
-            Function.Call(Hash.DRAW_SPRITE, TextureDict, TextureName, x, y, w, h, Heading, Color.R, Color.G, Color.B, Color.A);
+            Function.Call(Hash.DRAW_SPRITE, TextureDict, TextureName, RelativePosition.X, RelativePosition.Y, RelativeSize.Width, RelativeSize.Height, Heading, Color.R, Color.G, Color.B, Color.A);
         }
 
         [Obsolete("Create a Sprite object and call Draw that instead.", true)]
