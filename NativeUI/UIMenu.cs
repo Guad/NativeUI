@@ -105,7 +105,7 @@ namespace NativeUI
         public bool MouseEdgeEnabled = true;
         public bool ControlDisablingEnabled = true;
         public bool ResetCursorOnOpen = true;
-        [Obsolete("The description is now formated automatically by the game.")]
+        [Obsolete("The description is now formated automatically by the game.", true)]
         public bool FormatDescriptions = true;
         public bool MouseControlsEnabled = true;
         public bool ScaleWithSafezone = true;

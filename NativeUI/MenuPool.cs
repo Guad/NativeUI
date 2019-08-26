@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -17,6 +18,7 @@ namespace NativeUI
 
         public bool ResetCursorOnOpen { set { _menuList.ForEach(m => m.ResetCursorOnOpen = value); } }
 
+        [Obsolete("The description is now formated automatically by the game.", true)]
         public bool FormatDescriptions { set { _menuList.ForEach(m => m.FormatDescriptions = value); } }
 
         public string AUDIO_LIBRARY { set { _menuList.ForEach(m => m.AUDIO_LIBRARY = value); } }
