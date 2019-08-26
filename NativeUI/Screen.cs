@@ -1,4 +1,4 @@
-using GTA;
+﻿using GTA;
 using GTA.Native;
 using System;
 using System.Drawing;
@@ -22,6 +22,10 @@ namespace NativeUI
         /// The value of ResolutionMaintainRatio prior to the resolution change.
         /// </summary>
         private static SizeF PreviousResolutionMaintainRatio { get; set; } = SizeF.Empty;
+        /// <summary>
+        /// The value of SafezoneBounds prior to the resolution change.
+        /// </summary>
+        private static Point PreviousSafezoneBounds { get; set; } = Point.Empty;
 
         /// <summary>
         /// The 1080pixels-based screen resolution while mantaining current aspect ratio.
@@ -58,6 +62,13 @@ namespace NativeUI
         {
             get
             {
+                // If the resolution has not changed and the previous safezone bounds is not empty
+                if (!HasResolutionChanged && PreviousSafezoneBounds != Point.Empty)
+                {
+                    // Return the previous calculation of the safezone bounds
+                    return PreviousSafezoneBounds;
+                }
+
                 // Get the size of the safezone as a float
                 float t = Function.Call<float>(Hash.GET_SAFE_ZONE_SIZE);
                 // Round the value with a max of 2 decimal places and do some calculations
