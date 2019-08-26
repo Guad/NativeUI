@@ -106,10 +106,10 @@ namespace NativeUI
             SizeF res = Screen.ResolutionMaintainRatio;
 
             // Calculate the width, height, x and y positions
-            float width = (Size.Width / res.Width);
-            float height = (Size.Height / res.Height);
-            float x = (Position.X / res.Width) + width * 0.5f;
-            float y = (Position.Y / res.Height) + height * 0.5f;
+            float width = Size.Width / res.Width;
+            float height = Size.Height / res.Height;
+            float x = (Position.X / res.Width) + (width * 0.5f);
+            float y = (Position.Y / res.Height) + (height * 0.5f);
 
             // Finally, set the values
             RelativePosition = new PointF(x, y);
