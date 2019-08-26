@@ -213,7 +213,7 @@ namespace NativeUI.PauseMenu
                 }.Draw();
 
                 new UIResRectangle(new Point((int) res.Width - SafeSize.X - 512, SafeSize.Y + 256 + 44 + 40*propLen),
-                    new Size(512, 45*(int)(StringMeasurer.MeasureString(Heists[Index].Description, (Font) 0, 0.35f)/500)),
+                    new Size(512, 45*(int)(Screen.GetTextWidth(Heists[Index].Description, Font.ChaletLondon, 0.35f)/500)),
                     Color.FromArgb(blackAlpha, 0, 0, 0)).Draw();
             }
         }

@@ -75,5 +75,68 @@ namespace NativeUI
             // Finally, return the result of the checks
             return isX && isY;
         }
+
+        /// <summary>
+        /// Calculates the width of a string.
+        /// </summary>
+        /// <param name="text">The text to measure.</param>
+        /// <param name="font">Game font used for measurements.</param>
+        /// <param name="scale">The scale of the characters.</param>
+        /// <returns>The width of the string based on the font and scale.</returns>
+        public static float GetTextWidth(string text, GTA.Font font, float scale)
+        {
+            // Start by requesting the game to start processing a width measurement
+            Function.Call(Hash._SET_TEXT_ENTRY_FOR_WIDTH, "CELL_EMAIL_BCON"); // _BEGIN_TEXT_COMMAND_WIDTH
+            // Add the text string
+            UIResText.AddLongString(text);
+
+            // Set the properties for the text
+            Function.Call(Hash.SET_TEXT_FONT, (int)font);
+            Function.Call(Hash.SET_TEXT_SCALE, 1f, scale);
+
+            // Ask the game for the relative string width
+            float width = Function.Call<float>(Hash._GET_TEXT_SCREEN_WIDTH, true);
+            // And return the literal result
+            return ResolutionMaintainRatio.Width * width;
+
+        }
+
+        /// <summary>
+        /// Gets the line count for the text.
+        /// </summary>
+        /// <param name="text">The text to measure.</param>
+        /// <param name="position">The position of the text.</param>
+        /// <param name="font">The font to use.</param>
+        /// <returns>The number of lines used.</returns>
+        public static int GetLineCount(string text, Point position, GTA.Font font, float scale, int wrap)
+        {
+            // Tell the game that we are going to request the number of lines
+            Function.Call(Hash._SET_TEXT_GXT_ENTRY, "CELL_EMAIL_BCON"); // _BEGIN_TEXT_COMMAND_LINE_COUNT
+            // Add the text that has been sent to us
+            UIResText.AddLongStringForUtf8(text); // ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME
+
+            // Get the resolution with the correct aspect ratio
+            SizeF res = ResolutionMaintainRatio;
+            // Calculate the x and y positions
+            float x = position.X / res.Width;
+            float y = position.Y / res.Height;
+
+            // Set the properties for the text
+            Function.Call(Hash.SET_TEXT_FONT, (int)font);
+            Function.Call(Hash.SET_TEXT_SCALE, 1f, scale);
+
+            // If there is some text wrap to add
+            if (wrap > 0)
+            {
+                // Calculate the wrap size
+                float start = position.X / res.Width;
+                float end = start + (wrap / res.Width);
+                // And apply it
+                Function.Call(Hash.SET_TEXT_WRAP, x, end);
+            }
+
+            // Finally, return the number of lines being made by the string
+            return Function.Call<int>(Hash._0x9040DFB09BE75706, x, y); // _GET_TEXT_SCREEN_LINE_COUNT
+        }
     }
 }
