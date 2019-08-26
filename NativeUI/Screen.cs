@@ -1,4 +1,4 @@
-﻿using GTA;
+using GTA;
 using GTA.Native;
 using System;
 using System.Drawing;
@@ -17,7 +17,7 @@ namespace NativeUI
         /// <summary>
         /// Checks if the current resolution is the same as previous calls.
         /// </summary>
-        private static bool HasResolutionChanged => PreviousResolution != Game.ScreenResolution || PreviousResolutionMaintainRatio == SizeF.Empty;
+        private static bool HasResolutionChanged => PreviousResolution != Game.ScreenResolution;
         /// <summary>
         /// The value of ResolutionMaintainRatio prior to the resolution change.
         /// </summary>
@@ -30,8 +30,8 @@ namespace NativeUI
         {
             get
             {
-                // If the resolution has not changed, return the previous resolution
-                if (!HasResolutionChanged)
+                // If the resolution has not changed and the previous resolution is not empty
+                if (!HasResolutionChanged && PreviousResolutionMaintainRatio != SizeF.Empty)
                 {
                     return PreviousResolutionMaintainRatio;
                 }
