@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -32,25 +32,14 @@ namespace NativeUI
         /// The rotation of the sprite.
         /// </summary>
         public float Heading;
-
         /// <summary>
         /// The texture dictionary to load from.
         /// </summary>
-        public string TextureDict
-        {
-            get { return _textureDict; }
-            set
-            {
-                _textureDict = value;
-                //if(_autoload && !Function.Call<bool>(Hash.HAS_STREAMED_TEXTURE_DICT_LOADED, value))
-                    //Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, value, true);
-            }
-        }
+        public string TextureDict { get; set; }
         /// <summary>
         /// The name of the texture inside of the dictionary to use.
         /// </summary>
-        public string TextureName;
-        private string _textureDict;
+        public string TextureName { get; set; }
 
         /// <summary>
         /// Creates a game sprite object from a texture dictionary and texture name.
