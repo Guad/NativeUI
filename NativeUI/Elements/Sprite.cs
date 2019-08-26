@@ -67,22 +67,27 @@ namespace NativeUI
         /// </summary>
         public void Draw()
         {
-            if (!Visible) return;
+            // If the sprite should not be visible during this game tick, return
+            if (!Visible)
+            {
+                return;
+            }
+
+            // If the texture dictionary has not been loaded, request it
             if (!Function.Call<bool>(Hash.HAS_STREAMED_TEXTURE_DICT_LOADED, TextureDict))
+            {
                 Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, TextureDict, true);
-
-                int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
-            const float height = 1080f;
-            float ratio = (float)screenw/screenh;
-            var width = height*ratio;
-
-
-            float w = (Size.Width / width);
-            float h = (Size.Height / height);
-            float x = (Position.X / width) + w * 0.5f;
-            float y = (Position.Y / height) + h * 0.5f;
+            }
             
+            // Get the 1080p based screen resolution while maintaining the aspect ratio
+            SizeF res = Screen.ResolutionMaintainRatio;
+            // Calculate the width, height, x and y positions
+            float w = (Size.Width / res.Width);
+            float h = (Size.Height / res.Height);
+            float x = (Position.X / res.Width) + w * 0.5f;
+            float y = (Position.Y / res.Height) + h * 0.5f;
+
+            // Finally, call DRAW_SPRITE to draw it with the information that we already have
             Function.Call(Hash.DRAW_SPRITE, TextureDict, TextureName, x, y, w, h, Heading, Color.R, Color.G, Color.B, Color.A);
         }
 
