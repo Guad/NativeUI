@@ -44,19 +44,10 @@ namespace NativeUI
         /// <summary>
         /// Creates a game sprite object from a texture dictionary and texture name.
         /// </summary>
-        /// <param name="textureDict"></param>
-        /// <param name="textureName"></param>
-        /// <param name="position"></param>
-        /// <param name="size"></param>
-        /// <param name="heading"></param>
-        /// <param name="color"></param>
-        public Sprite(string textureDict, string textureName, Point position, Size size, float heading, Color color) //BASE
+        public Sprite(string dict, string texture, Point position, Size size, float heading, Color color) //BASE
         {
-            //if (!Function.Call<bool>(Hash.HAS_STREAMED_TEXTURE_DICT_LOADED, textureDict))
-                //Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, textureDict, true);
-            TextureDict = textureDict;
-            TextureName = textureName;
-
+            TextureDict = dict;
+            TextureName = texture;
             Position = position;
             Size = size;
             Heading = heading;
@@ -67,14 +58,9 @@ namespace NativeUI
         /// <summary>
         /// Creates a game sprite object from a texture dictionary and texture name.
         /// </summary>
-        /// <param name="textureDict"></param>
-        /// <param name="textureName"></param>
-        /// <param name="position"></param>
-        /// <param name="size"></param>
-        public Sprite(string textureDict, string textureName, Point position, Size size) : this(textureDict, textureName, position, size, 0f, Color.FromArgb(255, 255, 255, 255))
+        public Sprite(string dict, string texture, Point position, Size size) : this(dict, texture, position, size, 0f, Color.White)
         {
         }
-
 
         /// <summary>
         /// Draws the sprite on a 1080-pixels height base.
