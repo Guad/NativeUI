@@ -137,6 +137,9 @@ namespace NativeUI
             Function.Call(Hash.DRAW_SPRITE, TextureDict, TextureName, RelativePosition.X, RelativePosition.Y, RelativeSize.Width, RelativeSize.Height, Heading, Color.R, Color.G, Color.B, Color.A);
         }
 
+        /// <summary>
+        /// Draws a sprite with the specified parameters.
+        /// </summary>
         [Obsolete("Create a Sprite object and call Draw that instead.", true)]
         public static void Draw(string dict, string texture, int x, int y, int width, int height, float rotation, Color color)
         {
