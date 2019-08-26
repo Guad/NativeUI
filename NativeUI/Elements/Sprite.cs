@@ -91,24 +91,13 @@ namespace NativeUI
             Function.Call(Hash.DRAW_SPRITE, TextureDict, TextureName, x, y, w, h, Heading, Color.R, Color.G, Color.B, Color.A);
         }
 
-        public static void Draw(string dict, string name, int xpos, int ypos, int boxWidth, int boxHeight, float rotation, Color color)
+        [Obsolete("Create a Sprite object and draw that instead.", true)]
+        public static void Draw(string dict, string texture, int x, int y, int width, int height, float rotation, Color color)
         {
-            if (!Function.Call<bool>(Hash.HAS_STREAMED_TEXTURE_DICT_LOADED, dict))
-                Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, dict, true);
-
-            int screenw = Game.ScreenResolution.Width;
-            int screenh = Game.ScreenResolution.Height;
-            const float height = 1080f;
-            float ratio = (float)screenw / screenh;
-            var width = height * ratio;
-
-
-            float w = (boxWidth / width);
-            float h = (boxHeight / height);
-            float x = (xpos / width) + w * 0.5f;
-            float y = (ypos / height) + h * 0.5f;
-
-            Function.Call(Hash.DRAW_SPRITE, dict, name, x, y, w, h, rotation, color.R, color.G, color.B, color.A);
+            // Create the sprite object
+            Sprite sprite = new Sprite(dict, texture, new Point(x, y), new Size(width, height), rotation, color);
+            // And draw said object
+            sprite.Draw();
         }
 
         /// <summary>
