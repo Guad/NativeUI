@@ -91,7 +91,7 @@ namespace NativeUI
             Function.Call(Hash.DRAW_SPRITE, TextureDict, TextureName, x, y, w, h, Heading, Color.R, Color.G, Color.B, Color.A);
         }
 
-        [Obsolete("Create a Sprite object and draw that instead.", true)]
+        [Obsolete("Create a Sprite object and call Draw that instead.", true)]
         public static void Draw(string dict, string texture, int x, int y, int width, int height, float rotation, Color color)
         {
             // Create the sprite object
