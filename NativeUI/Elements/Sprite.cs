@@ -156,7 +156,7 @@ namespace NativeUI
         /// <summary>
         /// Draws a sprite with the specified parameters.
         /// </summary>
-        [Obsolete("Create a Sprite object and call Draw that instead.", true)]
+        [Obsolete("Create a Sprite object and call Draw instead.", true)]
         public static void Draw(string dict, string texture, int x, int y, int width, int height, float rotation, Color color)
         {
             // Create the sprite object
