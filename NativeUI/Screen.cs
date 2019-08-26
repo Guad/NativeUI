@@ -11,12 +11,31 @@ namespace NativeUI
     public static class Screen
     {
         /// <summary>
+        /// The resolution that we got prior to calling one of the functions from this class.
+        /// </summary>
+        private static Size PreviousResolution { get; set; } = Game.ScreenResolution;
+        /// <summary>
+        /// Checks if the current resolution is the same as previous calls.
+        /// </summary>
+        private static bool HasResolutionChanged => PreviousResolution != Game.ScreenResolution || PreviousResolutionMaintainRatio == SizeF.Empty;
+        /// <summary>
+        /// The value of ResolutionMaintainRatio prior to the resolution change.
+        /// </summary>
+        private static SizeF PreviousResolutionMaintainRatio { get; set; } = SizeF.Empty;
+
+        /// <summary>
         /// The 1080pixels-based screen resolution while mantaining current aspect ratio.
         /// </summary>
         public static SizeF ResolutionMaintainRatio
         {
             get
             {
+                // If the resolution has not changed, return the previous resolution
+                if (!HasResolutionChanged)
+                {
+                    return PreviousResolutionMaintainRatio;
+                }
+
                 // Get the game width and height
                 int screenw = Game.ScreenResolution.Width;
                 int screenh = Game.ScreenResolution.Height;
@@ -24,8 +43,11 @@ namespace NativeUI
                 float ratio = (float)screenw / screenh;
                 // And the width with that ratio
                 float width = 1080f * ratio;
-                // Finally, return a SizeF
-                return new SizeF(width, 1080f);
+
+                // Create a new FizeF object
+                PreviousResolutionMaintainRatio = new SizeF(width, 1080f);
+                // And return it
+                return PreviousResolutionMaintainRatio;
             }
         }
 
