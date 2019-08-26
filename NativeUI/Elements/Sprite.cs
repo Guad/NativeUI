@@ -31,7 +31,7 @@ namespace NativeUI
         /// <summary>
         /// The rotation of the sprite.
         /// </summary>
-        public float Heading;
+        public float Heading { get; set; }
         /// <summary>
         /// The texture dictionary to load from.
         /// </summary>
