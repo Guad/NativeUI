@@ -954,8 +954,7 @@ namespace NativeUI
             else
             {
                 Point start = ((ScaleWithSafezone) ? Safe : new Point(0, 0));
-
-                Sprite.DrawTexture(BannerTexture, new Point(start.X + Offset.X, start.Y + Offset.Y), DrawWidth);
+                new Elements.ImageFile(BannerTexture, new Point(start.X + Offset.X, start.Y + Offset.Y), DrawWidth).Draw();
             }
             _mainMenu.Draw();
             if (MenuItems.Count == 0)
