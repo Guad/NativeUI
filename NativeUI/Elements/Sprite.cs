@@ -4,13 +4,14 @@ using System.IO;
 using System.Reflection;
 using GTA;
 using GTA.Native;
+using NativeUI.Elements;
 
 namespace NativeUI
 {
     /// <summary>
     /// Class for drawing sprites.
     /// </summary>
-    public class Sprite
+    public class Sprite : INativeElement
     {
         /// <summary>
         /// The screen position.
@@ -60,11 +61,21 @@ namespace NativeUI
         /// <summary>
         /// If the sprite should be drawn during the next game tick.
         /// </summary>
+        public bool Enabled { get; set; }
+        /// <summary>
+        /// If the sprite should be drawn during the next game tick.
+        /// </summary>
+        [Obsolete("Use Sprite.Enabled instead.", true)]
         public bool Visible { get; set; }
         /// <summary>
         /// The rotation of the sprite.
         /// </summary>
-        public float Heading { get; set; }
+        public float Rotation { get; set; }
+        /// <summary>
+        /// The rotation of the sprite.
+        /// </summary>
+        [Obsolete("Use Sprite.Rotation instead.", true)]
+        public float Heading { get => Rotation; set => Rotation = value; }
         /// <summary>
         /// The texture dictionary to load from.
         /// </summary>
@@ -83,9 +94,9 @@ namespace NativeUI
             TextureName = texture;
             Position = position;
             Size = size;
-            Heading = heading;
+            Rotation = heading;
             Color = color;
-            Visible = true;
+            Enabled = true;
 
             Recalculate();
         }
@@ -119,10 +130,15 @@ namespace NativeUI
         /// <summary>
         /// Draws the sprite on a 1080-pixels height base.
         /// </summary>
-        public void Draw()
+        public void Draw() => Draw(Size.Empty);
+
+        /// <summary>
+        /// Draws the sprite on a 1080-pixels height base with the specified offset.
+        /// </summary>
+        public void Draw(Size offset)
         {
             // If the sprite should not be visible during this game tick, return
-            if (!Visible)
+            if (!Enabled)
             {
                 return;
             }
@@ -134,7 +150,7 @@ namespace NativeUI
             }
 
             // Finally, call DRAW_SPRITE to draw it with the information that we already have
-            Function.Call(Hash.DRAW_SPRITE, TextureDict, TextureName, RelativePosition.X, RelativePosition.Y, RelativeSize.Width, RelativeSize.Height, Heading, Color.R, Color.G, Color.B, Color.A);
+            Function.Call(Hash.DRAW_SPRITE, TextureDict, TextureName, RelativePosition.X, RelativePosition.Y, RelativeSize.Width, RelativeSize.Height, Rotation, Color.R, Color.G, Color.B, Color.A);
         }
 
         /// <summary>
