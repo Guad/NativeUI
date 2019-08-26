@@ -111,7 +111,7 @@ namespace NativeUI
         /// <summary>
         /// Recalculates the position (X and Y) and size (width and height) of the sprite.
         /// </summary>
-        private void Recalculate()
+        public void Recalculate()
         {
             // Get the 1080p based screen resolution while maintaining the aspect ratio
             SizeF res = Screen.ResolutionMaintainRatio;

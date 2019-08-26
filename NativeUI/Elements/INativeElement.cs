@@ -16,5 +16,9 @@ namespace NativeUI.Elements
         /// The rotation or heading of the element.
         /// </summary>
         float Rotation { get; set; }
+        /// <summary>
+        /// Function that recalculates the Position and Size when required.
+        /// </summary>
+        void Recalculate();
     }
 }
