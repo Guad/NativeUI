@@ -20,8 +20,12 @@ build_script:
 
 after_build:
   - 7z a %APPVEYOR_PROJECT_NAME%.7z %APPVEYOR_BUILD_FOLDER%\NativeUI\bin\x64\Release\*
-  - appveyor PushArtifact %APPVEYOR_PROJECT_NAME%.7z
-  - appveyor PushArtifact %APPVEYOR_PROJECT_NAME%-%APPVEYOR_BUILD_VERSION%.nupkg
+
+artifacts:
+  - path: "%APPVEYOR_PROJECT_NAME%.7z"
+    name: File for Final Users
+  - path: "**\*.nupkg"
+    name: NuGet Package for Developers
 
 deploy:
   release: $(APPVEYOR_BUILD_VERSION)
