@@ -24,7 +24,7 @@ after_build:
 artifacts:
   - path: "%APPVEYOR_PROJECT_NAME%.7z"
     name: File for Final Users
-  - path: "**\*.nupkg"
+  - path: '**\*.nupkg'
     name: NuGet Package for Developers
 
 deploy:
