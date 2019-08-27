@@ -576,6 +576,11 @@ namespace NativeUI
         /// </summary>
         public void GoLeft()
         {
+            if (!MenuItems[CurrentSelection].Enabled)
+            {
+                return;
+            }
+
             if (MenuItems[CurrentSelection] is UIMenuListItem)
             {
                 var it = (UIMenuListItem)MenuItems[CurrentSelection];
@@ -606,6 +611,11 @@ namespace NativeUI
         /// </summary>
         public void GoRight()
         {
+            if (!MenuItems[CurrentSelection].Enabled)
+            {
+                return;
+            }
+
             if (MenuItems[CurrentSelection] is UIMenuListItem)
             {
                 UIMenuListItem it = (UIMenuListItem)MenuItems[CurrentSelection];
