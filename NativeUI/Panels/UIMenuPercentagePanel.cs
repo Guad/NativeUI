@@ -34,7 +34,7 @@ namespace NativeUI
 		}
 
 
-		public UIMenuPercentagePanel(string Titolo, string MinText, string MaxText)
+		public UIMenuPercentagePanel(string title, string MinText, string MaxText)
 		{
 			Enabled = true;
 			Background = new Sprite("commonmenu", "gradient_bgd", new Point(0, 0), new Size(431, 275));
@@ -42,13 +42,12 @@ namespace NativeUI
 			BackgroundBar = new UIResRectangle(new Point(0, 0), new Size(413, 10), Color.FromArgb(80, 80, 80));
 			Min = new UIResText(MinText != "" || MinText != null ? MinText : "0%", new Point(0, 0), .35f, Color.FromArgb(255, 255, 255), CitizenFX.Core.UI.Font.ChaletLondon, Alignment.Center);
 			Max = new UIResText(MaxText != "" || MaxText != null ? MaxText : "100%", new Point(0, 0), .35f, Color.FromArgb(255, 255, 255), CitizenFX.Core.UI.Font.ChaletLondon, Alignment.Center);
-			Title = new UIResText(Titolo != "" || Titolo != null ? Titolo : "Opacità", new Point(0, 0), .35f, Color.FromArgb(255, 255, 255), CitizenFX.Core.UI.Font.ChaletLondon, Alignment.Center);
+			Title = new UIResText(title != "" || title != null ? title : "Opacity", new Point(0, 0), .35f, Color.FromArgb(255, 255, 255), CitizenFX.Core.UI.Font.ChaletLondon, Alignment.Center);
 			Audio = new UIMenuGridAudio("CONTINUOUS_SLIDER", "HUD_FRONTEND_DEFAULT_SOUNDSET", 0);
 		}
 
-		public override void Position(float y)
+		internal override void Position(float y)
 		{
-			//var Y = y - 30;
 			float Y = y;
 			var ParentOffsetX = ParentItem.Offset.X;
 			var ParentOffsetWidth = ParentItem.Parent.WidthOffset;
@@ -94,7 +93,7 @@ namespace NativeUI
 			}
 		}
 
-		public async override Task Draw()
+		internal async override Task Draw()
 		{
 			if (Enabled)
 			{

@@ -391,16 +391,37 @@ namespace NativeUI
             item.Position((MenuItems.Count * 25) - 37 + _extraYOffset);
             MenuItems.Add(item);
 
-            RecaulculateDescriptionPosition();
+            RecalculateDescriptionPosition();
 
             CurrentSelection = selectedItem;
         }
 
-        /// <summary>
-        /// Remove an item at index n.
-        /// </summary>
-        /// <param name="index">Index to remove the item at.</param>
-        public void RemoveItemAt(int index)
+		/// <summary>
+		/// Add a new Heritage Window to the Menu
+		/// </summary>
+		/// <param name="window"></param>
+		public void AddWindow(UIMenuHeritageWindow window)
+		{
+			window.ParentMenu = this;
+			window.Offset = Offset;
+			Windows.Add(window);
+			ReDraw = true;
+			RecalculateDescriptionPosition();
+		}
+
+		/// <summary>
+		/// If a Description is changed during some events after the menu as been opened this updates the description live
+		/// </summary>
+		public void UpdateDescription()
+		{
+			ReDraw = true;
+		}
+
+		/// <summary>
+		/// Remove an item at index n.
+		/// </summary>
+		/// <param name="index">Index to remove the item at.</param>
+		public void RemoveItemAt(int index)
         {
             int selectedItem = CurrentSelection;
             if (Size > MaxItemsOnScreen && _maxItem == Size - 1)
@@ -409,7 +430,7 @@ namespace NativeUI
                 _minItem--;
             }
             MenuItems.RemoveAt(index);
-            RecaulculateDescriptionPosition();
+            RecalculateDescriptionPosition();
             CurrentSelection = selectedItem;
         }
 
@@ -439,7 +460,7 @@ namespace NativeUI
         public void Clear()
         {
             MenuItems.Clear();
-            RecaulculateDescriptionPosition();
+            RecalculateDescriptionPosition();
         }
 
         /// <summary>
@@ -456,7 +477,7 @@ namespace NativeUI
                     MenuItems.Remove(item);
                 }
             }
-            RecaulculateDescriptionPosition();
+            RecalculateDescriptionPosition();
         }
 
         private void DrawCalculations()
@@ -477,7 +498,7 @@ namespace NativeUI
 
             if (MenuItems.Count != 0 && !String.IsNullOrWhiteSpace(MenuItems[_activeItem % (MenuItems.Count)].Description))
             {
-                RecaulculateDescriptionPosition();
+                RecalculateDescriptionPosition();
 
                 string descCaption = MenuItems[_activeItem % (MenuItems.Count)].Description;
 
@@ -893,13 +914,15 @@ namespace NativeUI
         #endregion
 
         #region Private Methods
-        private void RecaulculateDescriptionPosition()
+        private void RecalculateDescriptionPosition()
         {
-            //_descriptionText.WordWrap = new Size(425 + WidthOffset, 0);
+			//_descriptionText.WordWrap = new Size(425 + WidthOffset, 0);
 
-            _descriptionBar.Position = new Point(Offset.X, 149 - 37 + _extraYOffset + Offset.Y);
-            _descriptionRectangle.Position = new Point(Offset.X, 149 - 37 + _extraYOffset + Offset.Y);
-            _descriptionText.Position = new Point(Offset.X + 8, 155 - 37 + _extraYOffset + Offset.Y);
+			var WindowHeight = CalculateWindowHeight();
+
+			_descriptionBar.Position = new PointF(Offset.X, 149 - 37 + _extraYOffset + Offset.Y + WindowHeight);
+            _descriptionRectangle.Position = new PointF(Offset.X, 149 - 37 + _extraYOffset + Offset.Y + WindowHeight);
+            _descriptionText.Position = new PointF(Offset.X + 8, 155 - 37 + _extraYOffset + Offset.Y + WindowHeight);
 
             _descriptionBar.Size = new Size(431 + WidthOffset, 4);
             _descriptionRectangle.Size = new Size(431 + WidthOffset, 30);

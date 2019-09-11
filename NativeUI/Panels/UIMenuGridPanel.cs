@@ -40,14 +40,14 @@ namespace NativeUI
 			Grid = new Sprite("pause_menu_pages_char_mom_dad", "nose_grid", new Point(0, 0), new Size(200, 200), 0f, Color.FromArgb(255, 255, 255));
 			Circle = new Sprite("mpinventory", "in_world_circle", new PointF(0, 0), new SizeF(20, 20), 0f, Color.FromArgb(255, 255, 255));
 			Audio = new UIMenuGridAudio("CONTINUOUS_SLIDER", "HUD_FRONTEND_DEFAULT_SOUNDSET", 0);
-			Top = new UIResText(TopText ?? "Sopra", new Point(0, 0), .35f, Color.FromArgb(255, 255, 255), CitizenFX.Core.UI.Font.ChaletLondon, Alignment.Center);
-			Left = new UIResText(LeftText ?? "Sinistra", new Point(0, 0), .35f, Color.FromArgb(255, 255, 255), CitizenFX.Core.UI.Font.ChaletLondon, Alignment.Center);
-			Right = new UIResText(RightText ?? "Destra", new Point(0, 0), .35f, Color.FromArgb(255, 255, 255), CitizenFX.Core.UI.Font.ChaletLondon, Alignment.Center);
-			Bottom = new UIResText(BottomText ?? "Sotto", new Point(0, 0), .35f, Color.FromArgb(255, 255, 255), CitizenFX.Core.UI.Font.ChaletLondon, Alignment.Center);
+			Top = new UIResText(TopText ?? "Up", new Point(0, 0), .35f, Color.FromArgb(255, 255, 255), CitizenFX.Core.UI.Font.ChaletLondon, Alignment.Center);
+			Left = new UIResText(LeftText ?? "Left", new Point(0, 0), .35f, Color.FromArgb(255, 255, 255), CitizenFX.Core.UI.Font.ChaletLondon, Alignment.Center);
+			Right = new UIResText(RightText ?? "Right", new Point(0, 0), .35f, Color.FromArgb(255, 255, 255), CitizenFX.Core.UI.Font.ChaletLondon, Alignment.Center);
+			Bottom = new UIResText(BottomText ?? "Down", new Point(0, 0), .35f, Color.FromArgb(255, 255, 255), CitizenFX.Core.UI.Font.ChaletLondon, Alignment.Center);
 			SetCirclePosition = new PointF(circlePosition.X != 0 ? circlePosition.X : .5f, circlePosition.Y != 0 ? circlePosition.Y : .5f);
 		}
 
-		public override void Position(float y)
+		internal override void Position(float y)
 		{
 			var ParentOffsetX = ParentItem.Offset.X;
 			var ParentOffsetWidth = ParentItem.Parent.WidthOffset;
@@ -64,13 +64,13 @@ namespace NativeUI
 			}
 		}
 
-		public void UpdateParent( float X, float Y)
+		internal void UpdateParent( float X, float Y)
 		{
 			ParentItem.Parent.ListChange(ParentItem, ParentItem.Index);
 			ParentItem.ListChangedTrigger(ParentItem.Index);
 		}
 
-		private async void Functions()
+		internal async void Functions()
 		{
 			if (Screen.IsMouseInBounds(new PointF(Grid.Position.X + 20f, Grid.Position.Y + 20f), new SizeF(Grid.Size.Width - 40f , Grid.Size.Height - 40f)))
 			{
@@ -103,7 +103,7 @@ namespace NativeUI
 			}
 		}
 
-		public async override Task Draw()
+		internal async override Task Draw()
 		{
 			if (!Enabled) return;
 			Background.Size = new Size(431 + ParentItem.Parent.WidthOffset, 275);

@@ -38,14 +38,13 @@ namespace NativeUI
 			Grid = new Sprite("NativeUI", "horizontal_grid", new Point(0, 0), new Size(200, 200), 0f, Color.FromArgb(255, 255, 255));
 			Circle = new Sprite("mpinventory", "in_world_circle", new Point(0, 0), new Size(20, 20), 0f, Color.FromArgb(255, 255, 255));
 			Audio = new UIMenuGridAudio("CONTINUOUS_SLIDER", "HUD_FRONTEND_DEFAULT_SOUNDSET", 0);
-			Left = new UIResText(LeftText ?? "Sinistra", new Point(0, 0), .35f, Color.FromArgb(255, 255, 255), CitizenFX.Core.UI.Font.ChaletLondon, Alignment.Center);
-			Right = new UIResText(RightText ?? "Destra", new Point(0, 0), .35f, Color.FromArgb(255, 255, 255), CitizenFX.Core.UI.Font.ChaletLondon, Alignment.Center);
+			Left = new UIResText(LeftText ?? "Left", new Point(0, 0), .35f, Color.FromArgb(255, 255, 255), CitizenFX.Core.UI.Font.ChaletLondon, Alignment.Center);
+			Right = new UIResText(RightText ?? "Right", new Point(0, 0), .35f, Color.FromArgb(255, 255, 255), CitizenFX.Core.UI.Font.ChaletLondon, Alignment.Center);
 			SetCirclePosition = new PointF(CirclePositionX, 0.5f);
 		}
 
-		public override void Position(float y)
+		internal override void Position(float y)
 		{
-			//var Y = y - 205;
 			float Y = y;
 			var ParentOffsetX = ParentItem.Offset.X;
 			var ParentOffsetWidth = ParentItem.Parent.WidthOffset;
@@ -97,7 +96,7 @@ namespace NativeUI
 			}
 		}
 
-		public async override Task Draw()
+		internal async override Task Draw()
 		{
 			if (!Enabled) return;
 			Background.Size = new Size(431 + ParentItem.Parent.WidthOffset, 275);

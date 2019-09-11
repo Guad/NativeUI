@@ -8,13 +8,13 @@ namespace NativeUI
 {
 	public class UIMenuPanel
 	{
-		public dynamic Background;
+		internal dynamic Background;
 		public UIMenuPanel()
 		{
 		}
 		public virtual bool Selected { get; set; }
 		public virtual bool Enabled { get; set; }
-		public virtual void Position(float y)
+		internal virtual void Position(float y)
 		{
 		}
 		public virtual void UpdateParent()
@@ -22,7 +22,7 @@ namespace NativeUI
 			ParentItem.Parent.ListChange(ParentItem, ParentItem.Index);
 			ParentItem.ListChangedTrigger(ParentItem.Index);
 		}
-		public async virtual Task Draw()
+		internal async virtual Task Draw()
 		{
 		}
 

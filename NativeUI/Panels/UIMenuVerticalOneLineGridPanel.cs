@@ -38,12 +38,12 @@ namespace NativeUI
 			Grid = new Sprite("NativeUI", "vertical_grid", new Point(0, 0), new Size(200, 200), 0f, Color.FromArgb(255, 255, 255));
 			Circle = new Sprite("mpinventory", "in_world_circle", new Point(0, 0), new Size(20, 20), 0f, Color.FromArgb(255, 255, 255));
 			Audio = new UIMenuGridAudio("CONTINUOUS_SLIDER", "HUD_FRONTEND_DEFAULT_SOUNDSET", 0);
-			Top = new UIResText(TopText ?? "Sopra", new Point(0, 0), .35f, Color.FromArgb(255, 255, 255), CitizenFX.Core.UI.Font.ChaletLondon, Alignment.Center);
-			Bottom = new UIResText(BottomText ?? "Sotto", new Point(0, 0), .35f, Color.FromArgb(255, 255, 255), CitizenFX.Core.UI.Font.ChaletLondon, Alignment.Center);
+			Top = new UIResText(TopText ?? "Up", new Point(0, 0), .35f, Color.FromArgb(255, 255, 255), CitizenFX.Core.UI.Font.ChaletLondon, Alignment.Center);
+			Bottom = new UIResText(BottomText ?? "Down", new Point(0, 0), .35f, Color.FromArgb(255, 255, 255), CitizenFX.Core.UI.Font.ChaletLondon, Alignment.Center);
 			SetCirclePosition = new PointF(.5f, circlePositionY != 0 ? circlePositionY : .5f);
 		}
 
-		public override void Position(float y)
+		internal override void Position(float y)
 		{
 			//var Y = y - 205;
 			float Y = y;
@@ -97,7 +97,7 @@ namespace NativeUI
 			}
 		}
 
-		public async override Task Draw()
+		internal async override Task Draw()
 		{
 			if (!Enabled) return;
 			Background.Size = new Size(431 + ParentItem.Parent.WidthOffset, 275);

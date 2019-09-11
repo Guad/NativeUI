@@ -14,7 +14,7 @@ namespace NativeUI
 
         protected int _index;
         protected List<object> _items;
-		internal List<UIMenuPanel> Panels = new List<UIMenuPanel>();
+		public List<UIMenuPanel> Panels = new List<UIMenuPanel>();
 
 
 		/// <summary>

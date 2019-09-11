@@ -9,13 +9,13 @@ namespace NativeUI
 {
 	public class UIMenuColorPanel : UIMenuPanel
 	{
-		public ColorPanelData Data = new ColorPanelData();
-		public List<UIResRectangle> Bar = new List<UIResRectangle>();
-		public bool EnableArrow;
-		public Sprite LeftArrow;
-		public Sprite RightArrow;
-		public UIResRectangle SelectedRectangle;
-		public UIResText Text;
+		private ColorPanelData Data = new ColorPanelData();
+		private List<UIResRectangle> Bar = new List<UIResRectangle>();
+		private bool EnableArrow;
+		private Sprite LeftArrow;
+		private Sprite RightArrow;
+		private UIResRectangle SelectedRectangle;
+		private UIResText Text;
 		private List<Color> Colors = new List<Color>();
 		int r = 0;
 		int g = 0;
@@ -104,9 +104,8 @@ namespace NativeUI
 			}
 		}
 
-		public override void Position(float y)
+		internal override void Position(float y)
 		{
-//			float Y = y - 80;
 			float Y = y;
 			float ParentOffsetX = ParentItem.Offset.X; float ParentOffsetWidth = ParentItem.Parent.WidthOffset;
 			Background.Position = new PointF(ParentOffsetX, Y);
@@ -222,7 +221,7 @@ namespace NativeUI
 			}
 		}
 
-		public async override Task Draw()
+		internal async override Task Draw()
 		{
 			if (Enabled)
 			{

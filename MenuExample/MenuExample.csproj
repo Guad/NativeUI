@@ -36,6 +36,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MenuExample.cs" />
+    <Compile Include="PointF.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NativeUI\NativeUI.csproj">

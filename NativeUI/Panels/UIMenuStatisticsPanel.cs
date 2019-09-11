@@ -54,9 +54,8 @@ namespace NativeUI
 			}
 		}
 
-		public override void Position(float y)
+		internal override void Position(float y)
 		{
-			//float Y = y - 250;
 			float Y = y;
 			var ParentOffsetX = ParentItem.Offset.X;
 			var ParentOffsetWidth = ParentItem.Parent.WidthOffset;
@@ -79,7 +78,7 @@ namespace NativeUI
 			}
 		}
 
-		public async override Task Draw()
+		internal async override Task Draw()
 		{
 			Background.Draw();
 			for (int i=0; i<Items.Count; i++)

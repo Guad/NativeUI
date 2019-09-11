@@ -96,6 +96,7 @@
   <ItemGroup>
     <None Include="NativeUI.nuspec" />
     <None Include="packages.config" />
+    <None Include="stream\NativeUI.ytd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
