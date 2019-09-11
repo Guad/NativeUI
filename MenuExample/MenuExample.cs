@@ -50,8 +50,9 @@ public class MenuExample : BaseScript
 
 	public void HeritageMenu(UIMenu menu)
 	{
+		var heritagemenu = _menuPool.AddSubMenu(menu, "Heritage Menu");
 		var heritageWindow = new UIMenuHeritageWindow(0, 0);
-		menu.AddWindow(heritageWindow);
+		heritagemenu.AddWindow(heritageWindow);
 		List<dynamic> momfaces = new List<dynamic>() { "Hannah", "Audrey", "Jasmine", "Giselle", "Amelia", "Isabella", "Zoe", "Ava", "Camilla", "Violet", "Sophia", "Eveline", "Nicole", "Ashley", "Grace", "Brianna", "Natalie", "Olivia", "Elizabeth", "Charlotte", "Emma", "Misty" };
 		List<dynamic> dadfaces = new List<dynamic>() { "Benjamin", "Daniel", "Joshua", "Noah", "Andrew", "Joan", "Alex", "Isaac", "Evan", "Ethan", "Vincent", "Angel", "Diego", "Adrian", "Gabriel", "Michael", "Santiago", "Kevin", "Louis", "Samuel", "Anthony", "Claude", "Niko", "John" };
 		List<dynamic> lista = new List<dynamic>();
@@ -59,12 +60,12 @@ public class MenuExample : BaseScript
 		var mom = new UIMenuListItem("Mamma", momfaces, 0);
 		var dad = new UIMenuListItem("Papà", dadfaces, 0);
 		var newItem = new UIMenuSliderHeritageItem("Heritage Slider", "This is Useful on heritage", true);
-		menu.AddItem(mom);
-		menu.AddItem(dad);
-		menu.AddItem(newItem);
+		heritagemenu.AddItem(mom);
+		heritagemenu.AddItem(dad);
+		heritagemenu.AddItem(newItem);
 		int MomIndex = 0;
 		int DadIndex = 0;
-		menu.OnListChange += (_sender, _listItem, _newIndex) =>
+		heritagemenu.OnListChange += (_sender, _listItem, _newIndex) =>
 		{
 			if (_listItem == mom)
 			{
@@ -79,7 +80,7 @@ public class MenuExample : BaseScript
 			// This way the heritage window changes only if you change a list item!
 		};
 
-		menu.OnSliderChange += (_sender, _item, _newIndex) =>
+		heritagemenu.OnSliderChange += (_sender, _item, _newIndex) =>
 		{
 			if (_item == newItem)
 			{
