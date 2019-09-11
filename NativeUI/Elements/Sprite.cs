@@ -70,10 +70,10 @@ namespace NativeUI
         public void Draw()
         {
             if (!Visible) return;
-            if (!Function.Call<bool>(Hash.HAS_STREAMED_TEXTURE_DICT_LOADED, TextureDict))
-                Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, TextureDict, true);
+			if (!API.HasStreamedTextureDictLoaded(TextureDict))
+				API.RequestStreamedTextureDict(TextureDict, true);
 
-                int screenw = CitizenFX.Core.UI.Screen.Resolution.Width;
+			int screenw = CitizenFX.Core.UI.Screen.Resolution.Width;
             int screenh = CitizenFX.Core.UI.Screen.Resolution.Height;
             const float height = 1080f;
             float ratio = (float)screenw/screenh;
@@ -84,16 +84,17 @@ namespace NativeUI
             float h = (Size.Height / height);
             float x = (Position.X / width) + w * 0.5f;
             float y = (Position.Y / height) + h * 0.5f;
-            
-            Function.Call(Hash.DRAW_SPRITE, TextureDict, TextureName, x, y, w, h, Heading, Color.R, Color.G, Color.B, Color.A);
-        }
 
-        public static void Draw(string dict, string name, int xpos, int ypos, int boxWidth, int boxHeight, float rotation, Color color)
+			API.DrawSprite(TextureDict, TextureName, x, y, w, h, Heading, Color.R, Color.G, Color.B, Color.A);
+		}
+
+		public static void Draw(string dict, string name, int xpos, int ypos, int boxWidth, int boxHeight, float rotation, Color color)
         {
-            if (!Function.Call<bool>(Hash.HAS_STREAMED_TEXTURE_DICT_LOADED, dict))
-                Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, dict, true);
+			if (!API.HasStreamedTextureDictLoaded(dict))
+				API.RequestStreamedTextureDict(dict, true);
 
-            int screenw = CitizenFX.Core.UI.Screen.Resolution.Width;
+
+			int screenw = CitizenFX.Core.UI.Screen.Resolution.Width;
             int screenh = CitizenFX.Core.UI.Screen.Resolution.Height;
             const float height = 1080f;
             float ratio = (float)screenw / screenh;
@@ -105,16 +106,16 @@ namespace NativeUI
             float x = (xpos / width) + w * 0.5f;
             float y = (ypos / height) + h * 0.5f;
 
-            Function.Call(Hash.DRAW_SPRITE, dict, name, x, y, w, h, rotation, color.R, color.G, color.B, color.A);
-        }
+			API.DrawSprite(dict, name, x, y, w, h, rotation, color.R, color.G, color.B, color.A);
+		}
 
-        /// <summary>
-        /// Draw a custom texture from a file on a 1080-pixels height base.
-        /// </summary>
-        /// <param name="path">Path to texture file.</param>
-        /// <param name="position"></param>
-        /// <param name="size"></param>
-        public static void DrawTexture(string path, Point position, Size size, float rotation, Color color)
+		/// <summary>
+		/// Draw a custom texture from a file on a 1080-pixels height base.
+		/// </summary>
+		/// <param name="path">Path to texture file.</param>
+		/// <param name="position"></param>
+		/// <param name="size"></param>
+		public static void DrawTexture(string path, Point position, Size size, float rotation, Color color)
         {
             throw new NotSupportedException("Custom PNG textures are not supported in FiveM.");
         }

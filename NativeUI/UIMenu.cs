@@ -1,6 +1,7 @@
 ﻿using CitizenFX.Core;
 using CitizenFX.Core.Native;
 using CitizenFX.Core.UI;
+using static CitizenFX.Core.Native.API;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -901,17 +902,17 @@ namespace NativeUI
         /// <returns>0 - Not in item at all, 1 - In label, 2 - In arrow space.</returns>
         private int IsMouseInListItemArrows(UIMenuItem item, Point topLeft, Point safezone) // TODO: Ability to scroll left and right
         {
-            Function.Call((Hash)0x54CE8AC98E120CAB, "jamyfafi");
-            UIResText.AddLongString(item.Text);
+			API.BeginTextCommandWidth("jamyfafi");
+			UIResText.AddLongString(item.Text);
             var res = Screen.ResolutionMaintainRatio;
             var screenw = res.Width;
             var screenh = res.Height;
             const float height = 1080f;
             float ratio = screenw / screenh;
             var width = height * ratio;
-            int labelSize = (int)(Function.Call<float>((Hash)0x85F061DA64ED2F67, 0) * width * 0.35f);
+			int labelSize = (int)(API.EndTextCommandGetWidth(false) * width * 0.35f);
 
-            int labelSizeX = 5 + labelSize + 10;
+			int labelSizeX = 5 + labelSize + 10;
             int arrowSizeX = 431 - labelSizeX;
             return Screen.IsMouseInBounds(topLeft, new Size(labelSizeX, 38))
                 ? 1
@@ -934,8 +935,8 @@ namespace NativeUI
 
             if (_buttonsEnabled)
             {
-                Function.Call(Hash.DRAW_SCALEFORM_MOVIE_FULLSCREEN, _instructionalButtonsScaleform.Handle, 255, 255, 255, 255, 0);
-                CitizenFX.Core.UI.Screen.Hud.HideComponentThisFrame(HudComponent.VehicleName);
+				API.DrawScaleformMovieFullscreen(_instructionalButtonsScaleform.Handle, 255, 255, 255, 255, 0);
+				CitizenFX.Core.UI.Screen.Hud.HideComponentThisFrame(HudComponent.VehicleName);
 				CitizenFX.Core.UI.Screen.Hud.HideComponentThisFrame(HudComponent.AreaName);
 				CitizenFX.Core.UI.Screen.Hud.HideComponentThisFrame(HudComponent.StreetName);
             }
@@ -943,11 +944,12 @@ namespace NativeUI
 
             if (ScaleWithSafezone)
             {
-                Function.Call((Hash)0xB8A850F20A067EB6, 76, 84); // Safezone
-                Function.Call((Hash)0xF5A2C681787E579D, 0f, 0f, 0f, 0f); // stuff
-            }
+				API.SetScriptGfxAlign(76, 84); // Safezone
+				API.SetScriptGfxAlignParams(0f, 0f, 0f, 0f); // stuff
 
-            if (ReDraw) DrawCalculations();
+			}
+
+			if (ReDraw) DrawCalculations();
 
             if (String.IsNullOrWhiteSpace(BannerTexture))
             {
@@ -967,7 +969,7 @@ namespace NativeUI
             _mainMenu.Draw();
             if (MenuItems.Count == 0)
             {
-                Function.Call((Hash)0xE3A3DB414A373DAB); // Safezone end
+				API.ResetScriptGfxAlign(); // Safezone end
                 return;
             }
 
@@ -1018,9 +1020,9 @@ namespace NativeUI
                 }
             }
 
-            if (ScaleWithSafezone)
-                Function.Call((Hash)0xE3A3DB414A373DAB); // Safezone end
-        }
+			if (ScaleWithSafezone)
+				API.ResetScriptGfxAlign();
+		}
 
         /// <summary>
         /// Process the mouse's position and check if it's hovering over any UI element. Call this in OnTick
@@ -1029,11 +1031,11 @@ namespace NativeUI
         {
             if (!Visible || _justOpened || MenuItems.Count == 0 || IsUsingController || !MouseControlsEnabled)
             {
-                Function.Call(Hash.ENABLE_CONTROL_ACTION, (int)Control.LookUpDown);
-                Function.Call(Hash.ENABLE_CONTROL_ACTION, (int)Control.LookLeftRight);
-                Function.Call(Hash.ENABLE_CONTROL_ACTION, (int)Control.Aim);
-                Function.Call(Hash.ENABLE_CONTROL_ACTION, (int)Control.Attack);
-                if (_itemsDirty)
+				EnableControlAction(2, (int)Control.LookUpDown, true);
+				EnableControlAction(2, (int)Control.LookLeftRight, true);
+				EnableControlAction(2, (int)Control.Aim, true);
+				EnableControlAction(2, (int)Control.Attack, true);
+				if (_itemsDirty)
                 {
                     MenuItems.Where(i => i.Hovered).ToList().ForEach(i => i.Hovered = false);
                     _itemsDirty = false;
@@ -1042,8 +1044,8 @@ namespace NativeUI
             }
 
             Point safezoneOffset = Screen.SafezoneBounds;
-            Function.Call(Hash._SHOW_CURSOR_THIS_FRAME);
-            int limit = MenuItems.Count - 1;
+			ShowCursorThisFrame();
+			int limit = MenuItems.Count - 1;
             int counter = 0;
             if (MenuItems.Count > MaxItemsOnScreen + 1)
                 limit = _maxItem;
@@ -1051,19 +1053,19 @@ namespace NativeUI
             if (Screen.IsMouseInBounds(new Point(0, 0), new Size(30, 1080)) && MouseEdgeEnabled)
             {
                 GameplayCamera.RelativeHeading += 5f;
-                Function.Call(Hash._SET_CURSOR_SPRITE, 6);
-            }
+				SetCursorSprite(6);
+			}
             else if (Screen.IsMouseInBounds(new Point(Convert.ToInt32(Screen.ResolutionMaintainRatio.Width - 30f), 0), new Size(30, 1080)) && MouseEdgeEnabled)
             {
                 GameplayCamera.RelativeHeading -= 5f;
-                Function.Call(Hash._SET_CURSOR_SPRITE, 7);
-            }
-            else if (MouseEdgeEnabled)
+				SetCursorSprite(7);
+			}
+			else if (MouseEdgeEnabled)
             {
-                Function.Call(Hash._SET_CURSOR_SPRITE, 1);
-            }
+				SetCursorSprite(1);
+			}
 
-            for (int i = _minItem; i <= limit; i++)
+			for (int i = _minItem; i <= limit; i++)
             {
                 int xpos = Offset.X + safezoneOffset.X;
                 int ypos = Offset.Y + 144 - 37 + _extraYOffset + (counter * 38) + safezoneOffset.Y;
@@ -1078,9 +1080,9 @@ namespace NativeUI
                         safezoneOffset);
                     if (uiMenuItem.Hovered && res == 1 && MenuItems[i] is IListItem)
                     {
-                        Function.Call(Hash._SET_CURSOR_SPRITE, 5);
-                    }
-                    if (Game.IsControlJustPressed(0, Control.Attack))
+						SetCursorSprite(5);
+					}
+					if (Game.IsControlJustPressed(0, Control.Attack))
                         if (uiMenuItem.Selected && uiMenuItem.Enabled)
                         {
                             if (MenuItems[i] is IListItem &&
@@ -1159,13 +1161,13 @@ namespace NativeUI
                 _justOpened = false;
                 return;
             }
-
-            if (HasControlJustBeenReleaseed(MenuControls.Back, key))
+			// THIS CONTROL CHECK IS TO PREVENT THE MENU TO MOVE / CLOSE / ACCEPT WHILE ANY INPUT / WARNING IS BEING DISPLAYED
+            if (HasControlJustBeenReleaseed(MenuControls.Back, key) && UpdateOnscreenKeyboard() != 0 && !IsWarningMessageActive())
             {
                 GoBack();
             }
             if (MenuItems.Count == 0) return;
-            if (IsControlBeingPressed(MenuControls.Up, key))
+            if (IsControlBeingPressed(MenuControls.Up, key) && UpdateOnscreenKeyboard() != 0 && !IsWarningMessageActive())
             {
                 if (Size > MaxItemsOnScreen + 1)
                     GoUpOverflow();
@@ -1174,7 +1176,7 @@ namespace NativeUI
                 UpdateScaleform();
             }
 
-            else if (IsControlBeingPressed(MenuControls.Down, key))
+            else if (IsControlBeingPressed(MenuControls.Down, key) && UpdateOnscreenKeyboard() != 0 && !IsWarningMessageActive())
             {
                 if (Size > MaxItemsOnScreen + 1)
                     GoDownOverflow();
@@ -1183,17 +1185,17 @@ namespace NativeUI
                 UpdateScaleform();
             }
 
-            else if (IsControlBeingPressed(MenuControls.Left, key))
+            else if (IsControlBeingPressed(MenuControls.Left, key) && UpdateOnscreenKeyboard() != 0 && !IsWarningMessageActive())
             {
                 GoLeft();
             }
 
-            else if (IsControlBeingPressed(MenuControls.Right, key))
+            else if (IsControlBeingPressed(MenuControls.Right, key) && UpdateOnscreenKeyboard() != 0 && !IsWarningMessageActive())
             {
                 GoRight();
             }
 
-            else if (HasControlJustBeenPressed(MenuControls.Select, key))
+            else if (HasControlJustBeenPressed(MenuControls.Select, key) && UpdateOnscreenKeyboard() != 0 && !IsWarningMessageActive())
             {
                 SelectItem();
             }
@@ -1225,9 +1227,9 @@ namespace NativeUI
             _instructionalButtonsScaleform.CallFunction("CREATE_CONTAINER");
 
 
-            _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 0, Function.Call<string>(Hash.GET_CONTROL_INSTRUCTIONAL_BUTTON, 2, (int)Control.PhoneSelect, 0), _selectTextLocalized);
-            _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 1, Function.Call<string>(Hash.GET_CONTROL_INSTRUCTIONAL_BUTTON, 2, (int)Control.PhoneCancel, 0), _backTextLocalized);
-            int count = 2;
+			_instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 0, GetControlInstructionalButton(2, (int)Control.PhoneSelect, 0), _selectTextLocalized);
+			_instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", 1, GetControlInstructionalButton(2, (int)Control.PhoneCancel, 0), _backTextLocalized);
+			int count = 2;
             foreach (var button in _instructionalButtons.Where(button => button.ItemBind == null || MenuItems[CurrentSelection] == button.ItemBind))
             {
                 _instructionalButtonsScaleform.CallFunction("SET_DATA_SLOT", count, button.GetButtonId(), button.Text);
@@ -1260,9 +1262,9 @@ namespace NativeUI
                 if (!ResetCursorOnOpen) return;
                 // Cursor.Position = new Point(Screen.PrimaryScreen.Bounds.Width / 2, Screen.PrimaryScreen.Bounds.Height / 2);
                 API.SetCursorLocation(CitizenFX.Core.UI.Screen.Resolution.Width / 2f, CitizenFX.Core.UI.Screen.Resolution.Height / 2f);
-                Function.Call(Hash._SET_CURSOR_SPRITE, 1);
-            }
-        }
+				SetCursorSprite(1);
+			}
+		}
 
 
         /// <summary>
@@ -1293,7 +1295,7 @@ namespace NativeUI
         /// <summary>
         /// Returns false if last input was made with mouse and keyboard, true if it was made with a controller.
         /// </summary>
-        public static bool IsUsingController => !Function.Call<bool>(Hash._GET_LAST_INPUT_METHOD, 2);
+        public static bool IsUsingController => !IsInputDisabled(2);
 
 
         /// <summary>

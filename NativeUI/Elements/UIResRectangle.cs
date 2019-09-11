@@ -32,10 +32,10 @@ namespace NativeUI
             float x = ((Position.X + offset.Width)/width) + w*0.5f;
             float y = ((Position.Y + offset.Height)/height) + h*0.5f;
 
-            Function.Call(Hash.DRAW_RECT, x, y, w, h, Color.R, Color.G, Color.B, Color.A);
-        }
+			API.DrawRect(x, y, w, h, Color.R, Color.G, Color.B, Color.A);
+		}
 
-        public static void Draw(int xPos, int yPos, int boxWidth, int boxHeight, Color color)
+		public static void Draw(int xPos, int yPos, int boxWidth, int boxHeight, Color color)
         {
             int screenw = CitizenFX.Core.UI.Screen.Resolution.Width;
             int screenh = CitizenFX.Core.UI.Screen.Resolution.Height;
@@ -48,7 +48,7 @@ namespace NativeUI
             float x = ((xPos) / width) + w * 0.5f;
             float y = ((yPos) / height) + h * 0.5f;
 
-            Function.Call(Hash.DRAW_RECT, x, y, w, h, color.R, color.G, color.B, color.A);
-        }
-    }
+			API.DrawRect(x, y, w, h, color.R, color.G, color.B, color.A);
+		}
+	}
 }

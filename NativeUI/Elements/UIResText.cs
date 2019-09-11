@@ -54,7 +54,7 @@ namespace NativeUI
             for (int i = 0; i < input.Length; i += maxByteLengthPerString)
             {
                 string substr = (input.Substring(i, Math.Min(maxByteLengthPerString, input.Length - i)));
-                Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, substr);
+				API.AddTextComponentString(substr);
             }
         }
 
@@ -76,7 +76,7 @@ namespace NativeUI
             var utf8ByteCount = enc.GetByteCount(input);
             if (utf8ByteCount < maxByteLengthPerString)
             {
-                Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, input);
+				API.AddTextComponentString(input);
                 return;
             }
 
@@ -88,14 +88,14 @@ namespace NativeUI
                 if (enc.GetByteCount(input.Substring(startIndex, length)) > maxByteLengthPerString)
                 {
                     string substr = (input.Substring(startIndex, length - 1));
-                    Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, substr);
+					API.AddTextComponentString(substr);
 
                     i -= 1;
                     startIndex = (startIndex + length - 1);
                 }
             }
-            Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, input.Substring(startIndex, input.Length - startIndex));
-        }
+			API.AddTextComponentString(input.Substring(startIndex, input.Length - startIndex));
+		}
 
 		[Obsolete("Use Screen.GetTextWidth instead.", true)]
 		public static float MeasureStringWidth(string str, Font font, float scale) => Screen.GetTextWidth(str, font, scale);
@@ -119,84 +119,84 @@ namespace NativeUI
 
         public override void Draw(SizeF offset)
         {
-            int screenw = CitizenFX.Core.UI.Screen.Resolution.Width;
-            int screenh = CitizenFX.Core.UI.Screen.Resolution.Height;
-            const float height = 1080f;
-            float ratio = (float)screenw / screenh;
-            var width = height * ratio;
+			int screenw = CitizenFX.Core.UI.Screen.Resolution.Width;
+			int screenh = CitizenFX.Core.UI.Screen.Resolution.Height;
+			const float height = 1080f;
+			float ratio = (float)screenw / screenh;
+			var width = height * ratio;
 
-            float x = (Position.X) / width;
-            float y = (Position.Y) / height;
+			float x = (Position.X) / width;
+			float y = (Position.Y) / height;
 
-            Function.Call(Hash.SET_TEXT_FONT, (int)Font);
-            Function.Call(Hash.SET_TEXT_SCALE, 1.0f, Scale);
-            Function.Call(Hash.SET_TEXT_COLOUR, Color.R, Color.G, Color.B, Color.A);
-            if (Shadow)
-                Function.Call(Hash.SET_TEXT_DROP_SHADOW);
-            if (Outline)
-                Function.Call(Hash.SET_TEXT_OUTLINE);
-            switch (TextAlignment)
-            {
-                case Alignment.Center:
-                    Function.Call(Hash.SET_TEXT_CENTRE, true);
-                    break;
-                case Alignment.Right:
-                    Function.Call(Hash.SET_TEXT_RIGHT_JUSTIFY, true);
-                    Function.Call(Hash.SET_TEXT_WRAP, 0, x);
-                    break;
-            }
+			API.SetTextFont((int)Font);
+			API.SetTextScale(1.0f, Scale);
+			API.SetTextColour(Color.R, Color.G, Color.B, Color.A);
+			if (Shadow)
+				API.SetTextDropShadow();
+			if (Outline)
+				API.SetTextOutline();
+			switch (TextAlignment)
+			{
+				case Alignment.Center:
+					API.SetTextCentre(true);
+					break;
+				case Alignment.Right:
+					API.SetTextRightJustify(true);
+					API.SetTextWrap(0, x);
+					break;
+			}
 
-            if (Wrap != 0)
-            {
-                float xsize = (Position.X + Wrap) / width;
-                Function.Call(Hash.SET_TEXT_WRAP, x, xsize);
-            }
+			if (Wrap != 0)
+			{
+				float xsize = (Position.X + Wrap) / width;
+				API.SetTextWrap(x, xsize);
+			}
 
-            Function.Call(Hash._SET_TEXT_ENTRY, "jamyfafi");
-            AddLongString(Caption);
+			API.SetTextEntry("jamyfafi");
+			AddLongString(Caption);
 
-            Function.Call(Hash._DRAW_TEXT, x, y);
-        }
+			API.DrawText(x, y);
+		}
 
-        public static void Draw(string caption, int xPos, int yPos, Font font, float scale, Color color, Alignment alignment, bool dropShadow, bool outline, int wordWrap)
+		public static void Draw(string caption, int xPos, int yPos, Font font, float scale, Color color, Alignment alignment, bool dropShadow, bool outline, int wordWrap)
         {
-            int screenw = CitizenFX.Core.UI.Screen.Resolution.Width;
-            int screenh = CitizenFX.Core.UI.Screen.Resolution.Height;
-            const float height = 1080f;
-            float ratio = (float)screenw / screenh;
-            var width = height * ratio;
+			int screenw = CitizenFX.Core.UI.Screen.Resolution.Width;
+			int screenh = CitizenFX.Core.UI.Screen.Resolution.Height;
+			const float height = 1080f;
+			float ratio = (float)screenw / screenh;
+			var width = height * ratio;
 
-            float x = (xPos) / width;
-            float y = (yPos) / height;
+			float x = (xPos) / width;
+			float y = (yPos) / height;
 
-            Function.Call(Hash.SET_TEXT_FONT, (int)font);
-            Function.Call(Hash.SET_TEXT_SCALE, 1.0f, scale);
-            Function.Call(Hash.SET_TEXT_COLOUR, color.R, color.G, color.B, color.A);
-            if (dropShadow)
-                Function.Call(Hash.SET_TEXT_DROP_SHADOW);
-            if (outline)
-                Function.Call(Hash.SET_TEXT_OUTLINE);
-            switch (alignment)
-            {
-                case Alignment.Center:
-                    Function.Call(Hash.SET_TEXT_CENTRE, true);
-                    break;
-                case Alignment.Right:
-                    Function.Call(Hash.SET_TEXT_RIGHT_JUSTIFY, true);
-                    Function.Call(Hash.SET_TEXT_WRAP, 0, x);
-                    break;
-            }
+			API.SetTextFont((int)font);
+			API.SetTextScale(1.0f, scale);
+			API.SetTextColour(color.R, color.G, color.B, color.A);
+			if (dropShadow)
+				API.SetTextDropShadow();
+			if (outline)
+				API.SetTextOutline();
+			switch (alignment)
+			{
+				case Alignment.Center:
+					API.SetTextCentre(true);
+					break;
+				case Alignment.Right:
+					API.SetTextRightJustify(true);
+					API.SetTextWrap(0, x);
+					break;
+			}
 
-            if (wordWrap != 0)
-            {
-                float xsize = (xPos + wordWrap) / width;
-                Function.Call(Hash.SET_TEXT_WRAP, x, xsize);
-            }
+			if (wordWrap != 0)
+			{
+				float xsize = (xPos + wordWrap) / width;
+				API.SetTextWrap(x, xsize);
+			}
 
-            Function.Call(Hash._SET_TEXT_ENTRY, "jamyfafi");
-            AddLongString(caption);
+			API.SetTextEntry("jamyfafi");
+			AddLongString(caption);
 
-            Function.Call(Hash._DRAW_TEXT, x, y);
-        }
+			API.DrawText(x, y);
+		}
     }
 }

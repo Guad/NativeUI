@@ -22,10 +22,10 @@ namespace NativeUI
             _sc = new Scaleform("MP_BIG_MESSAGE_FREEMODE");
             var timeout = 1000;
             var start = DateTime.Now;
-            while (!Function.Call<bool>(Hash.HAS_SCALEFORM_MOVIE_LOADED, _sc.Handle) && DateTime.Now.Subtract(start).TotalMilliseconds < timeout) BaseScript.Delay(0);
-        }
+			while (!API.HasScaleformMovieLoaded(_sc.Handle) && DateTime.Now.Subtract(start).TotalMilliseconds < timeout) BaseScript.Delay(0);
+		}
 
-        public void Dispose()
+		public void Dispose()
         {
             Function.Call(Hash.SET_SCALEFORM_MOVIE_AS_NO_LONGER_NEEDED, new OutputArgument(_sc.Handle));
             _sc = null;
