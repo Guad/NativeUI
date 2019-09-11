@@ -46,7 +46,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MenuExample.cs" />
-    <Compile Include="PointF.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NativeUI\NativeUI.csproj">
