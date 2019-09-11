@@ -66,6 +66,14 @@ public class MenuExample : BaseScript
             if (sender.MenuItems[index] == newitem)
                 newitem.SetLeftBadge(UIMenuItem.BadgeStyle.None);
         };
+
+		var BlankItem = new UIMenuSeparatorItem();
+		menu.AddItem(BlankItem);
+
+		var listPanelItem1 = new UIMenuListItem("ChangeColor", new List<object> { "Example", "example2" }, 0);
+		var ColorPanel = new UIMenuColorPanel("ColorPanelExample", UIMenuColorPanel.ColorPanelType.Hair); // you can choose from hair palette or makeup palette
+		menu.AddItem(listPanelItem1);
+		listPanelItem1.AddPanel(ColorPanel);
     }
 
     public void AddMenuAnotherMenu(UIMenu menu)

@@ -164,5 +164,25 @@ namespace NativeUI
         {
             return Items[Index].ToString();
         }
-    }
+
+		/// <summary>
+		/// Add a Panel to the UIMenuListItem
+		/// </summary>
+		/// <param name="panel"></param>
+		public virtual void AddPanel(UIMenuPanel panel)
+		{
+			Panels.Add(panel);
+			panel.SetParentItem(this);
+		}
+
+		/// <summary>
+		/// Removes a panel at a defined Index
+		/// </summary>
+		/// <param name="Index"></param>
+		public virtual void RemovePanelAt(int Index)
+		{
+			Panels.RemoveAt(Index);
+		}
+
+	}
 }
