@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace NativeUI
 {
@@ -35,12 +36,17 @@ namespace NativeUI
 
     public delegate void ItemSliderEvent(UIMenuSliderItem sender, int newIndex);
 
-    #endregion
+	public delegate void OnProgressChanged(UIMenu menu, UIMenuProgressItem item, int newIndex);
 
-    /// <summary>
-    /// Base class for NativeUI. Calls the next events: OnIndexChange, OnListChanged, OnCheckboxChange, OnItemSelect, OnMenuClose, OnMenuchange.
-    /// </summary>
-    public class UIMenu
+	public delegate void OnProgressSelected(UIMenu menu, UIMenuProgressItem item, int newIndex);
+
+
+	#endregion
+
+	/// <summary>
+	/// Base class for NativeUI. Calls the next events: OnIndexChange, OnListChanged, OnCheckboxChange, OnItemSelect, OnMenuClose, OnMenuchange.
+	/// </summary>
+	public class UIMenu
     {
         #region Private Fields
         private readonly Container _mainMenu;
@@ -78,8 +84,10 @@ namespace NativeUI
 
         private static readonly MenuControls[] _menuControls = Enum.GetValues(typeof(MenuControls)).Cast<MenuControls>().ToArray();
 
-        // Draw Variables
-        private Point Safe { get; set; }
+		private float PanelOffset = 0;
+
+		// Draw Variables
+		private Point Safe { get; set; }
         private Size BackgroundSize { get; set; }
         private Size DrawWidth { get; set; }
         private bool ReDraw = true;
@@ -100,8 +108,9 @@ namespace NativeUI
         public string AUDIO_ERROR = "ERROR";
 
         public List<UIMenuItem> MenuItems = new List<UIMenuItem>();
+		public List<UIMenuHeritageWindow> Windows = new List<UIMenuHeritageWindow>();
 
-        public bool MouseEdgeEnabled = true;
+		public bool MouseEdgeEnabled = true;
         public bool ControlDisablingEnabled = true;
         public bool ResetCursorOnOpen = true;
 		[Obsolete("The description is now formated automatically by the game.")]
@@ -143,11 +152,21 @@ namespace NativeUI
         /// Called when user presses left or right, changing a slider position.
         /// </summary>
         public event SliderChangedEvent OnSliderChange;
-        
-        /// <summary>
-        /// Called when user opens the menu.
-        /// </summary>
-        public event MenuOpenEvent OnMenuOpen;
+
+		/// <summary>
+		/// Called When user changes progress in a ProgressItem.
+		/// </summary>
+		public event OnProgressChanged OnProgressChange;
+
+		/// <summary>
+		/// Called when user either clicks on a ProgressItem.
+		/// </summary>
+		public event OnProgressSelected OnProgressSelect;
+
+		/// <summary>
+		/// Called when user opens the menu.
+		/// </summary>
+		public event MenuOpenEvent OnMenuOpen;
 
         /// <summary>
         /// Called when user closes the menu or goes back in a menu chain.
@@ -159,16 +178,17 @@ namespace NativeUI
         /// </summary>
         public event MenuChangeEvent OnMenuChange;
 
-        #endregion
 
-        #region Constructors
+		#endregion
 
-        /// <summary>
-        /// Basic Menu constructor.
-        /// </summary>
-        /// <param name="title">Title that appears on the big banner.</param>
-        /// <param name="subtitle">Subtitle that appears in capital letters in a small black bar.</param>
-        public UIMenu(string title, string subtitle) : this(title, subtitle, new Point(0, 0), "commonmenu", "interaction_bgd")
+		#region Constructors
+
+		/// <summary>
+		/// Basic Menu constructor.
+		/// </summary>
+		/// <param name="title">Title that appears on the big banner.</param>
+		/// <param name="subtitle">Subtitle that appears in capital letters in a small black bar.</param>
+		public UIMenu(string title, string subtitle) : this(title, subtitle, new Point(0, 0), "commonmenu", "interaction_bgd")
         {
         }
 
@@ -889,7 +909,7 @@ namespace NativeUI
                 count = MaxItemsOnScreen + 2;
 
             _descriptionBar.Position = new PointF(Offset.X, 38 * count + _descriptionBar.Position.Y);
-            _descriptionRectangle.Position = new Point(Offset.X, 38 * count + _descriptionRectangle.Position.Y);
+            _descriptionRectangle.Position = new PointF(Offset.X, 38 * count + _descriptionRectangle.Position.Y);
             _descriptionText.Position = new PointF(Offset.X + 8, 38 * count + _descriptionText.Position.Y);
         }
 
@@ -926,7 +946,7 @@ namespace NativeUI
         /// <summary>
         /// Draw the menu and all of it's components.
         /// </summary>
-        public void Draw()
+        public async Task Draw()
         {
             if (!Visible) return;
 
@@ -1020,14 +1040,70 @@ namespace NativeUI
                 }
             }
 
+			if (Windows.Count != 0)
+			{
+				float WindowOffset = 0;
+				for (int index = 0; index < Windows.Count; index++)
+				{
+					if (index > 0)
+						WindowOffset += Windows[index].Background.Size.Height;
+					Windows[index].Position(WindowOffset + _extraYOffset + 37);
+					Windows[index].Draw();
+				}
+			}
+
+			if (MenuItems[CurrentSelection] is UIMenuListItem)
+			{
+				if ((MenuItems[CurrentSelection] as UIMenuListItem).Panels.Count > 0)
+				{
+					PanelOffset = CalculatePanelsPosition(!String.IsNullOrWhiteSpace(MenuItems[CurrentSelection].Description));
+					for (int i = 0; i < (MenuItems[CurrentSelection] as UIMenuListItem).Panels.Count; i++)
+					{
+						if (i > 0)
+							PanelOffset = PanelOffset + (MenuItems[CurrentSelection] as UIMenuListItem).Panels[i - 1].Background.Size.Height + 5;
+						(MenuItems[CurrentSelection] as UIMenuListItem).Panels[i].Position(PanelOffset);
+						(MenuItems[CurrentSelection] as UIMenuListItem).Panels[i].Draw();
+					}
+				}
+			}
+
 			if (ScaleWithSafezone)
 				API.ResetScriptGfxAlign();
+			await Task.FromResult(0);
 		}
 
-        /// <summary>
-        /// Process the mouse's position and check if it's hovering over any UI element. Call this in OnTick
-        /// </summary>
-        public void ProcessMouse()
+		private float CalculateWindowHeight()
+		{
+			float height = 0;
+			if (Windows.Count > 0)
+				for (int i = 0; i < Windows.Count; i++)
+					height += Windows[i].Background.Size.Height;
+			return height;
+		}
+
+		private float CalculateItemHeight()
+		{
+			float ItemOffset = 0 + _mainMenu.Items[1].Position.Y - 37f;
+			for (int i = 0; i < MenuItems.Count; i++)
+				ItemOffset += MenuItems[i]._rectangle.Size.Height;
+			return ItemOffset;
+		}
+
+		/// <summary>
+		/// Calculate every panel position based on how many items are in the menu + description if present + heritage windows if there are any
+		/// </summary>
+		private float CalculatePanelsPosition(bool hasDescription)
+		{
+			float Height = CalculateWindowHeight() + 80 + _mainMenu.Position.Y;
+			if (hasDescription)
+				Height += _descriptionRectangle.Size.Height + 5;
+			return MenuItems.Count > (MaxItemsOnScreen + 1) ? CalculateItemHeight() + 37 + Height : CalculateItemHeight() + Height;
+		}
+
+		/// <summary>
+		/// Process the mouse's position and check if it's hovering over any UI element. Call this in OnTick
+		/// </summary>
+		public async Task ProcessMouse()
         {
             if (!Visible || _justOpened || MenuItems.Count == 0 || IsUsingController || !MouseControlsEnabled)
             {
@@ -1148,12 +1224,13 @@ namespace NativeUI
             }
             else
                 _extraRectangleDown.Color = Color.FromArgb(200, 0, 0, 0);
+			await Task.FromResult(0);
         }
 
         /// <summary>
         /// Process control-stroke. Call this in the OnTick event.
         /// </summary>
-        public void ProcessControl(Keys key = Keys.None)
+        public async Task ProcessControl(Keys key = Keys.None)
         {
             if (!Visible) return;
             if (_justOpened)
@@ -1199,14 +1276,14 @@ namespace NativeUI
             {
                 SelectItem();
             }
-
+			await BaseScript.Delay(275); // A little delay (else the menu items switch too fast)
         }
 
         /// <summary>
         /// Process keystroke. Call this in the OnKeyDown event.
         /// </summary>
         /// <param name="key"></param>
-        public void ProcessKey(Keys key)
+        public async Task ProcessKey(Keys key)
         {
             if ((from MenuControls menuControl in _menuControls
                  select new List<Keys>(_keyDictionary[menuControl].Item1))
@@ -1214,6 +1291,7 @@ namespace NativeUI
             {
                 ProcessControl(key);
             }
+			await Task.FromResult(0);
         }
 
         /// <summary>
@@ -1352,13 +1430,17 @@ namespace NativeUI
         }
 
 
-        protected virtual void ListChange(UIMenuListItem sender, int newindex)
+        internal virtual void ListChange(UIMenuListItem sender, int newindex)
         {
             OnListChange?.Invoke(this, sender, newindex);
         }
 
+		internal virtual void ProgressChange(UIMenuProgressItem sender, int newindex)
+		{
+			OnProgressChange?.Invoke(this, sender, newindex);
+		}
 
-        protected virtual void ItemSelect(UIMenuItem selecteditem, int index)
+		protected virtual void ItemSelect(UIMenuItem selecteditem, int index)
         {
             OnItemSelect?.Invoke(this, selecteditem, index);
         }

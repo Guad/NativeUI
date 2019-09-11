@@ -4,13 +4,14 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace NativeUI
 {
     public class Sprite
     {
-        public Point Position;
-        public Size Size;
+        public PointF Position; //TURNING Point TO PointF (same for Size to SizeF) DOESN'T BREAK COMPATIBILITY AND ADDS PRECISION
+        public SizeF Size;
         public Color Color;
         public bool Visible;
         public float Heading;
@@ -38,7 +39,7 @@ namespace NativeUI
         /// <param name="size"></param>
         /// <param name="heading"></param>
         /// <param name="color"></param>
-        public Sprite(string textureDict, string textureName, Point position, Size size, float heading, Color color) //BASE
+        public Sprite(string textureDict, string textureName, PointF position, SizeF size, float heading, Color color) //BASE
         {
             //if (!Function.Call<bool>(Hash.HAS_STREAMED_TEXTURE_DICT_LOADED, textureDict))
                 //Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, textureDict, true);
@@ -59,17 +60,17 @@ namespace NativeUI
         /// <param name="textureName"></param>
         /// <param name="position"></param>
         /// <param name="size"></param>
-        public Sprite(string textureDict, string textureName, Point position, Size size) : this(textureDict, textureName, position, size, 0f, Color.FromArgb(255, 255, 255, 255))
+        public Sprite(string textureDict, string textureName, PointF position, SizeF size) : this(textureDict, textureName, position, size, 0f, Color.FromArgb(255, 255, 255, 255))
         {
         }
 
 
-        /// <summary>
-        /// Draws the sprite on a 1080-pixels height base.
-        /// </summary>
-        public void Draw()
-        {
-            if (!Visible) return;
+		/// <summary>
+		/// Draws the sprite on a 1080-pixels height base.
+		/// </summary>
+		public async Task Draw()
+		{
+			if (!Visible) return;
 			if (!API.HasStreamedTextureDictLoaded(TextureDict))
 				API.RequestStreamedTextureDict(TextureDict, true);
 

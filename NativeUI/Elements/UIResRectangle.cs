@@ -17,8 +17,14 @@ namespace NativeUI
 
         public UIResRectangle(Point pos, Size size, Color color) : base(pos, size, color)
         { }
-        
-        public override void Draw(SizeF offset)
+
+		public UIResRectangle(PointF pos, SizeF size) : base(pos, size)
+		{ }
+
+		public UIResRectangle(PointF pos, SizeF size, Color color) : base(pos, size, color)
+		{ }
+
+		public override void Draw(SizeF offset)
         {
             if (!Enabled) return;
             int screenw = CitizenFX.Core.UI.Screen.Resolution.Width;

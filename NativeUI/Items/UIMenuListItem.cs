@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading.Tasks;
 
 namespace NativeUI
 {
@@ -13,12 +14,13 @@ namespace NativeUI
 
         protected int _index;
         protected List<object> _items;
+		internal List<UIMenuPanel> Panels = new List<UIMenuPanel>();
 
 
-        /// <summary>
-        /// Triggered when the list is changed.
-        /// </summary>
-        public event ItemListEvent OnListChanged;
+		/// <summary>
+		/// Triggered when the list is changed.
+		/// </summary>
+		public event ItemListEvent OnListChanged;
 
         
         /// <summary>
@@ -110,12 +112,12 @@ namespace NativeUI
         }
 
 
-        /// <summary>
-        /// Draw item.
-        /// </summary>
-        public override void Draw()
-        {
-            base.Draw();
+		/// <summary>
+		/// Draw item.
+		/// </summary>
+		public override async Task Draw()
+		{
+			base.Draw();
 
             string caption = Items[Index].ToString();
             float offset = Screen.GetTextWidth(caption, _itemText.Font, _itemText.Scale);
@@ -127,7 +129,7 @@ namespace NativeUI
             _arrowLeft.Color = Enabled ? Selected ? Colors.Black : Colors.WhiteSmoke : Color.FromArgb(163, 159, 148);
             _arrowRight.Color = Enabled ? Selected ? Colors.Black : Colors.WhiteSmoke : Color.FromArgb(163, 159, 148);
 
-            _arrowLeft.Position = new Point(375 - (int)offset + Offset.X + Parent.WidthOffset, _arrowLeft.Position.Y);
+            _arrowLeft.Position = new PointF(375 - (int)offset + Offset.X + Parent.WidthOffset, _arrowLeft.Position.Y);
             if (Selected)
             {
                 _arrowLeft.Draw();
@@ -139,6 +141,7 @@ namespace NativeUI
                 _itemText.Position = new PointF(418 + Offset.X + Parent.WidthOffset, _itemText.Position.Y);
             }
             _itemText.Draw();
+			await Task.FromResult(0);
         }
 
         internal virtual void ListChangedTrigger(int newindex)

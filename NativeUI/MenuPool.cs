@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace NativeUI
 {
@@ -143,7 +144,7 @@ namespace NativeUI
         /// <summary>
         /// Processes all of your visible menus' controls.
         /// </summary>
-        public void ProcessControl()
+        public async Task ProcessControl()
         {
             /*foreach (var menu in _menuList.Where(menu => menu.Visible)) // foreach works slower with List. Also why make a new enumerable every tick
             {
@@ -156,85 +157,91 @@ namespace NativeUI
                 if (_menuList[i].Visible)
                     _menuList[i].ProcessControl();
             }
-        }
+			await Task.FromResult(0);
+		}
 
 
-        /// <summary>
-        /// Processes all of your visible menus' keys.
-        /// </summary>
-        /// <param name="key"></param>
-        public void ProcessKey(Keys key)
-        {
-            /*foreach (var menu in _menuList.Where(menu => menu.Visible))
+		/// <summary>
+		/// Processes all of your visible menus' keys.
+		/// </summary>
+		/// <param name="key"></param>
+		public async Task ProcessKey(Keys key)
+		{
+			/*foreach (var menu in _menuList.Where(menu => menu.Visible))
             {
                 menu.ProcessKey(key);
             }*/
 
-            int count = _menuList.Count;
+			int count = _menuList.Count;
             for (int i = 0; i < count; i++)
             {
                 if (_menuList[i].Visible)
                     _menuList[i].ProcessKey(key);
             }
-        }
+			await Task.FromResult(0);
+		}
 
 
-        /// <summary>
-        /// Processes all of your visible menus' mouses.
-        /// </summary>
-        public void ProcessMouse()
-        {
-            /*foreach (var menu in _menuList.Where(menu => menu.Visible))
+		/// <summary>
+		/// Processes all of your visible menus' mouses.
+		/// </summary>
+		public async Task ProcessMouse()
+		{
+			/*foreach (var menu in _menuList.Where(menu => menu.Visible))
             {
                 menu.ProcessMouse();
             }*/
 
-            int count = _menuList.Count;
+			int count = _menuList.Count;
             for (int i = 0; i < count; i++)
             {
                 if (_menuList[i].Visible)
                     _menuList[i].ProcessMouse();
             }
-        }
-        
+			await Task.FromResult(0);
+		}
 
-        /// <summary>
-        /// Draws all visible menus.
-        /// </summary>
-        public void Draw()
-        {
-            /*foreach (var menu in _menuList.Where(menu => menu.Visible))
+
+		/// <summary>
+		/// Draws all visible menus.
+		/// </summary>
+		public async Task Draw()
+		{
+			/*foreach (var menu in _menuList.Where(menu => menu.Visible))
             {
                 menu.Draw();
             }*/
 
-            int count = _menuList.Count;
+			int count = _menuList.Count;
             for (int i = 0; i < count; i++)
             {
                 if (_menuList[i].Visible)
                     _menuList[i].Draw();
             }
-        }
+			await Task.FromResult(0);
+		}
 
 
-        /// <summary>
-        /// Checks if any menu is currently visible.
-        /// </summary>
-        /// <returns>true if at least one menu is visible, false if not.</returns>
-        public bool IsAnyMenuOpen()
+		/// <summary>
+		/// Checks if any menu is currently visible.
+		/// </summary>
+		/// <returns>true if at least one menu is visible, false if not.</returns>
+		public bool IsAnyMenuOpen()
         {
             return _menuList.Any(menu => menu.Visible);
         }
 
 
         /// <summary>
-        /// Process all of your menus' functions. Call this in a tick event.
+        /// Process all of your menus' functions. Call this in a tick event. 
+		/// It Has been made async without awaiting to make every process completely async on one another
         /// </summary>
-        public void ProcessMenus()
+        public async Task ProcessMenus()
         {
             ProcessControl();
             ProcessMouse();
             Draw();
+			await Task.FromResult(0);
         }
 
 

@@ -1,6 +1,7 @@
 ﻿using CitizenFX.Core.UI;
 using System;
 using System.Drawing;
+using System.Threading.Tasks;
 
 namespace NativeUI
 {
@@ -62,7 +63,7 @@ namespace NativeUI
         /// <summary>
         /// Draw item.
         /// </summary>
-        public override void Draw()
+        public override async Task Draw()
         {
             base.Draw();
 
@@ -76,7 +77,7 @@ namespace NativeUI
             _arrowLeft.Color = Enabled ? Selected ? Colors.Black : Colors.WhiteSmoke : Color.FromArgb(163, 159, 148);
             _arrowRight.Color = Enabled ? Selected ? Colors.Black : Colors.WhiteSmoke : Color.FromArgb(163, 159, 148);
 
-            _arrowLeft.Position = new Point(375 - (int)offset + Offset.X + Parent.WidthOffset, _arrowLeft.Position.Y);
+            _arrowLeft.Position = new PointF(375 - (int)offset + Offset.X + Parent.WidthOffset, _arrowLeft.Position.Y);
             if (Selected)
             {
                 _arrowLeft.Draw();
@@ -88,9 +89,10 @@ namespace NativeUI
                 _itemText.Position = new PointF(418 + Offset.X + Parent.WidthOffset, _itemText.Position.Y);
             }
             _itemText.Draw();
-        }
+			await Task.FromResult(0);
+		}
 
-        public override void SetRightBadge(BadgeStyle badge)
+		public override void SetRightBadge(BadgeStyle badge)
         {
             throw new Exception("UIMenuListItem cannot have a right badge.");
         }

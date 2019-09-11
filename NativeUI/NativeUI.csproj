@@ -54,9 +54,19 @@
     <Compile Include="InstructionalButton.cs" />
     <Compile Include="Items\IListItem.cs" />
     <Compile Include="Items\UIMenuDynamicListItem.cs" />
+    <Compile Include="Items\UIMenuProgressItem.cs" />
+    <Compile Include="Items\UIMenuSeparatorItem.cs" />
+    <Compile Include="Items\UIMenuSliderHeritageItem.cs" />
     <Compile Include="Items\UIMenuSliderItem.cs" />
     <Compile Include="Keys.cs" />
     <Compile Include="MenuPool.cs" />
+    <Compile Include="Panels\UIMenuColorPanel.cs" />
+    <Compile Include="Panels\UIMenuGridPanel.cs" />
+    <Compile Include="Panels\UIMenuHorizontalOneLineGridPanel.cs" />
+    <Compile Include="Panels\UIMenuPanel.cs" />
+    <Compile Include="Panels\UIMenuPercentagePanel.cs" />
+    <Compile Include="Panels\UIMenuStatisticsPanel.cs" />
+    <Compile Include="Panels\UIMenuVerticalOneLineGridPanel.cs" />
     <Compile Include="PauseMenu\TabItem.cs" />
     <Compile Include="PauseMenu\TabItemSimpleList.cs" />
     <Compile Include="PauseMenu\TabMissionSelectItem.cs" />
@@ -77,6 +87,8 @@
     <Compile Include="Items\UIMenuListItem.cs" />
     <Compile Include="Elements\UIResRectangle.cs" />
     <Compile Include="Elements\UIResText.cs" />
+    <Compile Include="Windows\UIMenuHeritageWindow.cs" />
+    <Compile Include="Windows\UIMenuWindow.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

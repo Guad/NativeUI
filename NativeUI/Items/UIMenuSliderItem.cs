@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Threading.Tasks;
 
 namespace NativeUI
 {
@@ -142,7 +143,7 @@ namespace NativeUI
         /// <summary>
         /// Draw item.
         /// </summary>
-        public override void Draw()
+        public override async Task Draw()
         {
             base.Draw();
 
@@ -162,6 +163,7 @@ namespace NativeUI
             _rectangleBackground.Draw();
             _rectangleSlider.Draw();
             _rectangleDivider.Draw();
+			await Task.FromResult(0);
         }
 
         internal virtual void SliderChanged()

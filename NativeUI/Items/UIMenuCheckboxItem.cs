@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Threading.Tasks;
 
 namespace NativeUI
 {          
@@ -50,15 +51,15 @@ namespace NativeUI
             base.Position(y);
             _checkedSprite.Position = new Point(380 + Offset.X + Parent.WidthOffset, y + 138 + Offset.Y);
         }
-        
 
-        /// <summary>
-        /// Draw item.
-        /// </summary>
-        public override void Draw()
-        {
-            base.Draw();
-            _checkedSprite.Position = new Point(380 + Offset.X + Parent.WidthOffset, _checkedSprite.Position.Y);
+
+		/// <summary>
+		/// Draw item.
+		/// </summary>
+		public override async Task Draw()
+		{
+			base.Draw();
+            _checkedSprite.Position = new PointF(380 + Offset.X + Parent.WidthOffset, _checkedSprite.Position.Y);
             if (Selected)
             {
                 _checkedSprite.TextureName = Checked ? "shop_box_tickb" : "shop_box_blankb";
@@ -68,9 +69,10 @@ namespace NativeUI
                 _checkedSprite.TextureName = Checked ? "shop_box_tick" : "shop_box_blank";
             }
             _checkedSprite.Draw();
-        }
+			await Task.FromResult(0);
+		}
 
-        public void CheckboxEventTrigger()
+		public void CheckboxEventTrigger()
         {
             CheckboxEvent?.Invoke(this, Checked);
         }

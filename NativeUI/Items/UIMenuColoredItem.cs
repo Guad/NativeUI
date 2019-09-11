@@ -1,5 +1,6 @@
 ﻿using CitizenFX.Core.UI;
 using System.Drawing;
+using System.Threading.Tasks;
 
 namespace NativeUI
 {
@@ -45,11 +46,11 @@ namespace NativeUI
 
             _labelText = new UIResText("", new Point(0, 0), 0.35f) { TextAlignment = Alignment.Right };
         }
-        
-        
-        public override void Draw()
-        {
-            _rectangle.Size = new Size(431 + Parent.WidthOffset, 38);
+
+
+		public override async Task Draw()
+		{
+			_rectangle.Size = new Size(431 + Parent.WidthOffset, 38);
             _selectedSprite.Size = new Size(431 + Parent.WidthOffset, 38);
 
             if (Hovered && !Selected)
@@ -85,7 +86,7 @@ namespace NativeUI
 
             if (RightBadge != BadgeStyle.None)
             {
-                _badgeRight.Position = new Point(385 + Offset.X + Parent.WidthOffset, _badgeRight.Position.Y);
+                _badgeRight.Position = new PointF(385 + Offset.X + Parent.WidthOffset, _badgeRight.Position.Y);
                 _badgeRight.TextureDict = BadgeToSpriteLib(RightBadge);
                 _badgeRight.TextureName = BadgeToSpriteName(RightBadge, Selected);
                 _badgeRight.Color = BadgeToColor(RightBadge, Selected);
@@ -100,6 +101,7 @@ namespace NativeUI
                 _labelText.Draw();
             }
             _text.Draw();
-        }
-    }
+			await Task.FromResult(0);
+		}
+	}
 }

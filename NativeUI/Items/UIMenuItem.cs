@@ -1,6 +1,7 @@
 ﻿using CitizenFX.Core.UI;
 using System;
 using System.Drawing;
+using System.Threading.Tasks;
 
 namespace NativeUI
 {                
@@ -9,7 +10,7 @@ namespace NativeUI
     /// </summary>
     public class UIMenuItem
     {
-        protected UIResRectangle _rectangle;
+        internal UIResRectangle _rectangle;
         protected UIResText _text;
         protected Sprite _selectedSprite;
 
@@ -103,7 +104,7 @@ namespace NativeUI
         /// <summary>
         /// Draw this item.
         /// </summary>
-        public virtual void Draw()
+        public virtual async Task Draw()
         {
             _rectangle.Size = new Size(431 + Parent.WidthOffset, 38);
             _selectedSprite.Size = new Size(431 + Parent.WidthOffset, 38);
@@ -133,7 +134,7 @@ namespace NativeUI
 
             if (RightBadge != BadgeStyle.None)
             {
-                _badgeRight.Position = new Point(385 + Offset.X + Parent.WidthOffset, _badgeRight.Position.Y);
+                _badgeRight.Position = new PointF(385 + Offset.X + Parent.WidthOffset, _badgeRight.Position.Y);
                 _badgeRight.TextureDict = BadgeToSpriteLib(RightBadge);
                 _badgeRight.TextureName = BadgeToSpriteName(RightBadge, Selected);
                 _badgeRight.Color = BadgeToColor(RightBadge, Selected);
@@ -149,6 +150,7 @@ namespace NativeUI
             }
 
             _text.Draw();
+			await Task.FromResult(0);
         }
 
 
@@ -200,7 +202,7 @@ namespace NativeUI
         /// <summary>
         /// Returns the current right label.
         /// </summary>
-        public virtual string RightLabel { get; private set; }
+        public virtual string RightLabel { get; internal set; }
 
 
         /// <summary>
