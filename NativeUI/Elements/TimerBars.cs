@@ -1,4 +1,6 @@
-﻿using CitizenFX.Core.UI;
+﻿using CitizenFX.Core;
+using CitizenFX.Core.UI;
+using Font = CitizenFX.Core.UI.Font;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -15,16 +17,16 @@ namespace NativeUI
 
         public virtual void Draw(int interval)
         {
-            SizeF res = UIMenu.GetScreenResolutionMaintainRatio();
-            Point safe = UIMenu.GetSafezoneBounds();
+            SizeF res = Screen.ResolutionMaintainRatio;
+            Point safe = Screen.SafezoneBounds;
 
-            UIResText.Draw(Label, (int)res.Width - safe.X - 180, (int)res.Height - safe.Y - (30 + (4 * interval)), Font.ChaletLondon, 0.3f, Colors.White,
-                Alignment.Right, false, false, 0);
+            UIResText.Draw(Label, (int)res.Width - safe.X - 180, (int)res.Height - safe.Y - (30 + (4 * interval)), CitizenFX.Core.UI.Font.ChaletLondon, 0.3f, Colors.White,
+				CitizenFX.Core.UI.Alignment.Right, false, false, 0);
             Sprite.Draw("timerbars", "all_black_bg", (int)res.Width - safe.X - 298, (int)res.Height - safe.Y - (40 + (4 * interval)), 300, 37, 0f, Color.FromArgb(180, 255, 255, 255));
 
-            Screen.Hud.HideComponentThisFrame(HudComponent.AreaName);
-            Screen.Hud.HideComponentThisFrame(HudComponent.StreetName);
-            Screen.Hud.HideComponentThisFrame(HudComponent.VehicleName);
+			CitizenFX.Core.UI.Screen.Hud.HideComponentThisFrame(HudComponent.AreaName);
+			CitizenFX.Core.UI.Screen.Hud.HideComponentThisFrame(HudComponent.StreetName);
+			CitizenFX.Core.UI.Screen.Hud.HideComponentThisFrame(HudComponent.VehicleName);
         }
     }
 
@@ -39,12 +41,12 @@ namespace NativeUI
 
         public override void Draw(int interval)
         {
-            SizeF res = UIMenu.GetScreenResolutionMaintainRatio();
-            Point safe = UIMenu.GetSafezoneBounds();
+            SizeF res = Screen.ResolutionMaintainRatio;
+            Point safe = Screen.SafezoneBounds;
 
             base.Draw(interval);
-            UIResText.Draw(Text, (int)res.Width - safe.X - 10, (int)res.Height - safe.Y - (42 + (4 * interval)), Font.ChaletLondon, 0.5f, Colors.White, 
-                Alignment.Right, false, false, 0);
+            UIResText.Draw(Text, (int)res.Width - safe.X - 10, (int)res.Height - safe.Y - (42 + (4 * interval)), CitizenFX.Core.UI.Font.ChaletLondon, 0.5f, Colors.White,
+				CitizenFX.Core.UI.Alignment.Right, false, false, 0);
         }
     }
 
@@ -66,8 +68,8 @@ namespace NativeUI
 
         public override void Draw(int interval)
         {
-            SizeF res = UIMenu.GetScreenResolutionMaintainRatio();
-            Point safe = UIMenu.GetSafezoneBounds();
+            SizeF res = Screen.ResolutionMaintainRatio;
+            Point safe = Screen.SafezoneBounds;
 
             base.Draw(interval);
 

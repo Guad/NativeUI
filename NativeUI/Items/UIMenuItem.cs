@@ -44,7 +44,7 @@ namespace NativeUI
             Enabled = true;
 
             _rectangle = new UIResRectangle(new Point(0, 0), new Size(431, 38), Color.FromArgb(20, 255, 255, 255)); // Color.FromArgb(150, 0, 0, 0)
-            _text = new UIResText(text, new Point(8, 0), 0.33f, Colors.WhiteSmoke, Font.ChaletLondon, Alignment.Left);
+            _text = new UIResText(text, new Point(8, 0), 0.33f, Colors.WhiteSmoke, CitizenFX.Core.UI.Font.ChaletLondon, Alignment.Left);
             Description = description;
             _selectedSprite = new Sprite("commonmenu", "gradient_nav", new Point(0, 0), new Size(431, 38));
 

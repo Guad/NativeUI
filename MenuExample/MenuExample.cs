@@ -19,7 +19,7 @@ public class MenuExample : BaseScript
             if (item == newitem)
             {
                 ketchup = checked_;
-                Screen.ShowNotification("~r~Ketchup status: ~b~" + ketchup);
+                CitizenFX.Core.UI.Screen.ShowNotification("~r~Ketchup status: ~b~" + ketchup);
             }
         };
     }
@@ -41,7 +41,7 @@ public class MenuExample : BaseScript
             if (item == newitem)
             {
                 dish = item.Items[index].ToString();
-                Screen.ShowNotification("Preparing ~b~" + dish + "~w~...");
+				CitizenFX.Core.UI.Screen.ShowNotification("Preparing ~b~" + dish + "~w~...");
             }
 
         };
@@ -58,7 +58,7 @@ public class MenuExample : BaseScript
             if (item == newitem)
             {
                 string output = ketchup ? "You have ordered ~b~{0}~w~ ~r~with~w~ ketchup." : "You have ordered ~b~{0}~w~ ~r~without~w~ ketchup.";
-                Screen.ShowSubtitle(String.Format(output, dish));
+				CitizenFX.Core.UI.Screen.ShowSubtitle(String.Format(output, dish));
             }
         };
         menu.OnIndexChange += (sender, index) =>

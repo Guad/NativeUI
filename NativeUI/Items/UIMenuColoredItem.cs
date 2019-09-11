@@ -37,7 +37,7 @@ namespace NativeUI
         {
             _selectedSprite = new Sprite("commonmenu", "gradient_nav", new Point(0, 0), new Size(431, 38), 0, HighlightColor);
             _rectangle = new UIResRectangle(new Point(0, 0), new Size(431, 38), Color.FromArgb(150, 0, 0, 0));
-            _text = new UIResText(Text, new Point(8, 0), 0.33f, Colors.WhiteSmoke, Font.ChaletLondon, Alignment.Left);
+            _text = new UIResText(Text, new Point(8, 0), 0.33f, Colors.WhiteSmoke, CitizenFX.Core.UI.Font.ChaletLondon, Alignment.Left);
             Description = Description;
 
             _badgeLeft = new Sprite("commonmenu", "", new Point(0, 0), new Size(40, 40));

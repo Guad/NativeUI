@@ -19,7 +19,7 @@ namespace NativeUI.PauseMenu
         {
             base.Draw();
 
-            var res = UIMenu.GetScreenResolutionMaintainRatio();
+            var res = Screen.ResolutionMaintainRatio;
 
             var alpha = (Focused || !CanBeFocused) ? 180 : 60;
             var blackAlpha = (Focused || !CanBeFocused) ? 200 : 90;
@@ -35,7 +35,7 @@ namespace NativeUI.PauseMenu
                 var item = Dictionary.ElementAt(i);
 
                 new UIResText(item.Key, new Point(TopLeft.X + 6, TopLeft.Y + 5 + (40 * i)), 0.35f, Color.FromArgb(fullAlpha, Colors.White)).Draw();
-                new UIResText(item.Value, new Point(BottomRight.X - 6, TopLeft.Y + 5 + (40 * i)), 0.35f, Color.FromArgb(fullAlpha, Colors.White), Font.ChaletLondon, Alignment.Right).Draw();
+                new UIResText(item.Value, new Point(BottomRight.X - 6, TopLeft.Y + 5 + (40 * i)), 0.35f, Color.FromArgb(fullAlpha, Colors.White), CitizenFX.Core.UI.Font.ChaletLondon, Alignment.Right).Draw();
             }
         }
     }

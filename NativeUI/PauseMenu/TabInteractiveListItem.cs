@@ -132,7 +132,7 @@ namespace NativeUI.PauseMenu
             if (!Visible) return;
             base.Draw();
 
-            var res = UIMenu.GetScreenResolutionMaintainRatio();
+            var res = Screen.ResolutionMaintainRatio;
 
             var alpha = Focused ? 120 : 30;
             var blackAlpha = Focused ? 200 : 100;
@@ -144,7 +144,7 @@ namespace NativeUI.PauseMenu
             int i = 0;
             for (int c = _minItem; c < Math.Min(Items.Count, _maxItem); c++)
             {
-                var hovering = UIMenu.IsMouseInBounds(SafeSize.AddPoints(new Point(0, (itemSize.Height + 3) * i)),
+                var hovering = Screen.IsMouseInBounds(SafeSize.AddPoints(new Point(0, (itemSize.Height + 3) * i)),
                     itemSize);
 
                 var hasLeftBadge = Items[c].LeftBadge != UIMenuItem.BadgeStyle.None;
@@ -186,7 +186,7 @@ namespace NativeUI.PauseMenu
                     new UIResText(Items[c].RightLabel,
                         SafeSize.AddPoints(new Point(BottomRight.X - SafeSize.X - 5, 5 + (itemSize.Height + 3) * i)),
                         0.35f, Color.FromArgb(fullAlpha, (Index == c && Focused) ? Colors.Black : Colors.White),
-                        Font.ChaletLondon, Alignment.Right).Draw();
+						CitizenFX.Core.UI.Font.ChaletLondon, Alignment.Right).Draw();
                 }
 
                 if (Items[c] is UIMenuCheckboxItem)
@@ -212,12 +212,12 @@ namespace NativeUI.PauseMenu
 
                     var arrowLeft = new Sprite("commonmenu", "arrowleft", basePos, new Size(30, 30));
                     var arrowRight = new Sprite("commonmenu", "arrowright", basePos, new Size(30, 30));
-                    var itemText = new UIResText("", basePos, 0.35f, Colors.White, Font.ChaletLondon,
+                    var itemText = new UIResText("", basePos, 0.35f, Colors.White, CitizenFX.Core.UI.Font.ChaletLondon,
                         Alignment.Left)
                     { TextAlignment = Alignment.Right };
 
                     string caption = convItem.Items[convItem.Index].ToString();
-                    float offset = StringMeasurer.MeasureString(caption, itemText.Font, itemText.Scale);
+                    float offset = Screen.GetTextWidth(caption, itemText.Font, itemText.Scale);
 
                     var selected = c == Index && Focused;
 

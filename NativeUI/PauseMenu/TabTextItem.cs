@@ -23,7 +23,7 @@ namespace NativeUI.PauseMenu
         {
             base.Draw();
 
-            var res = UIMenu.GetScreenResolutionMaintainRatio();
+            var res = Screen.ResolutionMaintainRatio;
 
             var alpha = (Focused || !CanBeFocused) ? 255 : 200;
 
@@ -38,7 +38,7 @@ namespace NativeUI.PauseMenu
 
                 new UIResText(Text, SafeSize.AddPoints(new Point(40, 150)), 0.4f, Color.FromArgb(alpha, Colors.White))
                 {
-                    WordWrap = new Size((int)ww, 0)
+					Wrap = ww
                 }.Draw();
             }
         }

@@ -147,7 +147,7 @@ namespace NativeUI.PauseMenu
             base.Draw();
             if (Heists.Count == 0) return;
 
-            var res = UIMenu.GetScreenResolutionMaintainRatio();
+            var res = Screen.ResolutionMaintainRatio;
 
             var activeWidth = res.Width - SafeSize.X * 2;
             var itemSize = new Size((int)activeWidth - 515, 40);
@@ -186,7 +186,7 @@ namespace NativeUI.PauseMenu
 
             new UIResRectangle(new Point((int)res.Width - SafeSize.X - 512, SafeSize.Y + 256), new Size(512, 40), Color.FromArgb(fullAlpha, Colors.Black)).Draw();
             new UIResText(Heists[Index].Name, new Point((int)res.Width - SafeSize.X - 4, SafeSize.Y + 260), 0.5f, Color.FromArgb(fullAlpha, Colors.White),
-                Font.HouseScript, Alignment.Right).Draw();
+				CitizenFX.Core.UI.Font.HouseScript, Alignment.Right).Draw();
 
             for (int i = 0; i < Heists[Index].ValueList.Count; i++)
             {
@@ -197,7 +197,7 @@ namespace NativeUI.PauseMenu
 
 
                 new UIResText(text, new Point((int)res.Width - SafeSize.X - 506, SafeSize.Y + 260 + 42 + (40 * i)), 0.35f, Color.FromArgb(fullAlpha, Colors.White)).Draw();
-                new UIResText(label, new Point((int)res.Width - SafeSize.X - 6, SafeSize.Y + 260 + 42 + (40 * i)), 0.35f, Color.FromArgb(fullAlpha, Colors.White), Font.ChaletLondon, Alignment.Right).Draw();
+                new UIResText(label, new Point((int)res.Width - SafeSize.X - 6, SafeSize.Y + 260 + 42 + (40 * i)), 0.35f, Color.FromArgb(fullAlpha, Colors.White), CitizenFX.Core.UI.Font.ChaletLondon, Alignment.Right).Draw();
             }
 
             if (!string.IsNullOrEmpty(Heists[Index].Description))
@@ -209,11 +209,11 @@ namespace NativeUI.PauseMenu
                     new Point((int)res.Width - SafeSize.X - 508, SafeSize.Y + 256 + 45 + 40 * propLen + 4), 0.35f,
                     Color.FromArgb(fullAlpha, Colors.White))
                 {
-                    WordWrap = new Size(508, 0),
+                    Wrap = 508,
                 }.Draw();
 
                 new UIResRectangle(new Point((int) res.Width - SafeSize.X - 512, SafeSize.Y + 256 + 44 + 40*propLen),
-                    new Size(512, 45*(int)(StringMeasurer.MeasureString(Heists[Index].Description, (Font) 0, 0.35f)/500)),
+                    new Size(512, 45*(int)(Screen.GetTextWidth(Heists[Index].Description, (CitizenFX.Core.UI.Font)0, 0.35f)/500)),
                     Color.FromArgb(blackAlpha, 0, 0, 0)).Draw();
             }
         }

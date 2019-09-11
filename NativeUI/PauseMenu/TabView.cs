@@ -213,11 +213,11 @@ namespace NativeUI.PauseMenu
             Function.Call(Hash._SHOW_CURSOR_THIS_FRAME);
 
 
-            var res = UIMenu.GetScreenResolutionMaintainRatio();
+            var res = Screen.ResolutionMaintainRatio;
             var safe = new Point(300, 180);
             if (!HideTabs)
             {
-                new UIResText(Title, new Point(safe.X, safe.Y - 80), 1f, Colors.White, Font.ChaletComprimeCologne,
+                new UIResText(Title, new Point(safe.X, safe.Y - 80), 1f, Colors.White, CitizenFX.Core.UI.Font.ChaletComprimeCologne,
                     Alignment.Left)
                 {
                     Shadow = true,
@@ -236,7 +236,7 @@ namespace NativeUI.PauseMenu
                 }
 
                 new UIResText(Name, new Point((int)res.Width - safe.X - 70, safe.Y - 95), 0.7f, Colors.White,
-                    Font.ChaletComprimeCologne, Alignment.Right)
+					CitizenFX.Core.UI.Font.ChaletComprimeCologne, Alignment.Right)
                 {
                     Shadow = true,
                 }.Draw();
@@ -249,7 +249,7 @@ namespace NativeUI.PauseMenu
 
 
                 new UIResText(t, new Point((int)res.Width - safe.X - 70, safe.Y - 60), 0.4f, Colors.White,
-                    Font.ChaletComprimeCologne, Alignment.Right)
+					CitizenFX.Core.UI.Font.ChaletComprimeCologne, Alignment.Right)
                 {
                     Shadow = true,
                 }.Draw();
@@ -261,7 +261,7 @@ namespace NativeUI.PauseMenu
                 }
 
                 new UIResText(subt, new Point((int)res.Width - safe.X - 70, safe.Y - 40), 0.4f, Colors.White,
-                    Font.ChaletComprimeCologne, Alignment.Right)
+					CitizenFX.Core.UI.Font.ChaletComprimeCologne, Alignment.Right)
                 {
                     Shadow = true,
                 }.Draw();
@@ -275,7 +275,7 @@ namespace NativeUI.PauseMenu
                     Game.EnableControlThisFrame(0, Control.CursorX);
                     Game.EnableControlThisFrame(0, Control.CursorY);
 
-                    var hovering = UIMenu.IsMouseInBounds(safe.AddPoints(new Point((tabWidth + 5) * i, 0)),
+                    var hovering = Screen.IsMouseInBounds(safe.AddPoints(new Point((tabWidth + 5) * i, 0)),
                         new Size(tabWidth, 40));
 
                     var tabColor = Tabs[i].Active
@@ -286,7 +286,7 @@ namespace NativeUI.PauseMenu
 
                     new UIResText(Tabs[i].Title.ToUpper(), safe.AddPoints(new Point((tabWidth / 2) + (tabWidth + 5) * i, 5)),
                         0.35f,
-                        Tabs[i].Active ? Colors.Black : Colors.White, Font.ChaletLondon, Alignment.Center)
+                        Tabs[i].Active ? Colors.Black : Colors.White, CitizenFX.Core.UI.Font.ChaletLondon, Alignment.Center)
                         .Draw();
 
                     if (Tabs[i].Active)

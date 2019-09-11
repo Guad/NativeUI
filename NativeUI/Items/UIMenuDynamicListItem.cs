@@ -39,7 +39,7 @@ namespace NativeUI
             const int y = 0;
             _arrowLeft = new Sprite("commonmenu", "arrowleft", new Point(110, 105 + y), new Size(30, 30));
             _arrowRight = new Sprite("commonmenu", "arrowright", new Point(280, 105 + y), new Size(30, 30));
-            _itemText = new UIResText("", new Point(290, y + 104), 0.35f, Colors.White, Font.ChaletLondon,
+            _itemText = new UIResText("", new Point(290, y + 104), 0.35f, Colors.White, CitizenFX.Core.UI.Font.ChaletLondon,
                 Alignment.Right);
 
             CurrentListItem = startingItem;
@@ -67,7 +67,7 @@ namespace NativeUI
             base.Draw();
 
             string caption = CurrentListItem;
-            float offset = StringMeasurer.MeasureString(caption, _itemText.Font, _itemText.Scale);
+            float offset = Screen.GetTextWidth(caption, _itemText.Font, _itemText.Scale);
 
             _itemText.Color = Enabled ? Selected ? Colors.Black : Colors.WhiteSmoke : Color.FromArgb(163, 159, 148);
 
