@@ -9,16 +9,16 @@ namespace NativeUI
 	public class UIMenuWindow
 	{
 		public UIMenu ParentMenu { get; set; }
-		public Sprite Background;
+		internal Sprite Background;
 
 		public virtual bool Enabled { get; set; }
-		public virtual void Position(float y)
+		internal virtual void Position(float y)
 		{
 		}
-		public virtual void UpdateParent()
+		internal virtual void UpdateParent()
 		{
 		}
-		public virtual void Draw()
+		internal virtual void Draw()
 		{
 		}
 

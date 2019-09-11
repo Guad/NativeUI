@@ -25,8 +25,7 @@ namespace NativeUI
 			Offset = new PointF(0, 0);
 		}
 
-
-		public override void Position(float y)
+		internal override void Position(float y)
 		{
 			Background.Position = new PointF(Offset.X, 70 + y + ParentMenu.Offset.Y);
 			MomSprite.Position = new PointF(Offset.X + (ParentMenu.WidthOffset / 2) + 25, 70 + y + ParentMenu.Offset.Y);
@@ -41,7 +40,7 @@ namespace NativeUI
 			DadSprite.TextureName = (Dad < 21) ? "male_" + Dad : "special_male_" + (Dad - 21);
 		}
 
-		public override void Draw()
+		internal override void Draw()
 		{
 			Background.Size = new Size(431 + ParentMenu.WidthOffset, 228);
 			Background.Draw();

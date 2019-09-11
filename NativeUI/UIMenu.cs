@@ -410,6 +410,17 @@ namespace NativeUI
 		}
 
 		/// <summary>
+		/// Removes Windows at given index
+		/// </summary>
+		/// <param name="index"></param>
+		public void RemoveWindowAt(int index)
+		{
+			Windows.RemoveAt(index);
+			ReDraw = true;
+			RecalculateDescriptionPosition();
+		}
+
+		/// <summary>
 		/// If a Description is changed during some events after the menu as been opened this updates the description live
 		/// </summary>
 		public void UpdateDescription()
@@ -482,17 +493,19 @@ namespace NativeUI
 
         private void DrawCalculations()
         {
-            DrawWidth = new Size(431 + WidthOffset, 107);
+			var WindowHeight = CalculateWindowHeight();
+
+			DrawWidth = new Size(431 + WidthOffset, 107);
 
             Safe = Screen.SafezoneBounds;
 
-            BackgroundSize = Size > MaxItemsOnScreen + 1 ? new Size(431 + WidthOffset, 38 * (MaxItemsOnScreen + 1)) : new Size(431 + WidthOffset, 38 * Size);
+            BackgroundSize = Size > MaxItemsOnScreen + 1 ? new Size(431 + WidthOffset, 38 * (MaxItemsOnScreen + 1) + (int)Math.Round(WindowHeight)) : new Size(431 + WidthOffset, 38 * Size+ (int)Math.Round(WindowHeight));
 
-            _extraRectangleUp.Size = new Size(431 + WidthOffset, 18);
+            _extraRectangleUp.Size = new SizeF(431 + WidthOffset, 18 + WindowHeight);
 
-            _extraRectangleDown.Size = new Size(431 + WidthOffset, 18);
+            _extraRectangleDown.Size = new SizeF(431 + WidthOffset, 18 + WindowHeight);
 
-            _upAndDownSprite.Position = new Point(190 + Offset.X + (WidthOffset > 0 ? (WidthOffset / 2) : WidthOffset), 147 + 37 * (MaxItemsOnScreen + 1) + Offset.Y - 37 + _extraYOffset);
+            _upAndDownSprite.Position = new PointF(190 + Offset.X + (WidthOffset > 0 ? (WidthOffset / 2) : WidthOffset), 147 + 37 * (MaxItemsOnScreen + 1) + Offset.Y - 37 + _extraYOffset + WindowHeight);
 
             ReDraw = false;
 
@@ -963,13 +976,33 @@ namespace NativeUI
 
         }
 
-        #endregion
+		private int IsMouseInListItemArrows(UIMenuItem item, PointF topLeft, Point safezone) // TODO: Ability to scroll left and right
+		{
+			API.BeginTextCommandWidth("jamyfafi");
+			UIResText.AddLongString(item.Text);
+			var res = Screen.ResolutionMaintainRatio;
+			var screenw = res.Width;
+			var screenh = res.Height;
+			const float height = 1080f;
+			float ratio = screenw / screenh;
+			var width = height * ratio;
+			int labelSize = (int)(API.EndTextCommandGetWidth(false) * width * 0.35f);
 
-        #region Drawing & Processing
-        /// <summary>
-        /// Draw the menu and all of it's components.
-        /// </summary>
-        public async Task Draw()
+			int labelSizeX = 5 + labelSize + 10;
+			int arrowSizeX = 431 - labelSizeX;
+			return Screen.IsMouseInBounds(topLeft, new Size(labelSizeX, 38))
+				? 1
+				: Screen.IsMouseInBounds(new PointF(topLeft.X + labelSizeX, topLeft.Y), new Size(arrowSizeX, 38)) ? 2 : 0;
+
+		}
+
+		#endregion
+
+		#region Drawing & Processing
+		/// <summary>
+		/// Draw the menu and all of it's components.
+		/// </summary>
+		public async Task Draw()
         {
             if (!Visible) return;
 
@@ -1010,7 +1043,7 @@ namespace NativeUI
                 Sprite.DrawTexture(BannerTexture, new Point(start.X + Offset.X, start.Y + Offset.Y), DrawWidth);
             }
             _mainMenu.Draw();
-            if (MenuItems.Count == 0)
+            if (MenuItems.Count == 0 && Windows.Count == 0)
             {
 				API.ResetScriptGfxAlign(); // Safezone end
                 return;
@@ -1028,13 +1061,16 @@ namespace NativeUI
                 _descriptionText.Draw();
             }
 
-            if (MenuItems.Count <= MaxItemsOnScreen + 1)
+			var WindowHeight = CalculateWindowHeight();
+
+
+			if (MenuItems.Count <= MaxItemsOnScreen + 1)
             {
                 int count = 0;
 
                 foreach (var item in MenuItems)
                 {
-                    item.Position(count * 38 - 37 + _extraYOffset);
+                    item.Position(count * 38 - 37 + _extraYOffset + (int)Math.Round(WindowHeight));
                     item.Draw();
                     count++;
                 }
@@ -1046,7 +1082,7 @@ namespace NativeUI
                 for (int index = _minItem; index <= _maxItem; index++)
                 {
                     var item = MenuItems[index];
-                    item.Position(count * 38 - 37 + _extraYOffset);
+                    item.Position(count * 38 - 37 + _extraYOffset + (int)Math.Round(WindowHeight));
                     item.Draw();
                     count++;
                 }
@@ -1063,13 +1099,14 @@ namespace NativeUI
                 }
             }
 
-			if (Windows.Count != 0)
+			if (Windows.Count > 0)
 			{
 				float WindowOffset = 0;
 				for (int index = 0; index < Windows.Count; index++)
 				{
 					if (index > 0)
 						WindowOffset += Windows[index].Background.Size.Height;
+
 					Windows[index].Position(WindowOffset + _extraYOffset + 37);
 					Windows[index].Draw();
 				}
@@ -1120,7 +1157,7 @@ namespace NativeUI
 			float Height = CalculateWindowHeight() + 80 + _mainMenu.Position.Y;
 			if (hasDescription)
 				Height += _descriptionRectangle.Size.Height + 5;
-			return MenuItems.Count > (MaxItemsOnScreen + 1) ? CalculateItemHeight() + 37 + Height : CalculateItemHeight() + Height;
+			return CalculateItemHeight() + Height;
 		}
 
 		/// <summary>
@@ -1128,7 +1165,9 @@ namespace NativeUI
 		/// </summary>
 		public async Task ProcessMouse()
         {
-            if (!Visible || _justOpened || MenuItems.Count == 0 || IsUsingController || !MouseControlsEnabled)
+			var WindowHeight = CalculateWindowHeight();
+
+			if (!Visible || _justOpened || MenuItems.Count == 0 || IsUsingController || !MouseControlsEnabled)
             {
 				EnableControlAction(2, (int)Control.LookUpDown, true);
 				EnableControlAction(2, (int)Control.LookLeftRight, true);
@@ -1166,16 +1205,16 @@ namespace NativeUI
 
 			for (int i = _minItem; i <= limit; i++)
             {
-                int xpos = Offset.X + safezoneOffset.X;
-                int ypos = Offset.Y + 144 - 37 + _extraYOffset + (counter * 38) + safezoneOffset.Y;
-                int yposSelected = Offset.Y + 144 - 37 + _extraYOffset + safezoneOffset.Y + CurrentSelection * 38;
+                float xpos = Offset.X + safezoneOffset.X;
+                float ypos = Offset.Y + 144 - 37 + _extraYOffset + (counter * 38) + safezoneOffset.Y + WindowHeight;
+                float yposSelected = Offset.Y + 144 - 37 + _extraYOffset + safezoneOffset.Y + CurrentSelection * 38 + WindowHeight;
                 int xsize = 431 + WidthOffset;
                 const int ysize = 38;
                 UIMenuItem uiMenuItem = MenuItems[i];
-                if (Screen.IsMouseInBounds(new Point(xpos, ypos), new Size(xsize, ysize)))
+                if (Screen.IsMouseInBounds(new PointF(xpos, ypos), new Size(xsize, ysize)))
                 {
                     uiMenuItem.Hovered = true;
-                    int res = IsMouseInListItemArrows(MenuItems[i], new Point(xpos, yposSelected),
+                    int res = IsMouseInListItemArrows(MenuItems[i], new PointF(xpos, yposSelected),
                         safezoneOffset);
                     if (uiMenuItem.Hovered && res == 1 && MenuItems[i] is IListItem)
                     {
@@ -1185,7 +1224,7 @@ namespace NativeUI
                         if (uiMenuItem.Selected && uiMenuItem.Enabled)
                         {
                             if (MenuItems[i] is IListItem &&
-                                IsMouseInListItemArrows(MenuItems[i], new Point(xpos, ypos),
+                                IsMouseInListItemArrows(MenuItems[i], new PointF(xpos, ypos),
                                     safezoneOffset) > 0)
                             {
                                 switch (res)
@@ -1217,10 +1256,10 @@ namespace NativeUI
                     uiMenuItem.Hovered = false;
                 counter++;
             }
-            int extraY = 144 + 38 * (MaxItemsOnScreen + 1) + Offset.Y - 37 + _extraYOffset + safezoneOffset.Y;
-            int extraX = safezoneOffset.X + Offset.X;
+            float extraY = 144 + 38 * (MaxItemsOnScreen + 1) + Offset.Y - 37 + _extraYOffset + safezoneOffset.Y + WindowHeight;
+			float extraX = safezoneOffset.X + Offset.X;
             if (Size <= MaxItemsOnScreen + 1) return;
-            if (Screen.IsMouseInBounds(new Point(extraX, extraY), new Size(431 + WidthOffset, 18)))
+            if (Screen.IsMouseInBounds(new PointF(extraX, extraY), new Size(431 + WidthOffset, 18)))
             {
                 _extraRectangleUp.Color = Color.FromArgb(255, 30, 30, 30);
                 if (Game.IsControlJustPressed(0, Control.Attack))
@@ -1234,7 +1273,7 @@ namespace NativeUI
             else
                 _extraRectangleUp.Color = Color.FromArgb(200, 0, 0, 0);
 
-            if (Screen.IsMouseInBounds(new Point(extraX, extraY + 18), new Size(431 + WidthOffset, 18)))
+            if (Screen.IsMouseInBounds(new PointF(extraX, extraY + 18), new Size(431 + WidthOffset, 18)))
             {
                 _extraRectangleDown.Color = Color.FromArgb(255, 30, 30, 30);
                 if (Game.IsControlJustPressed(0, Control.Attack))
