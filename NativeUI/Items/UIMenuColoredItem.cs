@@ -1,5 +1,6 @@
 ﻿using CitizenFX.Core.UI;
 using System.Drawing;
+using Font = CitizenFX.Core.UI.Font;
 
 namespace NativeUI
 {

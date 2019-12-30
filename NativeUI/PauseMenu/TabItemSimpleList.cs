@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Font = CitizenFX.Core.UI.Font;
 
 namespace NativeUI.PauseMenu
 {

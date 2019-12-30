@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using Font = CitizenFX.Core.UI.Font;
 
 namespace NativeUI
 {
