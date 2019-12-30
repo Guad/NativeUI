@@ -18,7 +18,7 @@ namespace NativeUI
             SizeF res = Screen.ResolutionMaintainRatio;
             Point safe = Screen.SafezoneBounds;
 
-            UIResText.Draw(Label, (int)res.Width - safe.X - 180, (int)res.Height - safe.Y - (30 + (4 * interval)), Font.ChaletLondon, 0.3f, Colors.White,
+            UIResText.Draw(Label, (int)res.Width - safe.X - 180, (int)res.Height - safe.Y - (30 + (4 * interval)), CitizenFX.Core.UI.Font.ChaletLondon, 0.3f, Colors.White,
                 Alignment.Right, false, false, 0);
             Sprite.Draw("timerbars", "all_black_bg", (int)res.Width - safe.X - 298, (int)res.Height - safe.Y - (40 + (4 * interval)), 300, 37, 0f, Color.FromArgb(180, 255, 255, 255));
 
@@ -43,7 +43,7 @@ namespace NativeUI
             Point safe = Screen.SafezoneBounds;
 
             base.Draw(interval);
-            UIResText.Draw(Text, (int)res.Width - safe.X - 10, (int)res.Height - safe.Y - (42 + (4 * interval)), Font.ChaletLondon, 0.5f, Colors.White, 
+            UIResText.Draw(Text, (int)res.Width - safe.X - 10, (int)res.Height - safe.Y - (42 + (4 * interval)), CitizenFX.Core.UI.Font.ChaletLondon, 0.5f, Colors.White, 
                 Alignment.Right, false, false, 0);
         }
     }

@@ -20,7 +20,7 @@ namespace NativeUI
             TextAlignment = Alignment.Left;
         }
 
-        public UIResText(string caption, Point position, float scale, Color color, Font font, Alignment justify) : base(caption, position, scale, color, font, justify)
+        public UIResText(string caption, Point position, float scale, Color color, CitizenFX.Core.UI.Font font, Alignment justify) : base(caption, position, scale, color, font, justify)
         {
             TextAlignment = justify;
         }
@@ -97,10 +97,10 @@ namespace NativeUI
         }
 
         [Obsolete("Use Screen.GetTextWidth instead.", true)]
-        public static float MeasureStringWidth(string str, Font font, float scale) => Screen.GetTextWidth(str, font, scale);
+        public static float MeasureStringWidth(string str, CitizenFX.Core.UI.Font font, float scale) => Screen.GetTextWidth(str, font, scale);
 
         [Obsolete("Use Screen.GetTextWidth instead.", true)]
-        public static float MeasureStringWidthNoConvert(string str, Font font, float scale) => Screen.GetTextWidth(str, font, scale);
+        public static float MeasureStringWidthNoConvert(string str, CitizenFX.Core.UI.Font font, float scale) => Screen.GetTextWidth(str, font, scale);
 
         /// <summary>
         /// Width of the text wrap box. Set to zero to disable.
@@ -157,7 +157,7 @@ namespace NativeUI
             Function.Call(Hash._DRAW_TEXT, x, y);
         }
 
-        public static void Draw(string caption, int xPos, int yPos, Font font, float scale, Color color, Alignment alignment, bool dropShadow, bool outline, int wordWrap)
+        public static void Draw(string caption, int xPos, int yPos, CitizenFX.Core.UI.Font font, float scale, Color color, Alignment alignment, bool dropShadow, bool outline, int wordWrap)
         {
             int screenw = CitizenFX.Core.UI.Screen.Resolution.Width;
             int screenh = CitizenFX.Core.UI.Screen.Resolution.Height;

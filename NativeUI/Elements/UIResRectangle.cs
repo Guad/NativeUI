@@ -7,7 +7,7 @@ namespace NativeUI
     /// <summary>
     /// A rectangle in 1080 pixels height system.
     /// </summary>
-    public class UIResRectangle : Rectangle
+    public class UIResRectangle : CitizenFX.Core.UI.Rectangle
     {
         public UIResRectangle()
         { }

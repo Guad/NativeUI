@@ -84,7 +84,7 @@ namespace NativeUI
         /// <param name="font">Game font used for measurements.</param>
         /// <param name="scale">The scale of the characters.</param>
         /// <returns>The width of the string based on the font and scale.</returns>
-        public static float GetTextWidth(string text, Font font, float scale)
+        public static float GetTextWidth(string text, CitizenFX.Core.UI.Font font, float scale)
         {
             // Start by requesting the game to start processing a width measurement
             Function.Call(Hash._SET_TEXT_ENTRY_FOR_WIDTH, "CELL_EMAIL_BCON"); // _BEGIN_TEXT_COMMAND_WIDTH
@@ -109,7 +109,7 @@ namespace NativeUI
         /// <param name="position">The position of the text.</param>
         /// <param name="font">The font to use.</param>
         /// <returns>The number of lines used.</returns>
-        public static int GetLineCount(string text, PointF position, Font font, float scale, int wrap)
+        public static int GetLineCount(string text, PointF position, CitizenFX.Core.UI.Font font, float scale, int wrap)
         {
             // Tell the game that we are going to request the number of lines
             Function.Call(Hash._SET_TEXT_GXT_ENTRY, "CELL_EMAIL_BCON"); // _BEGIN_TEXT_COMMAND_LINE_COUNT
