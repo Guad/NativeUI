@@ -1,6 +1,5 @@
-﻿using GTA;
-using GTA.Native;
-using System.Collections.Generic;
+﻿using CitizenFX.Core;
+using CitizenFX.Core.Native;
 using System.Linq;
 
 namespace NativeUI

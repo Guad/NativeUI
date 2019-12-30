@@ -116,12 +116,10 @@ namespace NativeUI
             set => Wrap = value.Width;
         }
 
-        public Size WordWrap { get; set; }
-
         public override void Draw(SizeF offset)
         {
-            int screenw = Screen.Resolution.Width;
-            int screenh = Screen.Resolution.Height;
+            int screenw = CitizenFX.Core.UI.Screen.Resolution.Width;
+            int screenh = CitizenFX.Core.UI.Screen.Resolution.Height;
             const float height = 1080f;
             float ratio = (float)screenw / screenh;
             var width = height * ratio;
@@ -161,8 +159,8 @@ namespace NativeUI
 
         public static void Draw(string caption, int xPos, int yPos, Font font, float scale, Color color, Alignment alignment, bool dropShadow, bool outline, int wordWrap)
         {
-            int screenw = Screen.Resolution.Width;
-            int screenh = Screen.Resolution.Height;
+            int screenw = CitizenFX.Core.UI.Screen.Resolution.Width;
+            int screenh = CitizenFX.Core.UI.Screen.Resolution.Height;
             const float height = 1080f;
             float ratio = (float)screenw / screenh;
             var width = height * ratio;
