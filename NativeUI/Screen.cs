@@ -109,7 +109,7 @@ namespace NativeUI
         /// <param name="position">The position of the text.</param>
         /// <param name="font">The font to use.</param>
         /// <returns>The number of lines used.</returns>
-        public static int GetLineCount(string text, Point position, Font font, float scale, int wrap)
+        public static int GetLineCount(string text, PointF position, Font font, float scale, int wrap)
         {
             // Tell the game that we are going to request the number of lines
             Function.Call(Hash._SET_TEXT_GXT_ENTRY, "CELL_EMAIL_BCON"); // _BEGIN_TEXT_COMMAND_LINE_COUNT

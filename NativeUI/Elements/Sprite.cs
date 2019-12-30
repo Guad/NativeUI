@@ -73,8 +73,8 @@ namespace NativeUI
             if (!Function.Call<bool>(Hash.HAS_STREAMED_TEXTURE_DICT_LOADED, TextureDict))
                 Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, TextureDict, true);
 
-                int screenw = Screen.Resolution.Width;
-            int screenh = Screen.Resolution.Height;
+                int screenw = CitizenFX.Core.UI.Screen.Resolution.Width;
+            int screenh = CitizenFX.Core.UI.Screen.Resolution.Height;
             const float height = 1080f;
             float ratio = (float)screenw/screenh;
             var width = height*ratio;
@@ -93,8 +93,8 @@ namespace NativeUI
             if (!Function.Call<bool>(Hash.HAS_STREAMED_TEXTURE_DICT_LOADED, dict))
                 Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, dict, true);
 
-            int screenw = Screen.Resolution.Width;
-            int screenh = Screen.Resolution.Height;
+            int screenw = CitizenFX.Core.UI.Screen.Resolution.Width;
+            int screenh = CitizenFX.Core.UI.Screen.Resolution.Height;
             const float height = 1080f;
             float ratio = (float)screenw / screenh;
             var width = height * ratio;

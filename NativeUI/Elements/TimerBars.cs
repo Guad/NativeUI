@@ -22,9 +22,9 @@ namespace NativeUI
                 Alignment.Right, false, false, 0);
             Sprite.Draw("timerbars", "all_black_bg", (int)res.Width - safe.X - 298, (int)res.Height - safe.Y - (40 + (4 * interval)), 300, 37, 0f, Color.FromArgb(180, 255, 255, 255));
 
-            Screen.Hud.HideComponentThisFrame(HudComponent.AreaName);
-            Screen.Hud.HideComponentThisFrame(HudComponent.StreetName);
-            Screen.Hud.HideComponentThisFrame(HudComponent.VehicleName);
+            CitizenFX.Core.UI.Screen.Hud.HideComponentThisFrame(HudComponent.AreaName);
+            CitizenFX.Core.UI.Screen.Hud.HideComponentThisFrame(HudComponent.StreetName);
+            CitizenFX.Core.UI.Screen.Hud.HideComponentThisFrame(HudComponent.VehicleName);
         }
     }
 

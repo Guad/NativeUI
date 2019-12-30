@@ -942,9 +942,9 @@ namespace NativeUI
             if (_buttonsEnabled)
             {
                 Function.Call(Hash.DRAW_SCALEFORM_MOVIE_FULLSCREEN, _instructionalButtonsScaleform.Handle, 255, 255, 255, 255, 0);
-                Screen.Hud.HideComponentThisFrame(HudComponent.VehicleName);
-                Screen.Hud.HideComponentThisFrame(HudComponent.AreaName);
-                Screen.Hud.HideComponentThisFrame(HudComponent.StreetName);
+                CitizenFX.Core.UI.Screen.Hud.HideComponentThisFrame(HudComponent.VehicleName);
+                CitizenFX.Core.UI.Screen.Hud.HideComponentThisFrame(HudComponent.AreaName);
+                CitizenFX.Core.UI.Screen.Hud.HideComponentThisFrame(HudComponent.StreetName);
             }
             // _instructionalButtonsScaleform.Render2D(); // Bug #13
 
@@ -1266,7 +1266,7 @@ namespace NativeUI
                 if (ParentMenu != null || !value) return;
                 if (!ResetCursorOnOpen) return;
                 // Cursor.Position = new Point(Screen.PrimaryScreen.Bounds.Width / 2, Screen.PrimaryScreen.Bounds.Height / 2);
-                API.SetCursorLocation(Screen.Resolution.Width / 2f, Screen.Resolution.Height / 2f);
+                API.SetCursorLocation(CitizenFX.Core.UI.Screen.Resolution.Width / 2f, CitizenFX.Core.UI.Screen.Resolution.Height / 2f);
                 Function.Call(Hash._SET_CURSOR_SPRITE, 1);
             }
         }
