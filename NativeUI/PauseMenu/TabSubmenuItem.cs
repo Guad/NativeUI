@@ -96,7 +96,7 @@ namespace NativeUI.PauseMenu
             if (!Visible) return;
             base.Draw();
 
-            var res = UIMenu.GetScreenResolutionMaintainRatio();
+            var res = Screen.ResolutionMaintainRatio;
 
             var alpha = Focused ? 120 : 30;
             var blackAlpha = Focused ? 200 : 100;
@@ -108,7 +108,7 @@ namespace NativeUI.PauseMenu
 
             for (int i = 0; i < Items.Count; i++)
             {
-                var hovering = UIMenu.IsMouseInBounds(SafeSize.AddPoints(new Point(0, (itemSize.Height + 3) * i)),
+                var hovering = Screen.IsMouseInBounds(SafeSize.AddPoints(new Point(0, (itemSize.Height + 3) * i)),
                     itemSize);
 
                 new UIResRectangle(SafeSize.AddPoints(new Point(0, (itemSize.Height + 3) * i)), itemSize, (Index == i && Focused) ? Color.FromArgb(fullAlpha, Colors.White) : hovering && Focused ? Color.FromArgb(100, 50, 50, 50) : Color.FromArgb(blackAlpha, Colors.Black)).Draw();

@@ -76,46 +76,7 @@ namespace NativeUI
         private readonly int _extraYOffset;
 
         private static readonly MenuControls[] _menuControls = Enum.GetValues(typeof(MenuControls)).Cast<MenuControls>().ToArray();
-
-        private static readonly List<Control> _necessaryControlsForKeyboard = new List<Control>
-        {
-            Control.FrontendAccept,
-            Control.FrontendAxisX,
-            Control.FrontendAxisY,
-            Control.FrontendDown,
-            Control.FrontendUp,
-            Control.FrontendLeft,
-            Control.FrontendRight,
-            Control.FrontendCancel,
-            Control.FrontendSelect,
-            Control.CursorScrollDown,
-            Control.CursorScrollUp,
-            Control.CursorX,
-            Control.CursorY,
-            Control.MoveUpDown,
-            Control.MoveLeftRight,
-            Control.Sprint,
-            Control.Jump,
-            Control.Enter,
-            Control.VehicleExit,
-            Control.VehicleAccelerate,
-            Control.VehicleBrake,
-            Control.VehicleMoveLeftRight,
-            Control.VehicleFlyYawLeft,
-            Control.FlyLeftRight,
-            Control.FlyUpDown,
-            Control.VehicleFlyYawRight,
-            Control.VehicleHandbrake,
-        };
-        private static readonly List<Control> _necessaryControlsForController = _necessaryControlsForKeyboard.Concat(new Control[]
-        {
-            Control.LookUpDown,
-            Control.LookLeftRight,
-            Control.Aim,
-            Control.Attack,
-        })
-        .ToList();
-
+        
         // Draw Variables
         private Point Safe { get; set; }
         private Size BackgroundSize { get; set; }
@@ -142,6 +103,7 @@ namespace NativeUI
         public bool MouseEdgeEnabled = true;
         public bool ControlDisablingEnabled = true;
         public bool ResetCursorOnOpen = true;
+        [Obsolete("The description is now formated automatically by the game.")]
         public bool FormatDescriptions = true;
         public bool MouseControlsEnabled = true;
         public bool ScaleWithSafezone = true;
@@ -294,92 +256,41 @@ namespace NativeUI
         #endregion
 
         #region Static Methods
+
         /// <summary>
-        /// Enable or disable all controls but the necessary to operate a menu.
+        /// Toggles the availability of the controls.
+        /// It does not disable the basic movement and frontend controls.
         /// </summary>
-        /// <param name="enable"></param>
-        public static void DisEnableControls(bool enable)
-        {
-            if (enable)
-                Game.EnableAllControlsThisFrame(2);
-            else
-                Game.DisableAllControlsThisFrame(2);
-            //Controls we want
-            // -Frontend
-            // -Mouse
-            // -Walk/Move
-            // -
-
-            if (enable) return;
-            var list = (IsUsingController ? _necessaryControlsForController : _necessaryControlsForKeyboard);
-
-            foreach (var control in list)
-            {
-                Function.Call(Hash.ENABLE_CONTROL_ACTION, 0, (int)control);
-            }
-        }
+        /// <param name="toggle">If we want to enable or disable the controls.</param>
+        [Obsolete("Use Controls.Toggle instead.", true)]
+        public static void DisEnableControls(bool toggle) => Controls.Toggle(toggle);
 
         /// <summary>
         /// Returns the 1080pixels-based screen resolution while mantaining current aspect ratio.
         /// </summary>
-        /// <returns></returns>
-        public static SizeF GetScreenResolutionMaintainRatio()
-        {
-            int screenw = Screen.Resolution.Width;
-            int screenh = Screen.Resolution.Height;
-            const float height = 1080f;
-            float ratio = (float)screenw / screenh;
-            var width = height * ratio;
+        [Obsolete("Use Screen.ResolutionMantainRatio instead.", true)]
+        public static SizeF GetScreenResolutionMaintainRatio() => Screen.ResolutionMaintainRatio;
 
-            return new SizeF(width, height);
-        }
-        
         /// <summary>
-        /// Old GetScreenResolutionMantainRatio Method to support old versions
+        /// Screen.ResolutionMantainRatio for providing backwards compatibility.
         /// </summary>
-        /// <returns></returns>
-        [Obsolete("Use GetScreenResolutionMaintainRatio")]
-        public static SizeF GetScreenResolutionMantainRatio()
-        {
-            return GetScreenResolutionMaintainRatio();
-        }
+        [Obsolete("Use Screen.ResolutionMantainRatio instead.", true)]
+        public static SizeF GetScreenResolutionMantainRatio() => Screen.ResolutionMaintainRatio;
 
         /// <summary>
         /// Chech whether the mouse is inside the specified rectangle.
         /// </summary>
-        /// <param name="topLeft">top left point of your rectangle.</param>
+        /// <param name="topLeft">Start point of the rectangle at the top left.</param>
         /// <param name="boxSize">size of your rectangle.</param>
-        /// <returns></returns>
-        public static bool IsMouseInBounds(Point topLeft, Size boxSize)
-        {
-            var res = GetScreenResolutionMaintainRatio();
-
-            int mouseX = (int)Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)Control.CursorX) * res.Width);
-            int mouseY = (int)Math.Round(Function.Call<float>(Hash.GET_CONTROL_NORMAL, 0, (int)Control.CursorY) * res.Height);
-
-            return (mouseX >= topLeft.X && mouseX <= topLeft.X + boxSize.Width)
-                   && (mouseY > topLeft.Y && mouseY < topLeft.Y + boxSize.Height);
-        }
+        /// <returns>true if the mouse is inside of the specified bounds, false otherwise.</returns>
+        [Obsolete("Use Screen.IsMouseInBounds instead.", true)]
+        public static bool IsMouseInBounds(Point topLeft, Size boxSize) => Screen.IsMouseInBounds(topLeft, boxSize);
 
         /// <summary>
         /// Returns the safezone bounds in pixel, relative to the 1080pixel based system.
         /// </summary>
-        /// <returns></returns>
-        public static Point GetSafezoneBounds()
-        {
-            float t = Function.Call<float>(Hash.GET_SAFE_ZONE_SIZE); // Safezone size.
-            double g = Math.Round(Convert.ToDouble(t), 2);
-            g = (g * 100) - 90;
-            g = 10 - g;
-
-            const float hmp = 5.4f;
-            int screenw = Screen.Resolution.Width;
-            int screenh = Screen.Resolution.Height;
-            float ratio = (float)screenw / screenh;
-            float wmp = ratio * hmp;
-
-            return new Point((int)Math.Round(g * wmp), (int)Math.Round(g * hmp));
-        }
+        [Obsolete("Use Screen.SafezoneBounds instead.", true)]
+        public static Point GetSafezoneBounds() => Screen.SafezoneBounds;
 
         #endregion
 
@@ -531,7 +442,7 @@ namespace NativeUI
         {
             DrawWidth = new Size(431 + WidthOffset, 107);
 
-            Safe = GetSafezoneBounds();
+            Safe = Screen.SafezoneBounds;
 
             BackgroundSize = Size > MaxItemsOnScreen + 1 ? new Size(431 + WidthOffset, 38 * (MaxItemsOnScreen + 1)) : new Size(431 + WidthOffset, 38 * Size);
 
@@ -548,14 +459,13 @@ namespace NativeUI
                 RecaulculateDescriptionPosition();
 
                 string descCaption = MenuItems[_activeItem % (MenuItems.Count)].Description;
+                _descriptionText.Caption = descCaption;
+                _descriptionText.Wrap = 400;
 
-                if (FormatDescriptions) _descriptionText.Caption = FormatDescription(descCaption);
-                else _descriptionText.Caption = descCaption;
-
-                int numLines = _descriptionText.Caption.Split('\n').Length;
+                int numLines = Screen.GetLineCount(descCaption, _descriptionText.Position, _descriptionText.Font, _descriptionText.Scale, 400);
 
                 _descriptionRectangle.Size = new Size(431 + WidthOffset, (numLines * 25) + 15);
-            }         
+            }
         }
 
         /// <summary>
@@ -664,6 +574,11 @@ namespace NativeUI
         /// </summary>
         public void GoLeft()
         {
+            if (!MenuItems[CurrentSelection].Enabled)
+            {
+                return;
+            }
+
             if (MenuItems[CurrentSelection] is UIMenuListItem)
             {
                 var it = (UIMenuListItem)MenuItems[CurrentSelection];
@@ -694,6 +609,11 @@ namespace NativeUI
         /// </summary>
         public void GoRight()
         {
+            if (!MenuItems[CurrentSelection].Enabled)
+            {
+                return;
+            }
+
             if (MenuItems[CurrentSelection] is UIMenuListItem)
             {
                 UIMenuListItem it = (UIMenuListItem)MenuItems[CurrentSelection];
@@ -990,7 +910,7 @@ namespace NativeUI
         {
             Function.Call((Hash)0x54CE8AC98E120CAB, "jamyfafi");
             UIResText.AddLongString(item.Text);
-            var res = GetScreenResolutionMaintainRatio();
+            var res = Screen.ResolutionMaintainRatio;
             var screenw = res.Width;
             var screenh = res.Height;
             const float height = 1080f;
@@ -1000,39 +920,10 @@ namespace NativeUI
 
             int labelSizeX = 5 + labelSize + 10;
             int arrowSizeX = 431 - labelSizeX;
-            return IsMouseInBounds(topLeft, new Size(labelSizeX, 38))
+            return Screen.IsMouseInBounds(topLeft, new Size(labelSizeX, 38))
                 ? 1
-                : IsMouseInBounds(new Point(topLeft.X + labelSizeX, topLeft.Y), new Size(arrowSizeX, 38)) ? 2 : 0;
+                : Screen.IsMouseInBounds(new Point(topLeft.X + labelSizeX, topLeft.Y), new Size(arrowSizeX, 38)) ? 2 : 0;
 
-        }
-
-        /// <summary>
-        /// Formats the input string so it doesn't go out of bounds of the description box.
-        /// </summary>
-        /// <param name="input">String to format.</param>
-        /// <returns></returns>
-        private string FormatDescription(string input)
-        {
-            int maxPixelsPerLine = 425 + WidthOffset;
-            int aggregatePixels = 0;
-            string output = "";
-            string[] words = input.Split(' ');
-            foreach (string word in words)
-            {
-                int offset = (int) StringMeasurer.MeasureString(word, (Font)0, 0.35f);
-                aggregatePixels += offset;
-                if (aggregatePixels > maxPixelsPerLine)
-                {
-                    output += "\n" + word + " ";
-                    aggregatePixels = offset + StringMeasurer.MeasureString(" ");
-                }
-                else
-                {
-                    output += word + " ";
-                    aggregatePixels += StringMeasurer.MeasureString(" ");
-                }
-            }
-            return output;
         }
 
         #endregion
@@ -1046,7 +937,7 @@ namespace NativeUI
             if (!Visible) return;
 
             if (ControlDisablingEnabled)
-                DisEnableControls(false);
+                Controls.Toggle(false);
 
             if (_buttonsEnabled)
             {
@@ -1157,19 +1048,19 @@ namespace NativeUI
                 return;
             }
 
-            Point safezoneOffset = GetSafezoneBounds();
+            Point safezoneOffset = Screen.SafezoneBounds;
             Function.Call(Hash._SHOW_CURSOR_THIS_FRAME);
             int limit = MenuItems.Count - 1;
             int counter = 0;
             if (MenuItems.Count > MaxItemsOnScreen + 1)
                 limit = _maxItem;
 
-            if (IsMouseInBounds(new Point(0, 0), new Size(30, 1080)) && MouseEdgeEnabled)
+            if (Screen.IsMouseInBounds(new Point(0, 0), new Size(30, 1080)) && MouseEdgeEnabled)
             {
                 GameplayCamera.RelativeHeading += 5f;
                 Function.Call(Hash._SET_CURSOR_SPRITE, 6);
             }
-            else if (IsMouseInBounds(new Point(Convert.ToInt32(GetScreenResolutionMaintainRatio().Width - 30f), 0), new Size(30, 1080)) && MouseEdgeEnabled)
+            else if (Screen.IsMouseInBounds(new Point(Convert.ToInt32(Screen.ResolutionMaintainRatio.Width - 30f), 0), new Size(30, 1080)) && MouseEdgeEnabled)
             {
                 GameplayCamera.RelativeHeading -= 5f;
                 Function.Call(Hash._SET_CURSOR_SPRITE, 7);
@@ -1187,7 +1078,7 @@ namespace NativeUI
                 int xsize = 431 + WidthOffset;
                 const int ysize = 38;
                 UIMenuItem uiMenuItem = MenuItems[i];
-                if (IsMouseInBounds(new Point(xpos, ypos), new Size(xsize, ysize)))
+                if (Screen.IsMouseInBounds(new Point(xpos, ypos), new Size(xsize, ysize)))
                 {
                     uiMenuItem.Hovered = true;
                     int res = IsMouseInListItemArrows(MenuItems[i], new Point(xpos, yposSelected),
@@ -1235,7 +1126,7 @@ namespace NativeUI
             int extraY = 144 + 38 * (MaxItemsOnScreen + 1) + Offset.Y - 37 + _extraYOffset + safezoneOffset.Y;
             int extraX = safezoneOffset.X + Offset.X;
             if (Size <= MaxItemsOnScreen + 1) return;
-            if (IsMouseInBounds(new Point(extraX, extraY), new Size(431 + WidthOffset, 18)))
+            if (Screen.IsMouseInBounds(new Point(extraX, extraY), new Size(431 + WidthOffset, 18)))
             {
                 _extraRectangleUp.Color = Color.FromArgb(255, 30, 30, 30);
                 if (Game.IsControlJustPressed(0, Control.Attack))
@@ -1249,7 +1140,7 @@ namespace NativeUI
             else
                 _extraRectangleUp.Color = Color.FromArgb(200, 0, 0, 0);
 
-            if (IsMouseInBounds(new Point(extraX, extraY + 18), new Size(431 + WidthOffset, 18)))
+            if (Screen.IsMouseInBounds(new Point(extraX, extraY + 18), new Size(431 + WidthOffset, 18)))
             {
                 _extraRectangleDown.Color = Color.FromArgb(255, 30, 30, 30);
                 if (Game.IsControlJustPressed(0, Control.Attack))

@@ -57,7 +57,7 @@ namespace NativeUI
             }
         }
 
-        private static void AddLongStringForUtf8(string input)
+        internal static void AddLongStringForUtf8(string input)
         {
             const int maxByteLengthPerString = 99;
 
@@ -96,21 +96,24 @@ namespace NativeUI
             Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, input.Substring(startIndex, input.Length - startIndex));
         }
 
-        public static float MeasureStringWidth(string str, Font font, float scale)
-        {
-            int screenw = 2560;// Game.ScreenResolution.Width;
-            int screenh = 1440;// Game.ScreenResolution.Height;
-            const float height = 1080f;
-            float ratio = (float)screenw / screenh;
-            float width = height * ratio;
-            return MeasureStringWidthNoConvert(str, font, scale) * width;
-        }
+        [Obsolete("Use Screen.GetTextWidth instead.", true)]
+        public static float MeasureStringWidth(string str, Font font, float scale) => Screen.GetTextWidth(str, font, scale);
 
-        public static float MeasureStringWidthNoConvert(string str, Font font, float scale)
+        [Obsolete("Use Screen.GetTextWidth instead.", true)]
+        public static float MeasureStringWidthNoConvert(string str, Font font, float scale) => Screen.GetTextWidth(str, font, scale);
+
+        /// <summary>
+        /// Width of the text wrap box. Set to zero to disable.
+        /// </summary>
+        public int Wrap { get; set; } = 0;
+        /// <summary>
+        /// Size of the text wrap box.
+        /// </summary>
+        [Obsolete("Use UIResText.Wrap instead.", true)]
+        public Size WordWrap
         {
-            Function.Call((Hash)0x54CE8AC98E120CAB, "STRING");
-            AddLongString(str);
-            return Function.Call<float>((Hash)0x85F061DA64ED2F67, (int)font) * scale;
+            get => new Size(Wrap, 0);
+            set => Wrap = value.Width;
         }
 
         public Size WordWrap { get; set; }
@@ -144,9 +147,9 @@ namespace NativeUI
                     break;
             }
 
-            if (WordWrap.Width != 0)
+            if (Wrap != 0)
             {
-                float xsize = (Position.X + WordWrap.Width) / width;
+                float xsize = (Position.X + Wrap) / width;
                 Function.Call(Hash.SET_TEXT_WRAP, x, xsize);
             }
 

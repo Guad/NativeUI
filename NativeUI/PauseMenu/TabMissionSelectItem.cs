@@ -147,7 +147,7 @@ namespace NativeUI.PauseMenu
             base.Draw();
             if (Heists.Count == 0) return;
 
-            var res = UIMenu.GetScreenResolutionMaintainRatio();
+            var res = Screen.ResolutionMaintainRatio;
 
             var activeWidth = res.Width - SafeSize.X * 2;
             var itemSize = new Size((int)activeWidth - 515, 40);
@@ -209,11 +209,11 @@ namespace NativeUI.PauseMenu
                     new Point((int)res.Width - SafeSize.X - 508, SafeSize.Y + 256 + 45 + 40 * propLen + 4), 0.35f,
                     Color.FromArgb(fullAlpha, Colors.White))
                 {
-                    WordWrap = new Size(508, 0),
+                    Wrap = 508,
                 }.Draw();
 
                 new UIResRectangle(new Point((int) res.Width - SafeSize.X - 512, SafeSize.Y + 256 + 44 + 40*propLen),
-                    new Size(512, 45*(int)(StringMeasurer.MeasureString(Heists[Index].Description, (Font) 0, 0.35f)/500)),
+                    new Size(512, 45*(int)(Screen.GetTextWidth(Heists[Index].Description, Font.ChaletLondon, 0.35f)/500)),
                     Color.FromArgb(blackAlpha, 0, 0, 0)).Draw();
             }
         }
