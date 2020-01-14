@@ -55,6 +55,7 @@ namespace NativeUI
         private int _activeItem = 1000;
 
         private bool _visible;
+        private bool _useCursor = true;
         private bool _buttonsEnabled = true;
         private bool _justOpened = true;
         private bool _itemsDirty = false;
@@ -239,7 +240,6 @@ namespace NativeUI
             _descriptionText = new UIResText("Description", new Point(Offset.X + 5, 125), 0.35f, Color.FromArgb(255, 255, 255, 255), Font.ChaletLondon, UIResText.Alignment.Left);
 
             _background = new Sprite("commonmenu", "gradient_bgd", new Point(Offset.X, 144 + Offset.Y - 37 + _extraYOffset), new Size(290, 25));
-
 
             SetKey(MenuControls.Up, Control.PhoneUp);
             SetKey(MenuControls.Up, Control.CursorScrollUp);
@@ -935,6 +935,12 @@ namespace NativeUI
             if (ControlDisablingEnabled)
                 Controls.Toggle(false);
 
+            if (!UseCursor)
+            {
+                Game.EnableControlThisFrame(0, Control.LookUpDown);
+                Game.EnableControlThisFrame(0, Control.LookLeftRight);
+            }
+
             if (_buttonsEnabled)
             {
                 Function.Call(Hash._0x0DF606929C105BE1, _instructionalButtonsScaleform.Handle, 255, 255, 255, 255, 0);
@@ -1044,24 +1050,28 @@ namespace NativeUI
                 return;
             }
 
+            if (UseCursor)
+            {
+                Function.Call(Hash._SHOW_CURSOR_THIS_FRAME);
+            }
+
             Point safezoneOffset = Screen.SafezoneBounds;
-            Function.Call(Hash._SHOW_CURSOR_THIS_FRAME);
             int limit = MenuItems.Count - 1;
             int counter = 0;
             if (MenuItems.Count > MaxItemsOnScreen + 1)
                 limit = _maxItem;
 
-            if (Screen.IsMouseInBounds(new Point(0, 0), new Size(30, 1080)) && MouseEdgeEnabled)
+            if (Screen.IsMouseInBounds(new Point(0, 0), new Size(30, 1080)) && UseCursor && MouseEdgeEnabled)
             {
                 GameplayCamera.RelativeHeading += 5f;
                 Function.Call(Hash._0x8DB8CFFD58B62552, 6);
             }
-            else if (Screen.IsMouseInBounds(new Point(Convert.ToInt32(Screen.ResolutionMaintainRatio.Width - 30f), 0), new Size(30, 1080)) && MouseEdgeEnabled)
+            else if (Screen.IsMouseInBounds(new Point(Convert.ToInt32(Screen.ResolutionMaintainRatio.Width - 30f), 0), new Size(30, 1080)) && UseCursor && MouseEdgeEnabled)
             {
                 GameplayCamera.RelativeHeading -= 5f;
                 Function.Call(Hash._0x8DB8CFFD58B62552, 7);
             }
-            else if (MouseEdgeEnabled)
+            else if (UseCursor && MouseEdgeEnabled)
             {
                 Function.Call(Hash._0x8DB8CFFD58B62552, 1);
             }
@@ -1074,7 +1084,7 @@ namespace NativeUI
                 int xsize = 431 + WidthOffset;
                 const int ysize = 38;
                 UIMenuItem uiMenuItem = MenuItems[i];
-                if (Screen.IsMouseInBounds(new Point(xpos, ypos), new Size(xsize, ysize)))
+                if (UseCursor && Screen.IsMouseInBounds(new Point(xpos, ypos), new Size(xsize, ysize)))
                 {
                     uiMenuItem.Hovered = true;
                     int res = IsMouseInListItemArrows(MenuItems[i], new Point(xpos, yposSelected),
@@ -1122,7 +1132,7 @@ namespace NativeUI
             int extraY = 144 + 38 * (MaxItemsOnScreen + 1) + Offset.Y - 37 + _extraYOffset + safezoneOffset.Y;
             int extraX = safezoneOffset.X + Offset.X;
             if (Size <= MaxItemsOnScreen + 1) return;
-            if (Screen.IsMouseInBounds(new Point(extraX, extraY), new Size(431 + WidthOffset, 18)))
+            if (UseCursor && Screen.IsMouseInBounds(new Point(extraX, extraY), new Size(431 + WidthOffset, 18)))
             {
                 _extraRectangleUp.Color = Color.FromArgb(255, 30, 30, 30);
                 if (Game.IsControlJustPressed(0, Control.Attack))
@@ -1136,7 +1146,7 @@ namespace NativeUI
             else
                 _extraRectangleUp.Color = Color.FromArgb(200, 0, 0, 0);
 
-            if (Screen.IsMouseInBounds(new Point(extraX, extraY + 18), new Size(431 + WidthOffset, 18)))
+            if (UseCursor && Screen.IsMouseInBounds(new Point(extraX, extraY + 18), new Size(431 + WidthOffset, 18)))
             {
                 _extraRectangleDown.Color = Color.FromArgb(255, 30, 30, 30);
                 if (Game.IsControlJustPressed(0, Control.Attack))
@@ -1266,6 +1276,29 @@ namespace NativeUI
             }
         }
 
+        /// <summary>
+        /// If the menu should allow the use of the cursor for selecting items.
+        /// </summary>
+        public bool UseCursor
+        {
+            get => _useCursor;
+            set
+            {
+                _useCursor = value;
+
+                ResetKey(MenuControls.Select);
+                ResetKey(MenuControls.Back);
+
+                if (!value)
+                {
+                    SetKey(MenuControls.Select, Control.PhoneSelect);
+                }
+                SetKey(MenuControls.Select, Control.FrontendAccept);
+
+                SetKey(MenuControls.Back, Control.PhoneCancel);
+                SetKey(MenuControls.Back, Control.FrontendPause);
+            }
+        }
 
         /// <summary>
         /// Returns the current selected item's index.
