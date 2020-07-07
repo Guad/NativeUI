@@ -17,6 +17,8 @@ namespace NativeUI
 
         public bool ResetCursorOnOpen { set { _menuList.ForEach(m => m.ResetCursorOnOpen = value); } }
 
+        public bool UseCursor { set { _menuList.ForEach(m => m.UseCursor = value); } }
+
         public bool FormatDescriptions { set { _menuList.ForEach(m => m.FormatDescriptions = value); } }
 
         public string AUDIO_LIBRARY { set { _menuList.ForEach(m => m.AUDIO_LIBRARY = value); } }

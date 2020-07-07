@@ -1,0 +1,40 @@
+version: "1.9.1.{build}"
+image: Visual Studio 2017
+
+assembly_info:
+  patch: true
+  file: Properties\AssemblyInfo.cs
+  assembly_version: "{version}"
+  assembly_file_version: "{version}"
+
+init:
+  - ps: if ($env:APPVEYOR_REPO_TAG -eq "true") { Update-AppveyorBuild -Version "$($env:APPVEYOR_REPO_TAG_NAME)" }
+
+install:
+  - git submodule update --init --recursive
+  - nuget restore %APPVEYOR_PROJECT_NAME%.sln
+
+build_script:
+  - msbuild %APPVEYOR_PROJECT_NAME%.sln /t:Build /p:Configuration=Release
+  - nuget pack %APPVEYOR_PROJECT_NAME%\%APPVEYOR_PROJECT_NAME%.nuspec
+
+after_build:
+  - 7z a %APPVEYOR_PROJECT_NAME%.7z %APPVEYOR_BUILD_FOLDER%\NativeUI\bin\x64\Release\*
+
+artifacts:
+  - path: "%APPVEYOR_PROJECT_NAME%.7z"
+    name: File for Final Users
+  - path: '**\%APPVEYOR_PROJECT_NAME%.*.nupkg'
+    name: NuGet Package for Developers
+
+deploy:
+  release: $(APPVEYOR_BUILD_VERSION)
+  provider: GitHub
+  auth_token:
+    secure: "DkvKC8KRj8AipGu/oWW/J2e6jMWt2xXQfKU7oefFMsp0ZMfzz+OR9Y9XpML+ZmG4"
+  artifact: /.*\.7z|nupkg/
+  draft: false
+  prerelease: false
+  on:
+    branch: master
+    appveyor_repo_tag: true
