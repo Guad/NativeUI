@@ -1,3 +1,7 @@
+> # NativeUI is now deprecated!
+> ## Existing projects should migrate to LemonUI. Please check issue [#136](https://github.com/Guad/NativeUI/issues/136) for more information.
+> ## Feel free to check the LemonUI repository at https://github.com/justalemon/LemonUI
+
 # NativeUI
 ![NativeUI Example](http://i.imgur.com/nqD2Ty1.png)
 
